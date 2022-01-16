@@ -1,0 +1,2426 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Kiseok Lee" />
+
+<meta name="date" content="2022-01-15" />
+
+<title>HW1_Basic_Monte_Carlo_and_Bayesian_inference</title>
+
+<script src="site_libs/header-attrs-2.9/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">fiveMinuteStats</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/stephens999/fiveMinuteStats">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">HW1_Basic_Monte_Carlo_and_Bayesian_inference</h1>
+<h4 class="author">Kiseok Lee</h4>
+<h4 class="date">2022-01-15</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2022-01-16
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>fiveMinuteStats/analysis/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.6.2). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed12345code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(12345)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed12345code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(12345)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomKiseokUchicagofiveMinuteStatstreee2f5a68a11912fed2df375d545388bb4eec85a41targetblanke2f5a68a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/KiseokUchicago/fiveMinuteStats/tree/e2f5a68a11912fed2df375d545388bb4eec85a41" target="_blank">e2f5a68</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomKiseokUchicagofiveMinuteStatstreee2f5a68a11912fed2df375d545388bb4eec85a41targetblanke2f5a68a" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version <a href="https://github.com/KiseokUchicago/fiveMinuteStats/tree/e2f5a68a11912fed2df375d545388bb4eec85a41" target="_blank">e2f5a68</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rproj.user/
+
+Untracked files:
+    Untracked:  analysis/220113_r_simplemix.Rmd
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/HW1_Basic_Monte_Carlo_and_Bayesian_inference.Rmd</code>) and HTML (<code>docs/HW1_Basic_Monte_Carlo_and_Bayesian_inference.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/KiseokUchicago/fiveMinuteStats/blob/e2f5a68a11912fed2df375d545388bb4eec85a41/analysis/HW1_Basic_Monte_Carlo_and_Bayesian_inference.Rmd" target="_blank">e2f5a68</a>
+</td>
+<td>
+Kiseok Lee
+</td>
+<td>
+2022-01-16
+</td>
+<td>
+wflow_publish(“analysis/HW1_Basic_Monte_Carlo_and_Bayesian_inference.Rmd”)
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="hw1-bais-monte-carlo-method-likelihoodbayesian-inference" class="section level2">
+<h2>HW1 Bais Monte Carlo method; Likelihood/Bayesian inference</h2>
+<p>Name: <strong>Kiseok Lee</strong><br />
+Date: 1/15/22<br />
+Class: <strong>HGEN 486 Computational Biology</strong></p>
+<pre class="r"><code># libraries
+library(dplyr)
+library(ggplot2)
+library(RColorBrewer)
+library(vegan)
+library(tidyverse)
+library(magrittr)
+library(readxl)
+library(reshape2)
+library(gtools)
+library(devtools)
+library(openxlsx)
+library(ape)
+library(stringr)
+library(tidyr)
+library(ggrepel)
+library(ggpubr)
+
+## theme for ggplot
+mytheme &lt;- theme_bw() + 
+  theme(text = element_text(family=&quot;serif&quot;)) +
+  theme(plot.title = element_text(size = 19,hjust = 0.5, family=&quot;serif&quot;)) + 
+  theme(axis.title.x = element_text(size = 17,hjust = 0.5, family=&quot;serif&quot;)) + 
+  theme(axis.title.y = element_text(size = 17,hjust = 0.5, family=&quot;serif&quot;)) + 
+  theme(axis.text.x = element_text(hjust = 0.5, vjust=0.3,size=13, family=&quot;serif&quot;))+
+  theme(axis.text.y = element_text(size=10, family=&quot;serif&quot;))+
+  theme(panel.grid.major = element_blank()) +
+  theme(panel.grid.minor = element_blank(),panel.background=element_blank(),panel.border=element_blank(),plot.background=element_blank()) +
+  theme(axis.ticks = element_line(size = 1.1))
+
+mytheme_2d &lt;- theme_bw() + 
+  theme(text = element_text(family=&quot;serif&quot;)) +
+  theme(plot.title = element_text(size = 19,hjust = 0.5, family=&quot;serif&quot;)) + 
+  theme(axis.title.x = element_text(size = 17,hjust = 0.5, family=&quot;serif&quot;)) + 
+  theme(axis.title.y = element_text(size = 17,hjust = 0.5, family=&quot;serif&quot;)) + 
+  theme(axis.text.x = element_text(hjust = 0.5, vjust=0.3,size=13, family=&quot;serif&quot;))+
+  theme(axis.text.y = element_text(size=13, family=&quot;serif&quot;))+
+  # theme(panel.grid.major = element_blank()) +
+  # theme(panel.grid.minor = element_blank(),panel.background=element_blank(),plot.background=element_blank()) +
+  theme(axis.ticks = element_line(size = 1.1))
+
+
+# color collection
+my_color_collection &lt;- c(
+  &quot;#CBD588&quot;, &quot;#5F7FC7&quot;, &quot;orange&quot;, &quot;#AD6F3B&quot;, &quot;#673770&quot;, 
+  &quot;#D14285&quot;, &quot;#652926&quot;, &quot;#C84248&quot;, &quot;#8569D5&quot;, &quot;#5E738F&quot;,
+  &quot;#D1A33D&quot;, &quot;#8A7C64&quot;, &quot;#599861&quot;,&quot;#616163&quot;, &quot;#FFCDB2&quot;,
+  &quot;#6D9F71&quot;, &quot;#242F40&quot;,
+  &quot;#CCA43B&quot;, &quot;#F92A82&quot;, &quot;#ED7B84&quot;, &quot;#7EB77F&quot;, 
+  &quot;#DEC4A1&quot;, &quot;#E5D1D0&quot;, &#39;#0E8482&#39;, &#39;#C9DAEA&#39;, &#39;#337357&#39;, 
+  &#39;#95C623&#39;, &#39;#E55812&#39;, &#39;#04471C&#39;, &#39;#F2D7EE&#39;, &#39;#D3BCC0&#39;, 
+  &#39;#A5668B&#39;, &#39;#69306D&#39;, &#39;#0E103D&#39;, &#39;#1A535C&#39;, &#39;#4ECDC4&#39;, 
+  &#39;#F7FFF7&#39;, &#39;#FF6B6B&#39;, &#39;#FFE66D&#39;, &#39;#6699CC&#39;, &#39;#FFF275&#39;, 
+  &#39;#FF8C42&#39;, &#39;#FF3C38&#39;, &#39;#A23E48&#39;, &#39;#000000&#39;, &#39;#CF5C36&#39;, 
+  &#39;#EEE5E9&#39;, &#39;#7C7C7C&#39;, &#39;#EFC88B&#39;, &#39;#2E5266&#39;, &#39;#6E8898&#39;, 
+  &#39;#9FB1BC&#39;, &#39;#D3D0CB&#39;, &#39;#E2C044&#39;, &#39;#5BC0EB&#39;, &#39;#FDE74C&#39;, 
+  &#39;#9BC53D&#39;, &#39;#E55934&#39;, &#39;#FA7921&#39;, &quot;#CD9BCD&quot;, &quot;#508578&quot;, &quot;#DA5724&quot;)
+
+# for git push, use this instead of using wflow_git_push()
+# git push -u origin master (in the Git app / in the working directory)</code></pre>
+</div>
+<div id="a-2-c-inverse-transform-sampling-simulation" class="section level2">
+<h2>A-2-c) Inverse Transform Sampling simulation</h2>
+<p>Veryfiy your previous answer by simulation. Specifically, using R to simulate 1000 values of U and compute 1000 corresponding values of - log (U).<br />
+Plot the empirical cumulative distribution function (in R, on can use plot(ecdf(x))) for your resulting random deviates and show they are qualitatively similar to that expected for an exponential random variable by overlaying a plot of the expected cdf.</p>
+<pre class="r"><code># -log(U) sampling 1000 times
+U = runif(1000)
+x = -log(U)
+
+# Plot the empirical cumulative distribution function
+plot(ecdf(x), col=&#39;blue&#39;, lty = 1,pch=19,lwd=1, main=&quot;Empirical cumulative distribution function&quot;)
+
+# Exponential random variable
+set.seed(1)
+k = rexp(1000, rate = 1) # rate is 1 for mean to be 1
+lines(ecdf(k), col=&#39;red&#39;, type = &quot;b&quot;,lty = 1, pch=19,lwd=1)
+
+legend(2,0.2, legend=c(&#39;-log(U)&#39;, &#39;Exponential random variable&#39;), col=c(&quot;Blue&quot;, &quot;Red&quot;), lty=1, cex=0.8, box.lty=0)</code></pre>
+<p><img src="figure/HW1_Basic_Monte_Carlo_and_Bayesian_inference.Rmd/unnamed-chunk-2-1.png" width="1056" style="display: block; margin: auto;" /></p>
+</div>
+<div id="exercise-likelihood-ratio-how-big-is-convincing" class="section level2">
+<h2>Exercise: Likelihood Ratio: how big is convincing?</h2>
+<p><a href="https://stephens999.github.io/fiveMinuteStats/LR_and_BF.html" class="uri">https://stephens999.github.io/fiveMinuteStats/LR_and_BF.html</a></p>
+<div id="a." class="section level3">
+<h3>a.</h3>
+<p>Write a function to simulate data for the medical screening example above.<br />
+The function should take as input the proportion of individuals who have the disease, and the number of individuals to simulate.<br />
+It should output a table, one row for each individual, with two columns: the first column (x) is the protein concentration for that individual, the second column (z) is an indicator of disease status (1=disease, 0=normal).<br />
+</p>
+<p>First let’s build the components of the function.</p>
+<pre class="r"><code># distribution protein concentration in blood of the diseased and healthy 
+x = seq(0,10,length=100)
+plot(x, dgamma(x,scale = 0.5,shape = 2), type=&quot;l&quot;, xlab=&quot;Protein concentration&quot;, ylab=&quot;density&quot;, main=&quot;protein concentration distribution in blood of the diseased and healthy&quot;)
+lines(x, dgamma(x,scale = 1,shape = 2), type=&quot;l&quot;, col=&quot;red&quot;)
+legend(4,0.6, legend=c(&#39;Healthy&#39;, &#39;Diseased&#39;),
+       col=c(&quot;Black&quot;, &quot;Red&quot;), lty=1, cex=0.8, box.lty=0)</code></pre>
+<p><img src="figure/HW1_Basic_Monte_Carlo_and_Bayesian_inference.Rmd/unnamed-chunk-3-1.png" width="1056" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># Input
+# proportion of individuals who have the disease
+p_dis = 0.1
+# the number of individuals to simulate
+n_ind = 1000
+
+# Protein concentration random generation
+set.seed(1) 
+
+# healthy
+healthy_protein_conc &lt;- function(n){rgamma(n, scale = 0.5,shape = 2)}
+healthy_protein_conc(n=1)</code></pre>
+<pre><code>[1] 0.4154325</code></pre>
+<pre class="r"><code># diseased
+diseased_protein_conc &lt;- function(n){rgamma(n, scale = 1, shape = 2)}
+diseased_protein_conc(n=1)</code></pre>
+<pre><code>[1] 3.570756</code></pre>
+<pre class="r"><code># Sample individual with diseased or no disease
+z = sample(0:1, size=n_ind, prob=c(1 - p_dis, p_dis), replace=T)
+
+# create x vector (protein concentration)
+x = rep(-1, n_ind)
+
+for (i in 1:n_ind){
+  # print(i)
+  if (z[i] == 0){  # healthy
+    x[i] = healthy_protein_conc(n=1)
+    # print(x[i])
+  } else if (z[i] == 1){ # diseased
+    x[i] = diseased_protein_conc(n=1)
+    # print(x[i])
+  } else{
+    print(&quot;Error&quot;)
+  }
+}
+
+head(x)</code></pre>
+<pre><code>[1] 0.05921332 2.96027644 2.04369326 0.14493148 1.71737662 0.45838017</code></pre>
+<pre class="r"><code># bind columns
+table_concentration &lt;- cbind(x, z)
+head(table_concentration)</code></pre>
+<pre><code>              x z
+[1,] 0.05921332 0
+[2,] 2.96027644 1
+[3,] 2.04369326 0
+[4,] 0.14493148 0
+[5,] 1.71737662 0
+[6,] 0.45838017 0</code></pre>
+<p>Wrap it into a function</p>
+<pre class="r"><code>## Wrapping into a function
+
+#&#39; @param p_dis proportion of individuals who have the disease
+#&#39; @param n_ind the number of individuals to simulate
+simulate_disease &lt;- function(p_dis, n_ind){
+  # Sample individual with diseased or no disease
+  z = sample(0:1, size=n_ind, prob=c(1 - p_dis, p_dis), replace=T)
+  
+  # create x vector (protein concentration)
+  x = rep(-1, n_ind)
+  
+  for (i in 1:n_ind){
+    # print(i)
+    if (z[i] == 0){  # healthy
+      x[i] = rgamma(1, scale = 0.5,shape = 2)
+      # print(x[i])
+    } else if (z[i] == 1){ # diseased
+      x[i] = rgamma(1, scale = 1, shape = 2)
+      # print(x[i])
+    } else{
+      print(&quot;Error&quot;)
+    }
+  }
+
+  # bind columns
+  table_concentration &lt;- cbind(x, z)
+  return(table_concentration)
+}
+
+# example
+
+simulate_disease(p_dis=0.4, n_ind=10)</code></pre>
+<pre><code>              x z
+ [1,] 3.5380273 1
+ [2,] 1.4887009 0
+ [3,] 0.6361705 0
+ [4,] 0.5308743 0
+ [5,] 2.0329460 0
+ [6,] 1.4075391 0
+ [7,] 1.0157633 0
+ [8,] 0.7970713 0
+ [9,] 1.5391166 0
+[10,] 2.8332090 1</code></pre>
+</div>
+<div id="b." class="section level3">
+<h3>b.</h3>
+<p>Write a function to compute the likelihood ratio in the medical screening example.</p>
+<p>Construct the elements of the function</p>
+<pre class="r"><code># When z == 0 (healthy), likelihood ratio is
+healthy_LR &lt;- function(x){dgamma(x, scale = 0.5,shape = 2) / dgamma(x, scale = 1, shape = 2)}
+# When z == 1, likelihood ratio is..
+diseased_LR &lt;- function(x){dgamma(x, scale = 1,shape = 2) / dgamma(x, scale = 0.5, shape = 2)}
+
+## function to compute the likelihood ratio
+# input will be the simulated data
+table_concentration</code></pre>
+<pre><code>                 x z
+   [1,] 0.05921332 0
+   [2,] 2.96027644 1
+   [3,] 2.04369326 0
+   [4,] 0.14493148 0
+   [5,] 1.71737662 0
+   [6,] 0.45838017 0
+   [7,] 3.19585037 0
+   [8,] 0.42540077 0
+   [9,] 0.89846066 0
+  [10,] 0.51365059 0
+  [11,] 0.31783655 0
+  [12,] 1.65582800 0
+  [13,] 0.73287486 1
+  [14,] 0.75251403 0
+  [15,] 0.61386666 0
+  [16,] 1.44211226 1
+  [17,] 0.80453766 0
+  [18,] 1.77490781 0
+  [19,] 0.26947549 0
+  [20,] 0.84028589 0
+  [21,] 0.19756059 0
+  [22,] 0.26942562 0
+  [23,] 0.49885865 0
+  [24,] 0.69324865 0
+  [25,] 0.94727337 0
+  [26,] 1.74025702 0
+  [27,] 1.16411868 0
+  [28,] 0.57377086 0
+  [29,] 0.55274847 0
+  [30,] 1.09739954 0
+  [31,] 0.76143794 0
+  [32,] 1.77467027 0
+  [33,] 0.71022803 0
+  [34,] 0.46274863 0
+  [35,] 2.19137177 0
+  [36,] 0.20763687 0
+  [37,] 0.52761878 0
+  [38,] 0.58007637 0
+  [39,] 1.68251872 0
+  [40,] 1.45799246 0
+  [41,] 1.75160210 0
+  [42,] 0.66871069 0
+  [43,] 1.57187971 0
+  [44,] 0.60608953 0
+  [45,] 0.28980087 0
+  [46,] 1.40274917 0
+  [47,] 0.26473585 0
+  [48,] 0.27097042 0
+  [49,] 0.49098541 0
+  [50,] 3.67371137 0
+  [51,] 0.50277778 0
+  [52,] 2.12940686 0
+  [53,] 1.07882365 0
+  [54,] 1.38458362 0
+  [55,] 0.66390621 0
+  [56,] 0.25285400 1
+  [57,] 0.35635770 0
+  [58,] 0.52437475 0
+  [59,] 1.84640353 0
+  [60,] 1.80475163 0
+  [61,] 1.05691214 0
+  [62,] 1.18662905 0
+  [63,] 0.43665603 0
+  [64,] 2.47665766 0
+  [65,] 0.89190938 0
+  [66,] 0.85403475 0
+  [67,] 0.96751934 0
+  [68,] 0.53265739 0
+  [69,] 0.53321702 0
+  [70,] 0.51298506 0
+  [71,] 0.01663019 0
+  [72,] 0.60581511 0
+  [73,] 1.10998380 0
+  [74,] 0.75300902 0
+  [75,] 0.92088812 1
+  [76,] 2.21875127 0
+  [77,] 1.23173573 0
+  [78,] 0.22739052 0
+  [79,] 1.75879202 0
+  [80,] 0.29793370 0
+  [81,] 1.81654574 0
+  [82,] 0.18654050 0
+  [83,] 1.15800324 0
+  [84,] 0.59360019 0
+  [85,] 1.96267362 0
+  [86,] 0.57260478 0
+  [87,] 1.35900902 0
+  [88,] 2.49717736 0
+  [89,] 0.91369979 0
+  [90,] 1.57492618 0
+  [91,] 1.64533130 0
+  [92,] 0.74373097 0
+  [93,] 0.79428542 0
+  [94,] 2.69032091 0
+  [95,] 0.20858764 0
+  [96,] 0.21038401 0
+  [97,] 0.12322180 0
+  [98,] 0.99503881 0
+  [99,] 0.56699042 1
+ [100,] 0.36824412 0
+ [101,] 0.16844268 0
+ [102,] 1.55526599 0
+ [103,] 0.19547358 0
+ [104,] 0.96571916 1
+ [105,] 0.23934193 0
+ [106,] 0.40736698 1
+ [107,] 1.45256133 0
+ [108,] 2.00554622 0
+ [109,] 0.24805210 0
+ [110,] 0.97046181 0
+ [111,] 0.40601662 0
+ [112,] 0.35852923 0
+ [113,] 0.79036440 0
+ [114,] 0.39029592 0
+ [115,] 1.14746739 0
+ [116,] 2.40954486 1
+ [117,] 0.57511789 0
+ [118,] 1.00025152 0
+ [119,] 0.57178084 0
+ [120,] 0.74144078 0
+ [121,] 0.26678810 0
+ [122,] 1.55711864 0
+ [123,] 1.06697730 0
+ [124,] 2.11086363 0
+ [125,] 0.83233566 0
+ [126,] 1.57121352 0
+ [127,] 1.07959074 0
+ [128,] 0.34885446 0
+ [129,] 0.40694061 0
+ [130,] 0.54312180 1
+ [131,] 0.37241984 0
+ [132,] 1.37221875 0
+ [133,] 1.08859301 0
+ [134,] 1.09695083 1
+ [135,] 0.67084814 0
+ [136,] 0.24049934 0
+ [137,] 1.48072962 0
+ [138,] 0.23258496 0
+ [139,] 1.42346917 0
+ [140,] 0.63330137 0
+ [141,] 0.62428095 0
+ [142,] 0.91925691 0
+ [143,] 1.55052682 0
+ [144,] 2.41974429 0
+ [145,] 1.45687654 0
+ [146,] 1.52067586 0
+ [147,] 2.22432369 0
+ [148,] 0.44078519 0
+ [149,] 1.74071936 0
+ [150,] 0.83853627 0
+ [151,] 0.22344180 0
+ [152,] 1.62463608 0
+ [153,] 1.86855048 0
+ [154,] 0.71208326 0
+ [155,] 0.16246704 0
+ [156,] 0.83774653 0
+ [157,] 0.53210838 0
+ [158,] 1.23010774 0
+ [159,] 1.27020465 0
+ [160,] 0.06867580 0
+ [161,] 1.00884129 0
+ [162,] 1.39517403 0
+ [163,] 0.15518885 0
+ [164,] 1.42238548 0
+ [165,] 2.64751977 0
+ [166,] 0.22436639 0
+ [167,] 0.69767779 0
+ [168,] 1.41481498 0
+ [169,] 0.94058374 0
+ [170,] 0.65995753 0
+ [171,] 0.25208482 0
+ [172,] 0.23511119 0
+ [173,] 2.25899639 0
+ [174,] 0.47287798 0
+ [175,] 1.28997549 1
+ [176,] 1.10817230 0
+ [177,] 1.65414137 0
+ [178,] 0.49374637 0
+ [179,] 0.98202281 0
+ [180,] 1.26111292 0
+ [181,] 1.21504619 0
+ [182,] 4.10340407 0
+ [183,] 0.40778235 0
+ [184,] 1.71053019 1
+ [185,] 0.17401775 0
+ [186,] 1.13678532 0
+ [187,] 0.93832357 0
+ [188,] 0.42041947 0
+ [189,] 4.51477945 1
+ [190,] 1.49725449 0
+ [191,] 0.44451756 0
+ [192,] 0.40259807 0
+ [193,] 2.74460494 0
+ [194,] 0.94651932 0
+ [195,] 0.24745019 0
+ [196,] 0.20601228 0
+ [197,] 0.01794738 0
+ [198,] 1.59036777 0
+ [199,] 1.97354684 0
+ [200,] 2.38442369 0
+ [201,] 0.87759193 0
+ [202,] 0.32092036 0
+ [203,] 4.33900336 0
+ [204,] 1.31672568 0
+ [205,] 1.47569164 0
+ [206,] 0.68472156 1
+ [207,] 2.27795443 0
+ [208,] 1.37218853 0
+ [209,] 0.19494279 1
+ [210,] 0.07042809 0
+ [211,] 0.76564796 0
+ [212,] 0.03096396 0
+ [213,] 1.95008923 1
+ [214,] 0.83397073 1
+ [215,] 1.70926021 0
+ [216,] 0.60632706 0
+ [217,] 0.86192380 0
+ [218,] 1.41568744 0
+ [219,] 0.95888154 0
+ [220,] 1.08451651 1
+ [221,] 0.73961156 0
+ [222,] 0.71222188 0
+ [223,] 1.01397456 0
+ [224,] 0.59840232 0
+ [225,] 0.27962982 0
+ [226,] 1.01675758 0
+ [227,] 1.84679482 0
+ [228,] 0.40077108 0
+ [229,] 1.94810347 0
+ [230,] 0.99498706 0
+ [231,] 0.91841622 0
+ [232,] 0.73504532 0
+ [233,] 0.46240328 0
+ [234,] 0.54001856 0
+ [235,] 0.92066499 0
+ [236,] 0.22136347 0
+ [237,] 0.55611888 0
+ [238,] 2.41599031 1
+ [239,] 0.90271052 0
+ [240,] 1.25196773 0
+ [241,] 0.28539266 0
+ [242,] 1.40971958 0
+ [243,] 0.88268178 0
+ [244,] 0.86297199 0
+ [245,] 1.30384968 1
+ [246,] 0.40563872 0
+ [247,] 2.80704358 1
+ [248,] 0.62019430 0
+ [249,] 2.41233474 0
+ [250,] 1.26938488 0
+ [251,] 2.84509482 0
+ [252,] 0.97887968 0
+ [253,] 0.21634157 0
+ [254,] 0.30783846 0
+ [255,] 0.52014918 1
+ [256,] 1.63463685 0
+ [257,] 2.50818207 0
+ [258,] 1.08756360 0
+ [259,] 0.04910037 0
+ [260,] 0.64845414 0
+ [261,] 0.63305172 0
+ [262,] 2.66643973 0
+ [263,] 0.78617852 0
+ [264,] 0.14976188 0
+ [265,] 0.39250892 0
+ [266,] 0.72471802 0
+ [267,] 0.52903924 0
+ [268,] 0.90092811 0
+ [269,] 0.28709996 0
+ [270,] 0.58641025 0
+ [271,] 2.76286294 0
+ [272,] 0.47816245 0
+ [273,] 0.65855901 0
+ [274,] 0.68041611 0
+ [275,] 0.46963488 0
+ [276,] 0.66992640 0
+ [277,] 0.62538132 0
+ [278,] 1.02121246 0
+ [279,] 0.49156167 0
+ [280,] 0.13475206 0
+ [281,] 0.73782981 0
+ [282,] 0.44365936 0
+ [283,] 2.34988698 0
+ [284,] 1.05514430 0
+ [285,] 1.38411522 0
+ [286,] 0.27789475 0
+ [287,] 1.80869461 0
+ [288,] 0.72396532 1
+ [289,] 1.00088470 0
+ [290,] 1.09117613 0
+ [291,] 2.50493273 0
+ [292,] 0.79009789 0
+ [293,] 1.06080419 0
+ [294,] 0.79649116 0
+ [295,] 0.96300220 1
+ [296,] 0.41026591 0
+ [297,] 0.83134723 0
+ [298,] 0.33375638 0
+ [299,] 0.69132608 0
+ [300,] 1.22143956 0
+ [301,] 0.96711216 1
+ [302,] 0.47618505 0
+ [303,] 1.52985003 0
+ [304,] 0.82596457 0
+ [305,] 0.57041713 0
+ [306,] 1.54514325 0
+ [307,] 1.28400224 0
+ [308,] 0.38116815 0
+ [309,] 1.60603955 0
+ [310,] 1.58546547 0
+ [311,] 0.31154149 0
+ [312,] 0.11916614 0
+ [313,] 0.07738982 0
+ [314,] 1.82237803 1
+ [315,] 0.59681406 0
+ [316,] 1.48578131 0
+ [317,] 0.45535236 0
+ [318,] 2.06595482 0
+ [319,] 1.29384120 1
+ [320,] 1.33670909 0
+ [321,] 0.86189264 1
+ [322,] 2.51506847 0
+ [323,] 0.56339120 0
+ [324,] 1.72905672 0
+ [325,] 0.94139678 0
+ [326,] 5.26910779 1
+ [327,] 1.02004395 0
+ [328,] 0.13621869 0
+ [329,] 2.94117568 0
+ [330,] 1.32149213 0
+ [331,] 0.60405535 0
+ [332,] 1.42197529 0
+ [333,] 0.29590270 0
+ [334,] 0.52793782 0
+ [335,] 0.68784580 1
+ [336,] 3.20717753 1
+ [337,] 0.35077575 0
+ [338,] 1.26402403 0
+ [339,] 1.28379877 0
+ [340,] 1.31062593 0
+ [341,] 0.55515570 0
+ [342,] 0.85351154 0
+ [343,] 1.36538553 0
+ [344,] 0.33191962 0
+ [345,] 2.58646407 0
+ [346,] 3.16689320 0
+ [347,] 0.55620108 0
+ [348,] 0.41702515 0
+ [349,] 0.84916664 0
+ [350,] 0.88143232 1
+ [351,] 0.85420874 0
+ [352,] 2.23768516 0
+ [353,] 1.24875599 0
+ [354,] 0.55746166 0
+ [355,] 4.73157361 0
+ [356,] 1.93985624 0
+ [357,] 0.60568364 0
+ [358,] 0.18069630 0
+ [359,] 0.26476101 0
+ [360,] 1.08145762 0
+ [361,] 0.33433963 0
+ [362,] 0.79589315 0
+ [363,] 1.24459650 0
+ [364,] 0.96915904 0
+ [365,] 1.12116144 0
+ [366,] 0.13691722 0
+ [367,] 0.27983254 0
+ [368,] 0.98382678 1
+ [369,] 0.35419038 0
+ [370,] 0.69028476 0
+ [371,] 0.53327095 0
+ [372,] 0.44882703 0
+ [373,] 1.25166017 0
+ [374,] 1.24150903 0
+ [375,] 0.35313172 0
+ [376,] 0.39397033 0
+ [377,] 1.78931767 0
+ [378,] 0.73762427 0
+ [379,] 0.62197687 1
+ [380,] 1.33850636 0
+ [381,] 2.32716542 0
+ [382,] 1.11811065 0
+ [383,] 0.26612238 0
+ [384,] 1.82003963 0
+ [385,] 0.77897601 1
+ [386,] 1.75902016 0
+ [387,] 0.02117411 0
+ [388,] 3.36058146 1
+ [389,] 1.31598037 0
+ [390,] 0.48083095 0
+ [391,] 0.80062375 0
+ [392,] 0.76581507 0
+ [393,] 0.66216399 0
+ [394,] 4.05629165 0
+ [395,] 0.48004014 0
+ [396,] 0.72951420 0
+ [397,] 1.00811832 0
+ [398,] 2.78835005 1
+ [399,] 0.89417103 0
+ [400,] 0.14830128 1
+ [401,] 1.16506237 0
+ [402,] 1.09842562 0
+ [403,] 0.61167593 0
+ [404,] 1.08493986 0
+ [405,] 3.94096084 1
+ [406,] 2.95424176 1
+ [407,] 1.70719376 0
+ [408,] 0.56159990 0
+ [409,] 0.29021784 0
+ [410,] 0.66716747 0
+ [411,] 2.17235210 0
+ [412,] 0.84395506 0
+ [413,] 2.26948381 0
+ [414,] 0.59319229 0
+ [415,] 0.51417132 0
+ [416,] 1.69109065 0
+ [417,] 0.23125300 0
+ [418,] 0.57311349 0
+ [419,] 0.51584323 0
+ [420,] 2.04295013 0
+ [421,] 0.49740078 0
+ [422,] 1.85108877 0
+ [423,] 0.18444216 1
+ [424,] 1.10939242 0
+ [425,] 0.85496161 0
+ [426,] 1.68047006 1
+ [427,] 0.42476965 0
+ [428,] 1.73672820 0
+ [429,] 0.58229833 0
+ [430,] 0.81686702 0
+ [431,] 1.89563912 0
+ [432,] 0.55107429 0
+ [433,] 0.85230649 0
+ [434,] 0.71688659 0
+ [435,] 0.43253224 1
+ [436,] 0.38006920 0
+ [437,] 0.50444132 0
+ [438,] 0.70620470 0
+ [439,] 0.46041343 0
+ [440,] 1.01600409 0
+ [441,] 0.45658026 0
+ [442,] 0.72316028 0
+ [443,] 1.64908586 1
+ [444,] 1.07438520 0
+ [445,] 0.58220949 0
+ [446,] 1.03348904 1
+ [447,] 2.92828040 0
+ [448,] 2.01871326 0
+ [449,] 0.37145125 0
+ [450,] 0.65905101 0
+ [451,] 1.85571554 0
+ [452,] 0.49186105 0
+ [453,] 3.03598592 1
+ [454,] 2.77266578 0
+ [455,] 1.77113705 0
+ [456,] 0.31183926 0
+ [457,] 0.79409294 0
+ [458,] 2.13195928 0
+ [459,] 0.22197241 0
+ [460,] 0.16165041 0
+ [461,] 1.41573691 1
+ [462,] 0.28915420 0
+ [463,] 1.72519586 0
+ [464,] 1.88235105 0
+ [465,] 0.86163009 0
+ [466,] 0.34432868 0
+ [467,] 0.63399903 1
+ [468,] 0.42800389 0
+ [469,] 1.23742847 0
+ [470,] 2.15225272 0
+ [471,] 0.27075520 0
+ [472,] 0.24494320 0
+ [473,] 0.94979532 0
+ [474,] 1.18104827 0
+ [475,] 0.78803416 0
+ [476,] 0.68366863 0
+ [477,] 0.65356829 0
+ [478,] 2.63559349 0
+ [479,] 5.15122646 1
+ [480,] 0.85758113 0
+ [481,] 0.68539332 0
+ [482,] 0.40811900 0
+ [483,] 1.92745855 0
+ [484,] 1.02061606 0
+ [485,] 1.58755572 0
+ [486,] 0.73351114 0
+ [487,] 2.09632645 1
+ [488,] 1.07967038 0
+ [489,] 0.39457699 0
+ [490,] 0.39664760 0
+ [491,] 1.21608450 0
+ [492,] 0.43590715 0
+ [493,] 0.97352742 0
+ [494,] 1.77252149 0
+ [495,] 0.27740570 0
+ [496,] 0.79344988 0
+ [497,] 0.24799358 0
+ [498,] 0.29149632 0
+ [499,] 0.16948200 0
+ [500,] 1.15516287 0
+ [501,] 0.92372698 1
+ [502,] 2.21808493 0
+ [503,] 0.74052625 0
+ [504,] 1.91798037 0
+ [505,] 0.38650738 0
+ [506,] 0.15421396 0
+ [507,] 1.45675621 0
+ [508,] 0.30570523 0
+ [509,] 0.71465511 0
+ [510,] 1.52327027 0
+ [511,] 1.59657916 0
+ [512,] 0.32876185 0
+ [513,] 2.20051380 0
+ [514,] 0.92820662 0
+ [515,] 0.57854059 0
+ [516,] 0.44833047 0
+ [517,] 0.32893419 0
+ [518,] 1.69347715 0
+ [519,] 0.22316286 0
+ [520,] 1.44375830 0
+ [521,] 1.02695917 1
+ [522,] 0.08929064 0
+ [523,] 0.87779119 0
+ [524,] 1.23572710 1
+ [525,] 0.38839194 1
+ [526,] 0.39933828 0
+ [527,] 0.32808037 0
+ [528,] 2.47344427 0
+ [529,] 0.38368498 0
+ [530,] 1.48226580 0
+ [531,] 1.13036103 0
+ [532,] 0.25030008 0
+ [533,] 0.58686874 0
+ [534,] 3.38770580 0
+ [535,] 0.65637612 0
+ [536,] 0.60016215 0
+ [537,] 0.75740186 1
+ [538,] 1.21430361 0
+ [539,] 0.75157908 0
+ [540,] 1.31699354 0
+ [541,] 0.81242566 0
+ [542,] 2.53836510 1
+ [543,] 1.99637272 0
+ [544,] 0.86356786 0
+ [545,] 0.58695533 0
+ [546,] 0.35175505 0
+ [547,] 0.29438765 0
+ [548,] 2.20952844 0
+ [549,] 5.13890835 1
+ [550,] 0.47787060 0
+ [551,] 2.12104694 0
+ [552,] 0.52743797 0
+ [553,] 0.79536108 0
+ [554,] 1.56491433 0
+ [555,] 1.75037521 0
+ [556,] 1.74097897 0
+ [557,] 1.46936584 0
+ [558,] 0.96532701 0
+ [559,] 2.34266591 0
+ [560,] 5.04538922 1
+ [561,] 1.78422295 0
+ [562,] 0.62151277 0
+ [563,] 2.13897259 0
+ [564,] 0.45076389 0
+ [565,] 0.73996281 1
+ [566,] 1.45648458 0
+ [567,] 1.27305602 0
+ [568,] 0.77305057 0
+ [569,] 2.67998688 0
+ [570,] 0.70205594 0
+ [571,] 0.72308967 0
+ [572,] 0.85142554 0
+ [573,] 2.72894817 0
+ [574,] 1.79666390 0
+ [575,] 2.25903066 0
+ [576,] 0.23551465 0
+ [577,] 1.56746216 1
+ [578,] 0.90888840 0
+ [579,] 0.82787905 0
+ [580,] 0.45803602 0
+ [581,] 0.27605592 0
+ [582,] 1.21419634 0
+ [583,] 1.94689645 0
+ [584,] 1.18223144 1
+ [585,] 1.95732410 0
+ [586,] 1.68224174 0
+ [587,] 0.82335704 0
+ [588,] 0.80803427 0
+ [589,] 1.36349410 0
+ [590,] 0.60379973 0
+ [591,] 0.59585935 0
+ [592,] 1.05802485 0
+ [593,] 3.46039811 0
+ [594,] 0.95842433 0
+ [595,] 0.11622640 0
+ [596,] 1.46452690 0
+ [597,] 0.87284028 1
+ [598,] 0.80812909 0
+ [599,] 1.15870691 0
+ [600,] 0.98277267 1
+ [601,] 0.86533868 1
+ [602,] 0.91571391 0
+ [603,] 1.55962482 0
+ [604,] 3.95196677 1
+ [605,] 1.02397438 0
+ [606,] 1.04640184 1
+ [607,] 0.08497509 0
+ [608,] 1.79548387 0
+ [609,] 0.82169488 0
+ [610,] 0.52902190 0
+ [611,] 0.40968897 0
+ [612,] 0.29551283 0
+ [613,] 0.71884195 0
+ [614,] 1.39701543 0
+ [615,] 0.28443899 0
+ [616,] 2.19601506 0
+ [617,] 0.22802626 0
+ [618,] 1.78481977 0
+ [619,] 0.68797835 0
+ [620,] 1.94592427 0
+ [621,] 1.36744100 0
+ [622,] 0.69494611 0
+ [623,] 0.65865066 0
+ [624,] 0.51520828 0
+ [625,] 1.97232454 1
+ [626,] 2.60379017 0
+ [627,] 0.21573935 0
+ [628,] 2.06087902 0
+ [629,] 0.61059759 0
+ [630,] 0.61095219 0
+ [631,] 1.79220393 0
+ [632,] 0.65619405 0
+ [633,] 1.05243088 0
+ [634,] 1.44467618 0
+ [635,] 0.19132083 0
+ [636,] 1.84859468 1
+ [637,] 0.47361768 0
+ [638,] 0.51774560 1
+ [639,] 0.55589586 0
+ [640,] 0.19135506 0
+ [641,] 0.95504074 0
+ [642,] 1.32117572 0
+ [643,] 1.07718073 0
+ [644,] 2.17888115 0
+ [645,] 1.62807724 1
+ [646,] 0.26632324 0
+ [647,] 0.94592934 0
+ [648,] 1.57442186 0
+ [649,] 1.58845236 0
+ [650,] 0.87456029 0
+ [651,] 1.80315751 0
+ [652,] 0.83552854 0
+ [653,] 2.00394487 0
+ [654,] 0.66735502 0
+ [655,] 1.79841915 0
+ [656,] 1.06501452 0
+ [657,] 0.60301319 0
+ [658,] 0.35140067 0
+ [659,] 1.63934003 0
+ [660,] 0.74879864 0
+ [661,] 1.21731281 0
+ [662,] 2.48306131 1
+ [663,] 0.57098368 0
+ [664,] 1.67066627 0
+ [665,] 2.99346429 0
+ [666,] 0.42090067 0
+ [667,] 0.75780950 0
+ [668,] 0.31048761 0
+ [669,] 0.32645900 0
+ [670,] 1.42039023 0
+ [671,] 0.94561100 0
+ [672,] 1.23470908 0
+ [673,] 0.96255152 0
+ [674,] 1.02069240 0
+ [675,] 1.28747648 0
+ [676,] 2.23121898 0
+ [677,] 0.80007954 0
+ [678,] 0.80676846 0
+ [679,] 0.98335618 0
+ [680,] 0.10217823 0
+ [681,] 0.46167121 0
+ [682,] 1.33270628 0
+ [683,] 0.55358420 0
+ [684,] 0.55864294 0
+ [685,] 1.79331154 1
+ [686,] 2.38244460 0
+ [687,] 1.55590657 0
+ [688,] 0.10727658 0
+ [689,] 1.44905489 0
+ [690,] 0.95380160 0
+ [691,] 0.81312838 0
+ [692,] 1.27808484 0
+ [693,] 1.48647647 0
+ [694,] 0.73700030 1
+ [695,] 0.46351113 0
+ [696,] 5.47337440 1
+ [697,] 2.11153789 1
+ [698,] 0.72822795 0
+ [699,] 0.02076804 0
+ [700,] 0.22723250 0
+ [701,] 2.22504314 0
+ [702,] 1.79935209 0
+ [703,] 0.96453355 0
+ [704,] 3.04164830 1
+ [705,] 1.25323716 0
+ [706,] 1.26482160 0
+ [707,] 1.40422441 0
+ [708,] 1.98544146 0
+ [709,] 1.13253113 0
+ [710,] 1.31236177 0
+ [711,] 1.25147875 0
+ [712,] 0.44384038 0
+ [713,] 0.67566356 0
+ [714,] 0.47857063 0
+ [715,] 0.05738538 0
+ [716,] 0.06095230 0
+ [717,] 0.16419686 0
+ [718,] 2.93632055 1
+ [719,] 0.70063085 0
+ [720,] 1.10968794 0
+ [721,] 0.97971700 0
+ [722,] 0.55368573 0
+ [723,] 0.93964271 0
+ [724,] 2.65533640 0
+ [725,] 0.85258897 0
+ [726,] 0.75502047 0
+ [727,] 0.50540520 0
+ [728,] 2.61217299 0
+ [729,] 0.64405561 0
+ [730,] 1.33464464 0
+ [731,] 2.61714274 0
+ [732,] 2.22327290 0
+ [733,] 0.57272641 0
+ [734,] 0.11019275 0
+ [735,] 2.16852977 0
+ [736,] 0.61276018 0
+ [737,] 2.16033635 0
+ [738,] 0.34874744 0
+ [739,] 2.00975342 0
+ [740,] 0.97569976 0
+ [741,] 1.15573443 0
+ [742,] 0.14729826 0
+ [743,] 1.34562928 0
+ [744,] 0.03703168 0
+ [745,] 1.93241700 0
+ [746,] 1.46661477 0
+ [747,] 1.68719321 1
+ [748,] 1.31090311 0
+ [749,] 1.13030947 0
+ [750,] 0.73331824 0
+ [751,] 1.47690492 0
+ [752,] 0.85818777 0
+ [753,] 0.36735598 0
+ [754,] 1.82604892 1
+ [755,] 0.75705758 0
+ [756,] 0.52180697 0
+ [757,] 0.42531644 0
+ [758,] 1.48439753 0
+ [759,] 0.75313465 0
+ [760,] 1.31261678 0
+ [761,] 0.44476512 0
+ [762,] 3.08831970 0
+ [763,] 1.16496339 0
+ [764,] 2.18752619 0
+ [765,] 1.11594087 0
+ [766,] 0.06339080 0
+ [767,] 0.95145003 0
+ [768,] 1.72262279 0
+ [769,] 0.70891392 1
+ [770,] 0.25792635 0
+ [771,] 1.36012208 0
+ [772,] 0.87710964 0
+ [773,] 0.15488644 0
+ [774,] 0.73869725 0
+ [775,] 1.04546635 1
+ [776,] 0.79357887 1
+ [777,] 0.87818223 0
+ [778,] 1.42786972 0
+ [779,] 1.22332557 0
+ [780,] 0.75233851 0
+ [781,] 1.87588422 0
+ [782,] 0.28851979 0
+ [783,] 1.41732071 0
+ [784,] 0.76937609 0
+ [785,] 1.81300817 0
+ [786,] 0.82111125 0
+ [787,] 0.86053837 0
+ [788,] 1.43521519 1
+ [789,] 1.58732116 0
+ [790,] 2.18638517 0
+ [791,] 0.98457758 0
+ [792,] 0.84839385 0
+ [793,] 2.00227905 0
+ [794,] 0.71127865 0
+ [795,] 1.93952942 0
+ [796,] 0.45331134 0
+ [797,] 0.12895757 0
+ [798,] 2.36498192 1
+ [799,] 0.53473183 0
+ [800,] 2.92042645 0
+ [801,] 0.52336847 0
+ [802,] 0.45501967 0
+ [803,] 7.20578472 1
+ [804,] 0.23480946 0
+ [805,] 0.36954609 0
+ [806,] 1.42860442 0
+ [807,] 1.50873299 0
+ [808,] 1.17233633 0
+ [809,] 2.33735148 1
+ [810,] 0.30287468 0
+ [811,] 1.41752437 0
+ [812,] 1.24900937 1
+ [813,] 2.53109517 1
+ [814,] 1.35301963 0
+ [815,] 1.36137456 0
+ [816,] 0.51251744 0
+ [817,] 1.76441133 0
+ [818,] 1.40872580 0
+ [819,] 1.31980747 0
+ [820,] 0.44698013 0
+ [821,] 1.37288153 0
+ [822,] 1.55004513 0
+ [823,] 3.14235688 0
+ [824,] 0.48553725 0
+ [825,] 0.26667700 0
+ [826,] 0.78300567 0
+ [827,] 0.41097288 1
+ [828,] 1.14154172 0
+ [829,] 0.64588306 0
+ [830,] 0.84549922 0
+ [831,] 1.14674397 0
+ [832,] 0.70230384 0
+ [833,] 0.50415349 0
+ [834,] 2.54078317 1
+ [835,] 0.44109315 0
+ [836,] 1.53956439 1
+ [837,] 1.44930145 0
+ [838,] 0.65356220 0
+ [839,] 0.51439332 0
+ [840,] 0.83641087 0
+ [841,] 2.04866834 0
+ [842,] 0.68339091 0
+ [843,] 0.86013201 0
+ [844,] 1.65763728 0
+ [845,] 1.04503838 0
+ [846,] 0.35007231 1
+ [847,] 1.48941407 0
+ [848,] 0.73686663 0
+ [849,] 0.48907087 1
+ [850,] 1.50065706 0
+ [851,] 0.87164213 0
+ [852,] 1.32894611 0
+ [853,] 0.36743341 0
+ [854,] 0.12246893 0
+ [855,] 0.75192679 0
+ [856,] 0.32249474 0
+ [857,] 0.40987272 0
+ [858,] 0.41653198 0
+ [859,] 0.61989390 0
+ [860,] 0.44575523 0
+ [861,] 2.20556348 0
+ [862,] 1.24322500 0
+ [863,] 1.93111269 0
+ [864,] 1.80725948 0
+ [865,] 0.56155194 0
+ [866,] 0.58870133 0
+ [867,] 2.79435937 1
+ [868,] 0.37427030 0
+ [869,] 2.00403886 0
+ [870,] 1.52280601 0
+ [871,] 1.08616167 0
+ [872,] 0.71475539 0
+ [873,] 1.28455417 0
+ [874,] 0.58903536 0
+ [875,] 0.56238188 1
+ [876,] 1.80664974 0
+ [877,] 2.62135276 1
+ [878,] 1.92582066 1
+ [879,] 2.47379103 0
+ [880,] 1.18790182 0
+ [881,] 2.09888014 0
+ [882,] 1.08944179 0
+ [883,] 1.35709283 0
+ [884,] 1.06341944 0
+ [885,] 0.52399860 0
+ [886,] 0.75135118 0
+ [887,] 0.55265063 0
+ [888,] 0.34046216 0
+ [889,] 0.21157621 0
+ [890,] 2.48304277 0
+ [891,] 0.47646258 0
+ [892,] 0.33104409 0
+ [893,] 0.24194847 0
+ [894,] 1.18539488 0
+ [895,] 1.59313492 0
+ [896,] 1.42108546 0
+ [897,] 2.59694110 0
+ [898,] 1.31696989 0
+ [899,] 2.46383172 0
+ [900,] 0.32485229 0
+ [901,] 2.72791989 0
+ [902,] 1.30392054 0
+ [903,] 1.40617593 0
+ [904,] 2.07917332 0
+ [905,] 0.95743077 0
+ [906,] 0.40533340 0
+ [907,] 0.40424272 0
+ [908,] 2.36177706 0
+ [909,] 0.59836559 0
+ [910,] 2.20122006 0
+ [911,] 1.01508767 0
+ [912,] 1.12910490 0
+ [913,] 2.56334731 0
+ [914,] 0.38740149 0
+ [915,] 0.57042340 0
+ [916,] 0.70926589 0
+ [917,] 3.62196194 1
+ [918,] 1.29372335 1
+ [919,] 0.51426103 0
+ [920,] 1.02441162 0
+ [921,] 0.23198450 0
+ [922,] 1.08418925 0
+ [923,] 0.64512613 0
+ [924,] 0.88286430 0
+ [925,] 1.15022190 0
+ [926,] 3.74433445 0
+ [927,] 3.13436173 1
+ [928,] 0.61650695 0
+ [929,] 2.05241278 0
+ [930,] 0.71151576 0
+ [931,] 1.63628284 0
+ [932,] 2.62903666 1
+ [933,] 1.00124478 0
+ [934,] 0.96921059 0
+ [935,] 1.05852274 0
+ [936,] 0.71745616 0
+ [937,] 2.17102726 1
+ [938,] 0.27217346 0
+ [939,] 0.27694772 0
+ [940,] 0.60705333 0
+ [941,] 1.22640311 0
+ [942,] 0.97416900 0
+ [943,] 1.49355792 0
+ [944,] 0.56325276 1
+ [945,] 0.57735232 0
+ [946,] 1.54237463 0
+ [947,] 0.39003500 0
+ [948,] 0.76921808 0
+ [949,] 0.80347032 0
+ [950,] 1.05756219 0
+ [951,] 0.21438575 0
+ [952,] 0.86641286 0
+ [953,] 0.40345209 0
+ [954,] 0.95765909 0
+ [955,] 1.29874296 0
+ [956,] 0.41398866 0
+ [957,] 0.43499344 0
+ [958,] 1.72353244 0
+ [959,] 2.47795976 0
+ [960,] 0.39049194 0
+ [961,] 1.34050229 0
+ [962,] 0.20625946 0
+ [963,] 2.93367549 0
+ [964,] 2.25074958 1
+ [965,] 1.70965534 0
+ [966,] 1.56120014 1
+ [967,] 0.49697505 0
+ [968,] 0.85362367 0
+ [969,] 1.27143752 1
+ [970,] 0.62034683 0
+ [971,] 1.13289279 0
+ [972,] 2.30111346 0
+ [973,] 0.57370307 0
+ [974,] 1.74489050 0
+ [975,] 0.65313343 0
+ [976,] 2.25621150 0
+ [977,] 0.41238982 0
+ [978,] 1.43948540 1
+ [979,] 0.30962826 0
+ [980,] 0.13875162 0
+ [981,] 1.88172716 0
+ [982,] 0.53672094 0
+ [983,] 3.06137906 0
+ [984,] 1.68306984 1
+ [985,] 0.11802178 0
+ [986,] 0.73115807 0
+ [987,] 1.86135218 0
+ [988,] 0.78328742 0
+ [989,] 2.05665313 0
+ [990,] 0.73948768 0
+ [991,] 0.86098433 0
+ [992,] 0.40324278 0
+ [993,] 1.03276193 0
+ [994,] 0.27128268 0
+ [995,] 1.07527280 0
+ [996,] 0.48493211 0
+ [997,] 0.53655760 0
+ [998,] 1.61904845 0
+ [999,] 0.55257289 1
+[1000,] 1.02055783 0</code></pre>
+<pre class="r"><code>dim(table_concentration)[1]</code></pre>
+<pre><code>[1] 1000</code></pre>
+<pre class="r"><code>vec_LR = rep(-1, dim(table_concentration)[1])  # empty likelihood ratio vector
+for (i in 1:dim(table_concentration)[1]){
+  # print(i)
+  if (table_concentration[,&quot;z&quot;][i] == 0){  # healthy
+    vec_LR[i] = healthy_LR(table_concentration[,&quot;x&quot;][i])
+    # print(x[i])
+  } else if (table_concentration[,&quot;z&quot;][i] == 1){ # diseased
+    vec_LR[i] = diseased_LR(table_concentration[,&quot;x&quot;][i])
+    # print(x[i])
+  } else{
+    print(&quot;Error&quot;)
+  }
+}
+
+head(vec_LR)</code></pre>
+<pre><code>[1] 3.7700228 4.8258268 0.5181975 3.4603262 0.7181461 2.5292282</code></pre>
+<pre class="r"><code># bind to the table as another column
+table_LR &lt;- cbind(table_concentration, LR = vec_LR)</code></pre>
+<p>Wrap into a function</p>
+<pre class="r"><code>#&#39; @table_concentration this is an simulated data input with column x and z. x is protein concentration and z is healthy or diseased index of 0 and 1.
+
+calculate_LR &lt;- function(table_concentration){
+  # When z == 0 (healthy), likelihood ratio is
+  healthy_LR &lt;- function(x){dgamma(x, scale = 0.5,shape = 2) / dgamma(x, scale = 1, shape = 2)}
+  # When z == 1, likelihood ratio is..
+  diseased_LR &lt;- function(x){dgamma(x, scale = 1,shape = 2) / dgamma(x, scale = 0.5, shape = 2)}
+  
+  ## function to compute the likelihood ratio
+  # input will be the simulated data
+  vec_LR = rep(-1, dim(table_concentration)[1])  # empty likelihood ratio vector
+  for (i in 1:dim(table_concentration)[1]){
+    # print(i)
+    if (table_concentration[,&quot;z&quot;][i] == 0){  # healthy
+      vec_LR[i] = healthy_LR(table_concentration[,&quot;x&quot;][i])
+      # print(x[i])
+    } else if (table_concentration[,&quot;z&quot;][i] == 1){ # diseased
+      vec_LR[i] = diseased_LR(table_concentration[,&quot;x&quot;][i])
+      # print(x[i])
+    } else{
+      print(&quot;Error&quot;)
+    }
+  }
+  
+  head(vec_LR)
+  # bind to the table as another column
+  table_LR &lt;- cbind(table_concentration, LR = vec_LR)
+  return(table_LR)
+}
+
+# example
+calculate_LR(table_concentration) %&gt;% head()</code></pre>
+<pre><code>              x z        LR
+[1,] 0.05921332 0 3.7700228
+[2,] 2.96027644 1 4.8258268
+[3,] 2.04369326 0 0.5181975
+[4,] 0.14493148 0 3.4603262
+[5,] 1.71737662 0 0.7181461
+[6,] 0.45838017 0 2.5292282</code></pre>
+</div>
+</div>
+<div id="c." class="section level2">
+<h2>c.</h2>
+<p>Use the above functions to answer the following question by simulation.<br />
+Suppose we screen a population of individuals, 20% of which are diseased, and compute the LR for each individual screened. Among individuals with an LR “near” c, what proportion are truly diseased? Denoting this proportion qD(c), make a plot of log10(c) [x axis] vs qD(c) [y axis], with c varying from 1/10 to 10 say (log10(c) varies from -1 to 1.) Or maybe a wider range if you like (the wider the range, the larger the simulation study you will need to get reliable results).</p>
+<pre class="r"><code># simulation
+table_concentration1 &lt;- simulate_disease(p_dis=0.2, n_ind=10000)
+head(table_concentration1)</code></pre>
+<pre><code>             x z
+[1,] 1.0510235 0
+[2,] 1.3097951 1
+[3,] 1.0693210 0
+[4,] 0.5423517 0
+[5,] 0.6635898 0
+[6,] 2.8400104 0</code></pre>
+<pre class="r"><code>table_LR1 &lt;- calculate_LR(table_concentration1)
+head(table_LR1)</code></pre>
+<pre><code>             x z        LR
+[1,] 1.0510235 0 1.3983192
+[2,] 1.3097951 1 0.9263536
+[3,] 1.0693210 0 1.3729660
+[4,] 0.5423517 0 2.3255177
+[5,] 0.6635898 0 2.0599970
+[6,] 2.8400104 0 0.2337002</code></pre>
+<pre class="r"><code>hist(table_LR1[,&quot;LR&quot;], breaks = 100)</code></pre>
+<p><img src="figure/HW1_Basic_Monte_Carlo_and_Bayesian_inference.Rmd/unnamed-chunk-7-1.png" width="1056" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># &quot;near&quot; definition
+c = 5   # LR
+eps = 0.5  # [LR - eps, LR + eps]
+class(table_LR1)</code></pre>
+<pre><code>[1] &quot;matrix&quot; &quot;array&quot; </code></pre>
+<pre class="r"><code># convert to dataframe
+df_LR1 &lt;- data.frame(table_LR1)
+
+# Individuals with an LR “near” c
+df_near &lt;- df_LR1 %&gt;% filter(LR &lt;= c + eps &amp; LR &gt;= c - eps)
+df_near</code></pre>
+<pre><code>          x z       LR
+1  2.908377 1 4.581759
+2  2.980498 1 4.924408
+3  3.034036 1 5.195232
+4  2.979295 1 4.918487
+5  3.044183 1 5.248218
+6  3.032261 1 5.186019
+7  2.957696 1 4.813391
+8  2.924038 1 4.654076
+9  3.049223 1 5.274735
+10 3.056097 1 5.311118
+11 3.058351 1 5.323104
+12 2.935564 1 4.708032
+13 2.952522 1 4.788549
+14 2.931914 1 4.690878
+15 3.021935 1 5.132743
+16 2.898242 1 4.535555
+17 3.045529 1 5.255286
+18 2.968001 1 4.863250
+19 3.058728 1 5.325111
+20 3.028862 1 5.168426
+21 3.031507 1 5.182113
+22 2.988028 1 4.961625
+23 2.965220 1 4.849742
+24 3.084408 1 5.463633
+25 3.082412 1 5.452734
+26 3.026694 1 5.157231
+27 2.942396 1 4.740307
+28 2.997311 1 5.007902
+29 3.004667 1 5.044872
+30 3.070195 1 5.386524
+31 2.963637 1 4.842072
+32 2.971936 1 4.882421
+33 3.061191 1 5.338244
+34 3.015331 1 5.098962
+35 2.962258 1 4.835399
+36 2.926980 1 4.667792
+37 2.954189 1 4.796538
+38 2.894512 1 4.518669
+39 3.074689 1 5.410786
+40 3.050519 1 5.281577
+41 2.998847 1 5.015600
+42 3.012241 1 5.083227
+43 2.989688 1 4.969871
+44 2.961951 1 4.833913
+45 2.966698 1 4.856916
+46 2.975814 1 4.901396
+47 3.037573 1 5.213641
+48 2.950040 1 4.776678
+49 2.998975 1 5.016238
+50 3.053626 1 5.298011
+51 3.052047 1 5.289653
+52 3.076959 1 5.423082
+53 3.056961 1 5.315711
+54 2.994445 1 4.993565
+55 2.974120 1 4.893098
+56 3.004303 1 5.043037
+57 3.058362 1 5.323160
+58 3.017606 1 5.110571
+59 2.927306 1 4.669313
+60 3.030241 1 5.175556
+61 3.024511 1 5.145986
+62 2.933028 1 4.696107
+63 3.005777 1 5.050477
+64 2.918135 1 4.626687
+65 3.059845 1 5.331062
+66 2.986262 1 4.952873</code></pre>
+<pre class="r"><code># proportion are truly diseased?
+qD &lt;- sum(df_near$z)/dim(df_near)[1]
+
+qD</code></pre>
+<pre><code>[1] 1</code></pre>
+<p>Wrap in to qD function</p>
+<pre class="r"><code>#&#39; @param table_LR1 table of simulated x, z, LR
+#&#39; @param c LR
+#&#39; @param eps epsilon, range of + - c
+
+calc_qD &lt;- function(table_LR1, c, eps){
+  # convert to dataframe
+  df_LR1 &lt;- data.frame(table_LR1)
+  # Individuals with an LR “near” c
+  df_near &lt;- df_LR1 %&gt;% filter(LR &lt;= c + eps &amp; LR &gt;= c - eps)
+  # proportion are truly diseased?
+  qD &lt;- sum(df_near$z)/dim(df_near)[1]
+  
+  return(qD)
+}</code></pre>
+<p>make a plot of log10(c) [x axis] vs qD(c) [y axis], with c varying from 1/10 to 10 say (log10(c) varies from -1 to 1.)</p>
+<pre class="r"><code>c &lt;- seq(from = 1/10, to = 10, length.out = 1000)
+
+## Let&#39;s say we define &quot;near&quot; relative to c. eps = c/100
+# calculate qD for vector c
+vec_qD &lt;- c()
+for (i in 1:length(c)){
+  # print(i)
+  vec_qD[i] = calc_qD(table_LR1, c[i], eps=c/100)
+}
+
+plot(log10(c), vec_qD, type=&quot;l&quot;, xlab=&quot;log10(c)&quot;, ylab=&quot;qD(c): proportion of truly diseased&quot;, main=&quot;Proportion are truly diseased (LR range: 0.1 &lt; c &lt; 10)&quot;)</code></pre>
+<p><img src="figure/HW1_Basic_Monte_Carlo_and_Bayesian_inference.Rmd/unnamed-chunk-9-1.png" width="1056" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>## Let&#39;s say we define &quot;near&quot; in terms of absolute value. eps = 0.05
+# calculate qD for vector c
+vec_qD &lt;- c()
+for (i in 1:length(c)){
+  # print(i)
+  vec_qD[i] = calc_qD(table_LR1, c[i], eps=0.05)
+}
+
+plot(log10(c), vec_qD, type=&quot;l&quot;, xlab=&quot;log10(c)&quot;, ylab=&quot;qD(c): proportion of truly diseased&quot;, main=&quot;Proportion are truly diseased (LR range: 0.1 &lt; c &lt; 10)&quot;)</code></pre>
+<p><img src="figure/HW1_Basic_Monte_Carlo_and_Bayesian_inference.Rmd/unnamed-chunk-9-2.png" width="1056" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># Function
+plot_qD &lt;- function(c, eps){
+  vec_qD &lt;- c()
+  for (i in 1:length(c)){
+    # print(i)
+    vec_qD[i] = calc_qD(table_LR1, c[i], eps)
+  }
+  
+  plot(log10(c), vec_qD, type=&quot;l&quot;, xlab=&quot;log10(c)&quot;, ylab=&quot;qD(c): proportion of truly diseased&quot;, main=paste0(&quot;Proportion are truly diseased (eps= &quot;,eps,&quot;)&quot;))
+}
+
+plot_qD(c, eps=0.1)</code></pre>
+<p><img src="figure/HW1_Basic_Monte_Carlo_and_Bayesian_inference.Rmd/unnamed-chunk-9-3.png" width="1056" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot_qD(c, eps=0.2)</code></pre>
+<p><img src="figure/HW1_Basic_Monte_Carlo_and_Bayesian_inference.Rmd/unnamed-chunk-9-4.png" width="1056" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot_qD(c, eps=0.3)</code></pre>
+<p><img src="figure/HW1_Basic_Monte_Carlo_and_Bayesian_inference.Rmd/unnamed-chunk-9-5.png" width="1056" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot_qD(c, eps=2)</code></pre>
+<p><img src="figure/HW1_Basic_Monte_Carlo_and_Bayesian_inference.Rmd/unnamed-chunk-9-6.png" width="1056" style="display: block; margin: auto;" /></p>
+</div>
+<div id="d." class="section level2">
+<h2>d.</h2>
+<p>Use the computations introduced in this vignette to compute the theoretical value for qD(c), and plot these on the same graph as your simulation results to demonstrate that your simulations match the theory. [It should provide a good agreement, provided your simulation is large enough.]<br />
+</p>
+<p>First, let’s get the theoretical value of qD(c), using the computation introduced in this vignette<br />
+<a href="https://stephens999.github.io/fiveMinuteStats/LR_and_BF.html" class="uri">https://stephens999.github.io/fiveMinuteStats/LR_and_BF.html</a></p>
+<pre class="r"><code># computation introduced in this vignette
+p_dis = 0.2 # proportion of diseased
+c = 3 # c is LR
+qD_vig = p_dis * c / ((1-p_dis) + p_dis * c)
+qD_vig</code></pre>
+<pre><code>[1] 0.4285714</code></pre>
+<pre class="r"><code>calc_qD_vig &lt;- function(c, p_dis){
+  qD_vig = p_dis * c / ((1-p_dis) + p_dis * c)
+  return(qD_vig)
+}
+
+# plot theoretical
+c &lt;- seq(from = 1/10, to = 10, length.out = 1000)
+calc_qD_vig(c, p_dis = 0.2)</code></pre>
+<pre><code>   [1] 0.02439024 0.02674266 0.02908375 0.03141361 0.03373232 0.03603995
+   [7] 0.03833658 0.04062230 0.04289718 0.04516129 0.04741472 0.04965753
+  [13] 0.05188981 0.05411163 0.05632306 0.05852417 0.06071504 0.06289574
+  [19] 0.06506633 0.06722689 0.06937749 0.07151819 0.07364907 0.07577019
+  [25] 0.07788162 0.07998342 0.08207567 0.08415842 0.08623173 0.08829569
+  [31] 0.09035034 0.09239575 0.09443198 0.09645910 0.09847716 0.10048622
+  [37] 0.10248636 0.10447761 0.10646005 0.10843373 0.11039872 0.11235506
+  [43] 0.11430281 0.11624204 0.11817279 0.12009512 0.12200910 0.12391476
+  [49] 0.12581217 0.12770138 0.12958243 0.13145540 0.13332032 0.13517725
+  [55] 0.13702624 0.13886734 0.14070060 0.14252607 0.14434380 0.14615385
+  [61] 0.14795625 0.14975105 0.15153831 0.15331808 0.15509039 0.15685530
+  [67] 0.15861285 0.16036309 0.16210606 0.16384181 0.16557038 0.16729182
+  [73] 0.16900618 0.17071349 0.17241379 0.17410714 0.17579358 0.17747314
+  [79] 0.17914587 0.18081181 0.18247100 0.18412348 0.18576930 0.18740849
+  [85] 0.18904110 0.19066715 0.19228670 0.19389978 0.19550643 0.19710669
+  [91] 0.19870060 0.20028818 0.20186949 0.20344456 0.20501343 0.20657613
+  [97] 0.20813269 0.20968316 0.21122757 0.21276596 0.21429835 0.21582480
+ [103] 0.21734532 0.21885996 0.22036874 0.22187171 0.22336890 0.22486034
+ [109] 0.22634605 0.22782609 0.22930047 0.23076923 0.23223241 0.23369002
+ [115] 0.23514212 0.23658872 0.23802986 0.23946557 0.24089588 0.24232082
+ [121] 0.24374042 0.24515471 0.24656372 0.24796748 0.24936602 0.25075937
+ [127] 0.25214755 0.25353060 0.25490854 0.25628141 0.25764922 0.25901202
+ [133] 0.26036982 0.26172265 0.26307054 0.26441352 0.26575161 0.26708485
+ [139] 0.26841325 0.26973684 0.27105566 0.27236971 0.27367904 0.27498367
+ [145] 0.27628362 0.27757891 0.27886958 0.28015564 0.28143713 0.28271405
+ [151] 0.28398645 0.28525435 0.28651776 0.28777671 0.28903122 0.29028133
+ [157] 0.29152705 0.29276840 0.29400541 0.29523810 0.29646649 0.29769060
+ [163] 0.29891047 0.30012610 0.30133753 0.30254477 0.30374784 0.30494678
+ [169] 0.30614158 0.30733229 0.30851892 0.30970149 0.31088002 0.31205454
+ [175] 0.31322506 0.31439160 0.31555419 0.31671283 0.31786757 0.31901840
+ [181] 0.32016537 0.32130847 0.32244773 0.32358318 0.32471483 0.32584270
+ [187] 0.32696680 0.32808717 0.32920381 0.33031674 0.33142599 0.33253157
+ [193] 0.33363350 0.33473180 0.33582648 0.33691756 0.33800507 0.33908901
+ [199] 0.34016942 0.34124629 0.34231966 0.34338953 0.34445593 0.34551887
+ [205] 0.34657837 0.34763444 0.34868711 0.34973638 0.35078228 0.35182482
+ [211] 0.35286401 0.35389988 0.35493244 0.35596171 0.35698769 0.35801041
+ [217] 0.35902988 0.36004612 0.36105915 0.36206897 0.36307560 0.36407906
+ [223] 0.36507937 0.36607653 0.36707056 0.36806149 0.36904931 0.37003405
+ [229] 0.37101572 0.37199434 0.37296992 0.37394247 0.37491201 0.37587855
+ [235] 0.37684211 0.37780269 0.37876032 0.37971500 0.38066676 0.38161560
+ [241] 0.38256154 0.38350458 0.38444475 0.38538206 0.38631652 0.38724814
+ [247] 0.38817693 0.38910292 0.39002610 0.39094650 0.39186413 0.39277899
+ [253] 0.39369111 0.39460049 0.39550715 0.39641109 0.39731234 0.39821090
+ [259] 0.39910678 0.40000000 0.40089057 0.40177850 0.40266380 0.40354648
+ [265] 0.40442656 0.40530405 0.40617895 0.40705128 0.40792106 0.40878828
+ [271] 0.40965297 0.41051514 0.41137478 0.41223193 0.41308658 0.41393875
+ [277] 0.41478845 0.41563569 0.41648048 0.41732283 0.41816276 0.41900026
+ [283] 0.41983536 0.42066806 0.42149837 0.42232631 0.42315188 0.42397509
+ [289] 0.42479596 0.42561449 0.42643069 0.42724458 0.42805616 0.42886545
+ [295] 0.42967245 0.43047717 0.43127962 0.43207982 0.43287776 0.43367347
+ [301] 0.43446695 0.43525820 0.43604725 0.43683409 0.43761875 0.43840121
+ [307] 0.43918151 0.43995964 0.44073561 0.44150943 0.44228112 0.44305068
+ [313] 0.44381811 0.44458344 0.44534666 0.44610778 0.44686682 0.44762379
+ [319] 0.44837868 0.44913151 0.44988229 0.45063103 0.45137773 0.45212241
+ [325] 0.45286506 0.45360571 0.45434435 0.45508100 0.45581566 0.45654835
+ [331] 0.45727906 0.45800781 0.45873461 0.45945946 0.46018237 0.46090335
+ [337] 0.46162241 0.46233955 0.46305478 0.46376812 0.46447956 0.46518911
+ [343] 0.46589679 0.46660259 0.46730654 0.46800863 0.46870887 0.46940727
+ [349] 0.47010383 0.47079857 0.47149149 0.47218260 0.47287190 0.47355940
+ [355] 0.47424512 0.47492904 0.47561120 0.47629158 0.47697020 0.47764706
+ [361] 0.47832217 0.47899554 0.47966717 0.48033708 0.48100526 0.48167173
+ [367] 0.48233648 0.48299953 0.48366089 0.48432056 0.48497854 0.48563485
+ [373] 0.48628948 0.48694245 0.48759377 0.48824343 0.48889145 0.48953782
+ [379] 0.49018257 0.49082569 0.49146719 0.49210707 0.49274534 0.49338202
+ [385] 0.49401709 0.49465058 0.49528248 0.49591281 0.49654156 0.49716874
+ [391] 0.49779437 0.49841844 0.49904096 0.49966193 0.50028137 0.50089928
+ [397] 0.50151566 0.50213052 0.50274387 0.50335570 0.50396604 0.50457487
+ [403] 0.50518221 0.50578807 0.50639244 0.50699534 0.50759676 0.50819672
+ [409] 0.50879522 0.50939227 0.50998786 0.51058201 0.51117472 0.51176600
+ [415] 0.51235585 0.51294427 0.51353128 0.51411687 0.51470106 0.51528384
+ [421] 0.51586523 0.51644522 0.51702382 0.51760104 0.51817689 0.51875135
+ [427] 0.51932446 0.51989619 0.52046657 0.52103560 0.52160328 0.52216961
+ [433] 0.52273460 0.52329826 0.52386059 0.52442159 0.52498128 0.52553965
+ [439] 0.52609670 0.52665245 0.52720690 0.52776005 0.52831191 0.52886248
+ [445] 0.52941176 0.52995977 0.53050650 0.53105196 0.53159616 0.53213909
+ [451] 0.53268077 0.53322119 0.53376037 0.53429830 0.53483499 0.53537045
+ [457] 0.53590467 0.53643767 0.53696944 0.53750000 0.53802934 0.53855747
+ [463] 0.53908440 0.53961012 0.54013465 0.54065798 0.54118012 0.54170107
+ [469] 0.54222085 0.54273944 0.54325687 0.54377312 0.54428821 0.54480213
+ [475] 0.54531490 0.54582651 0.54633698 0.54684630 0.54735447 0.54786151
+ [481] 0.54836741 0.54887218 0.54937582 0.54987835 0.55037975 0.55088003
+ [487] 0.55137921 0.55187727 0.55237423 0.55287009 0.55336485 0.55385852
+ [493] 0.55435110 0.55484259 0.55533300 0.55582233 0.55631058 0.55679776
+ [499] 0.55728388 0.55776892 0.55825291 0.55873584 0.55921771 0.55969853
+ [505] 0.56017831 0.56065704 0.56113472 0.56161137 0.56208699 0.56256158
+ [511] 0.56303513 0.56350767 0.56397918 0.56444968 0.56491916 0.56538763
+ [517] 0.56585509 0.56632155 0.56678700 0.56725146 0.56771493 0.56817740
+ [523] 0.56863888 0.56909938 0.56955889 0.57001743 0.57047499 0.57093158
+ [529] 0.57138720 0.57184185 0.57229554 0.57274827 0.57320004 0.57365085
+ [535] 0.57410072 0.57454964 0.57499761 0.57544464 0.57589072 0.57633588
+ [541] 0.57678010 0.57722339 0.57766575 0.57810718 0.57854770 0.57898729
+ [547] 0.57942597 0.57986374 0.58030060 0.58073654 0.58117159 0.58160573
+ [553] 0.58203897 0.58247132 0.58290277 0.58333333 0.58376301 0.58419180
+ [559] 0.58461970 0.58504673 0.58547288 0.58589815 0.58632256 0.58674609
+ [565] 0.58716876 0.58759056 0.58801151 0.58843159 0.58885082 0.58926920
+ [571] 0.58968672 0.59010340 0.59051923 0.59093422 0.59134837 0.59176168
+ [577] 0.59217415 0.59258580 0.59299661 0.59340659 0.59381575 0.59422409
+ [583] 0.59463161 0.59503831 0.59544419 0.59584926 0.59625352 0.59665698
+ [589] 0.59705962 0.59746147 0.59786251 0.59826276 0.59866221 0.59906086
+ [595] 0.59945873 0.59985580 0.60025209 0.60064760 0.60104232 0.60143627
+ [601] 0.60182943 0.60222182 0.60261344 0.60300429 0.60339437 0.60378369
+ [607] 0.60417224 0.60456003 0.60494706 0.60533333 0.60571885 0.60610362
+ [613] 0.60648764 0.60687090 0.60725343 0.60763521 0.60801624 0.60839654
+ [619] 0.60877610 0.60915493 0.60953302 0.60991038 0.61028702 0.61066293
+ [625] 0.61103811 0.61141257 0.61178631 0.61215933 0.61253163 0.61290323
+ [631] 0.61327411 0.61364427 0.61401374 0.61438249 0.61475054 0.61511789
+ [637] 0.61548454 0.61585049 0.61621575 0.61658031 0.61694418 0.61730736
+ [643] 0.61766985 0.61803166 0.61839278 0.61875322 0.61911298 0.61947206
+ [649] 0.61983046 0.62018820 0.62054525 0.62090164 0.62125736 0.62161241
+ [655] 0.62196679 0.62232052 0.62267358 0.62302598 0.62337772 0.62372881
+ [661] 0.62407925 0.62442903 0.62477816 0.62512665 0.62547448 0.62582168
+ [667] 0.62616822 0.62651413 0.62685940 0.62720403 0.62754802 0.62789138
+ [673] 0.62823411 0.62857621 0.62891768 0.62925852 0.62959873 0.62993832
+ [679] 0.63027729 0.63061564 0.63095337 0.63129048 0.63162698 0.63196286
+ [685] 0.63229814 0.63263280 0.63296685 0.63330030 0.63363314 0.63396538
+ [691] 0.63429701 0.63462804 0.63495848 0.63528832 0.63561756 0.63594621
+ [697] 0.63627427 0.63660174 0.63692861 0.63725490 0.63758061 0.63790573
+ [703] 0.63823026 0.63855422 0.63887759 0.63920039 0.63952261 0.63984426
+ [709] 0.64016533 0.64048583 0.64080576 0.64112512 0.64144392 0.64176214
+ [715] 0.64207981 0.64239691 0.64271345 0.64302943 0.64334485 0.64365971
+ [721] 0.64397402 0.64428777 0.64460098 0.64491363 0.64522573 0.64553728
+ [727] 0.64584829 0.64615875 0.64646867 0.64677804 0.64708688 0.64739517
+ [733] 0.64770293 0.64801015 0.64831683 0.64862298 0.64892860 0.64923369
+ [739] 0.64953824 0.64984227 0.65014577 0.65044875 0.65075120 0.65105313
+ [745] 0.65135453 0.65165542 0.65195579 0.65225564 0.65255497 0.65285379
+ [751] 0.65315210 0.65344989 0.65374717 0.65404395 0.65434021 0.65463597
+ [757] 0.65493122 0.65522597 0.65552021 0.65581395 0.65610720 0.65639994
+ [763] 0.65669218 0.65698393 0.65727518 0.65756594 0.65785621 0.65814598
+ [769] 0.65843526 0.65872406 0.65901236 0.65930018 0.65958752 0.65987437
+ [775] 0.66016073 0.66044662 0.66073202 0.66101695 0.66130140 0.66158537
+ [781] 0.66186886 0.66215188 0.66243443 0.66271650 0.66299810 0.66327924
+ [787] 0.66355990 0.66384010 0.66411983 0.66439909 0.66467789 0.66495623
+ [793] 0.66523411 0.66551153 0.66578848 0.66606498 0.66634102 0.66661661
+ [799] 0.66689174 0.66716642 0.66744064 0.66771441 0.66798774 0.66826061
+ [805] 0.66853303 0.66880501 0.66907654 0.66934763 0.66961828 0.66988848
+ [811] 0.67015823 0.67042755 0.67069643 0.67096487 0.67123288 0.67150044
+ [817] 0.67176758 0.67203427 0.67230054 0.67256637 0.67283177 0.67309675
+ [823] 0.67336129 0.67362540 0.67388909 0.67415236 0.67441519 0.67467761
+ [829] 0.67493960 0.67520117 0.67546232 0.67572305 0.67598336 0.67624326
+ [835] 0.67650273 0.67676179 0.67702044 0.67727867 0.67753650 0.67779390
+ [841] 0.67805090 0.67830749 0.67856367 0.67881944 0.67907481 0.67932977
+ [847] 0.67958433 0.67983848 0.68009223 0.68034557 0.68059852 0.68085106
+ [853] 0.68110321 0.68135496 0.68160631 0.68185727 0.68210783 0.68235799
+ [859] 0.68260776 0.68285714 0.68310613 0.68335473 0.68360294 0.68385075
+ [865] 0.68409819 0.68434523 0.68459189 0.68483816 0.68508405 0.68532955
+ [871] 0.68557468 0.68581942 0.68606378 0.68630776 0.68655136 0.68679458
+ [877] 0.68703743 0.68727990 0.68752199 0.68776371 0.68800506 0.68824603
+ [883] 0.68848663 0.68872686 0.68896673 0.68920622 0.68944534 0.68968409
+ [889] 0.68992248 0.69016050 0.69039816 0.69063545 0.69087238 0.69110895
+ [895] 0.69134515 0.69158099 0.69181648 0.69205160 0.69228637 0.69252078
+ [901] 0.69275483 0.69298852 0.69322186 0.69345485 0.69368748 0.69391976
+ [907] 0.69415168 0.69438326 0.69461449 0.69484536 0.69507589 0.69530607
+ [913] 0.69553590 0.69576538 0.69599452 0.69622332 0.69645177 0.69667987
+ [919] 0.69690764 0.69713506 0.69736214 0.69758888 0.69781529 0.69804135
+ [925] 0.69826707 0.69849246 0.69871751 0.69894223 0.69916661 0.69939066
+ [931] 0.69961437 0.69983775 0.70006080 0.70028352 0.70050590 0.70072796
+ [937] 0.70094969 0.70117109 0.70139216 0.70161290 0.70183332 0.70205342
+ [943] 0.70227318 0.70249263 0.70271175 0.70293055 0.70314903 0.70336718
+ [949] 0.70358502 0.70380254 0.70401973 0.70423661 0.70445317 0.70466942
+ [955] 0.70488534 0.70510096 0.70531625 0.70553124 0.70574591 0.70596026
+ [961] 0.70617431 0.70638804 0.70660147 0.70681458 0.70702738 0.70723988
+ [967] 0.70745207 0.70766395 0.70787552 0.70808679 0.70829775 0.70850840
+ [973] 0.70871876 0.70892881 0.70913855 0.70934800 0.70955714 0.70976598
+ [979] 0.70997452 0.71018277 0.71039071 0.71059836 0.71080571 0.71101276
+ [985] 0.71121951 0.71142597 0.71163214 0.71183801 0.71204358 0.71224887
+ [991] 0.71245386 0.71265856 0.71286296 0.71306708 0.71327091 0.71347445
+ [997] 0.71367769 0.71388065 0.71408333 0.71428571</code></pre>
+<pre class="r"><code>plot(log10(c), calc_qD_vig(c, p_dis = 0.2), type=&quot;l&quot;, xlab=&quot;log10(c)&quot;, ylab=&quot;qD(c)&quot;, main=&quot;Theoretical value of qD(c)&quot;)</code></pre>
+<p><img src="figure/HW1_Basic_Monte_Carlo_and_Bayesian_inference.Rmd/unnamed-chunk-10-1.png" width="1056" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># overlay simulated qD above
+vec_qD &lt;- c()
+for (i in 1:length(c)){
+  # print(i)
+  vec_qD[i] = calc_qD(table_LR1, c[i], eps=c[i]/10)
+}
+
+plot(log10(c), vec_qD, type=&quot;l&quot;, xlab=&quot;log10(c)&quot;, ylab=&quot;qD(c): proportion of truly diseased&quot;, main=&quot;Theoretical value of qD(c) vs. Simulated&quot;)
+
+lines(log10(c), calc_qD_vig(c, p_dis = 0.2), col=&quot;blue&quot;)
+legend(-0.9, 0.9, legend=c(&#39;Simulated&#39;, &#39;Theoretical&#39;),
+       col=c(&quot;Black&quot;, &quot;Blue&quot;), lty=1, cex=0.7, box.lty=0)</code></pre>
+<p><img src="figure/HW1_Basic_Monte_Carlo_and_Bayesian_inference.Rmd/unnamed-chunk-10-2.png" width="1056" style="display: block; margin: auto;" /> The theoretical prediction cannot capture the local increase and decrease at -0.5 &lt; log10(c) &lt; 0.</p>
+</div>
+<div id="e." class="section level2">
+<h2>e.</h2>
+<p>Repeat the above, but in the case where only 2% of the screened population are diseased.</p>
+<pre class="r"><code># simulation
+table_concentration2 &lt;- simulate_disease(p_dis=0.02, n_ind=10000)
+head(table_concentration2)</code></pre>
+<pre><code>             x z
+[1,] 0.1399478 0
+[2,] 0.2390567 0
+[3,] 1.5082715 0
+[4,] 0.6474531 0
+[5,] 1.1164134 0
+[6,] 1.2553302 0</code></pre>
+<pre class="r"><code>table_LR2 &lt;- calculate_LR(table_concentration2)
+head(table_LR2)</code></pre>
+<pre><code>             x z        LR
+[1,] 0.1399478 0 3.4776144
+[2,] 0.2390567 0 3.1494810
+[3,] 1.5082715 0 0.8851686
+[4,] 0.6474531 0 2.0935084
+[5,] 1.1164134 0 1.3098085
+[6,] 1.2553302 0 1.1399269</code></pre>
+<pre class="r"><code># overlay simulated qD above
+c &lt;- seq(from = 1/10, to = 10, length.out = 1000)
+
+vec_qD &lt;- c()
+for (i in 1:length(c)){
+  # print(i)
+  vec_qD[i] = calc_qD(table_LR2, c[i], eps=c[i]/10)
+}
+
+plot(log10(c), vec_qD, type=&quot;l&quot;, xlab=&quot;log10(c)&quot;, ylab=&quot;qD(c): proportion of truly diseased&quot;, main=&quot;Theoretical value of qD(c) vs. Simulated&quot;)
+
+lines(log10(c), calc_qD_vig(c, p_dis = 0.2), col=&quot;blue&quot;)
+legend(-0.9, 0.9, legend=c(&#39;Simulated&#39;, &#39;Theoretical&#39;),
+       col=c(&quot;Black&quot;, &quot;Blue&quot;), lty=1, cex=0.7, box.lty=0)</code></pre>
+<p><img src="figure/HW1_Basic_Monte_Carlo_and_Bayesian_inference.Rmd/unnamed-chunk-11-1.png" width="1056" style="display: block; margin: auto;" /></p>
+<p>Try with larger c range</p>
+<pre class="r"><code>c &lt;- seq(from = 1/50, to = 50, length.out = 1000)
+
+# overlay simulated qD above
+vec_qD &lt;- c()
+for (i in 1:length(c)){
+  # print(i)
+  vec_qD[i] = calc_qD(table_LR2, c[i], eps=c[i]/10)
+}
+
+plot(log10(c), vec_qD, type=&quot;l&quot;, xlab=&quot;log10(c)&quot;, ylab=&quot;qD(c): proportion of truly diseased&quot;, main=&quot;Theoretical value of qD(c) vs. Simulated&quot;)
+
+lines(log10(c), calc_qD_vig(c, p_dis = 0.2), col=&quot;blue&quot;)
+legend(-0.9, 0.9, legend=c(&#39;Simulated&#39;, &#39;Theoretical&#39;),
+       col=c(&quot;Black&quot;, &quot;Blue&quot;), lty=1, cex=0.7, box.lty=0)</code></pre>
+<p><img src="figure/HW1_Basic_Monte_Carlo_and_Bayesian_inference.Rmd/unnamed-chunk-12-1.png" width="1056" style="display: block; margin: auto;" /></p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.0.3 (2020-10-10)
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+Running under: Windows 10 x64 (build 19042)
+
+Matrix products: default
+
+locale:
+[1] LC_COLLATE=English_United States.1252 
+[2] LC_CTYPE=English_United States.1252   
+[3] LC_MONETARY=English_United States.1252
+[4] LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.1252    
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] ggpubr_0.4.0       ggrepel_0.9.1      ape_5.5            openxlsx_4.2.3    
+ [5] devtools_2.4.0     usethis_2.0.1      gtools_3.8.2       reshape2_1.4.4    
+ [9] readxl_1.3.1       magrittr_2.0.1     forcats_0.5.1      stringr_1.4.0     
+[13] purrr_0.3.4        readr_1.4.0        tidyr_1.1.3        tibble_3.0.4      
+[17] tidyverse_1.3.1    vegan_2.5-7        lattice_0.20-41    permute_0.9-5     
+[21] RColorBrewer_1.1-2 ggplot2_3.3.5      dplyr_1.0.5       
+
+loaded via a namespace (and not attached):
+ [1] colorspace_2.0-0  ggsignif_0.6.2    ellipsis_0.3.2    rio_0.5.27       
+ [5] rprojroot_2.0.2   fs_1.5.0          rstudioapi_0.13   remotes_2.4.0    
+ [9] fansi_0.4.2       lubridate_1.7.10  xml2_1.3.2        splines_4.0.3    
+[13] cachem_1.0.4      knitr_1.33        pkgload_1.2.1     jsonlite_1.7.2   
+[17] workflowr_1.6.2   broom_0.7.9       cluster_2.1.0     dbplyr_2.1.1     
+[21] compiler_4.0.3    httr_1.4.2        backports_1.2.1   assertthat_0.2.1 
+[25] Matrix_1.2-18     fastmap_1.1.0     cli_3.0.1         later_1.2.0      
+[29] htmltools_0.5.1.1 prettyunits_1.1.1 tools_4.0.3       gtable_0.3.0     
+[33] glue_1.4.2        Rcpp_1.0.5        carData_3.0-4     cellranger_1.1.0 
+[37] jquerylib_0.1.4   vctrs_0.3.8       nlme_3.1-149      xfun_0.22        
+[41] ps_1.6.0          testthat_3.0.2    rvest_1.0.1       lifecycle_1.0.0  
+[45] rstatix_0.7.0     MASS_7.3-53       scales_1.1.1      hms_1.1.0        
+[49] promises_1.2.0.1  parallel_4.0.3    yaml_2.2.1        curl_4.3.2       
+[53] memoise_2.0.0     sass_0.4.0        stringi_1.5.3     highr_0.9        
+[57] desc_1.3.0        pkgbuild_1.2.0    zip_2.1.1         rlang_0.4.10     
+[61] pkgconfig_2.0.3   evaluate_0.14     tidyselect_1.1.1  processx_3.5.1   
+[65] plyr_1.8.6        R6_2.5.0          generics_0.1.0    DBI_1.1.1        
+[69] pillar_1.6.0      haven_2.4.1       whisker_0.4       foreign_0.8-80   
+[73] withr_2.4.2       mgcv_1.8-33       abind_1.4-5       modelr_0.1.8     
+[77] crayon_1.4.1      car_3.0-11        utf8_1.1.4        rmarkdown_2.9    
+[81] grid_4.0.3        data.table_1.14.0 callr_3.7.0       git2r_0.28.0     
+[85] reprex_2.0.0      digest_0.6.27     httpuv_1.6.0      munsell_0.5.0    
+[89] bslib_0.2.5.1     sessioninfo_1.1.1</code></pre>
+</div>
+</div>
+
+<hr>
+<p>
+    This site was created with <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+</p>
+<hr>
+
+<!-- To enable disqus, uncomment the section below and provide your disqus_shortname -->
+
+<!-- disqus
+  <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'rmarkdown'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+-->
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
