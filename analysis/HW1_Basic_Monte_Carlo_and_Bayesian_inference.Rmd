@@ -9,16 +9,18 @@ editor_options:
 
 
 ```{r global_options, include=FALSE}
+library(knitr)
 knitr::opts_chunk$set(fig.width=11, fig.height=9,
-                      error=TRUE, echo=TRUE, eval=TRUE, warning=FALSE, message=FALSE)
+                      error=TRUE, echo=TRUE, eval=TRUE, warning=FALSE, message=FALSE,
+                      tidy.opts=list(width.cutoff=40),tidy=TRUE)
 ```
 
-## HW1 Bais Monte Carlo method; Likelihood/Bayesian inference
+## HW1 Basic Monte Carlo method; Likelihood/Bayesian inference
 Name: **Kiseok Lee** \
 Date: 1/15/22 \
 Class: **HGEN 486 Computational Biology**
 
-```{r}
+```{r, echo=FALSE}
 # libraries
 library(dplyr)
 library(ggplot2)
@@ -46,7 +48,7 @@ mytheme <- theme_bw() +
   theme(axis.text.x = element_text(hjust = 0.5, vjust=0.3,size=13, family="serif"))+
   theme(axis.text.y = element_text(size=10, family="serif"))+
   theme(panel.grid.major = element_blank()) +
-  theme(panel.grid.minor = element_blank(),panel.background=element_blank(),panel.border=element_blank(),plot.background=element_blank()) +
+  theme(panel.grid.minor = element_blank(),panel.background=element_blank(),panel.border=element_blank(),plot.background=element_blank())+
   theme(axis.ticks = element_line(size = 1.1))
 
 mytheme_2d <- theme_bw() + 
@@ -80,6 +82,10 @@ my_color_collection <- c(
 # for git push, use this instead of using wflow_git_push()
 # git push -u origin master (in the Git app / in the working directory)
 
+# for making pdf file
+library(rmarkdown)
+# render("analysis/~~.Rmd", "pdf_document")
+
 ```
 
 ## A-2-c) Inverse Transform Sampling simulation
@@ -107,7 +113,7 @@ legend(2,0.2, legend=c('-log(U)', 'Exponential random variable'), col=c("Blue", 
 ## Exercise: Likelihood Ratio: how big is convincing?
 https://stephens999.github.io/fiveMinuteStats/LR_and_BF.html
 
-### a. 
+## a. 
 Write a function to simulate data for the medical screening example above. \
 The function should take as input the proportion of individuals who have the disease, and the number of individuals to simulate. \
 It should output a table, one row for each individual, with two columns: the first column (x) is the protein concentration for that individual, the second column (z) is an indicator of disease status (1=disease, 0=normal). \
@@ -203,7 +209,7 @@ simulate_disease(p_dis=0.4, n_ind=10)
 ```
 
 
-### b.
+## b.
 Write a function to compute the likelihood ratio in the medical screening example.
 
 Construct the elements of the function
@@ -215,9 +221,6 @@ diseased_LR <- function(x){dgamma(x, scale = 1,shape = 2) / dgamma(x, scale = 0.
 
 ## function to compute the likelihood ratio
 # input will be the simulated data
-table_concentration
-dim(table_concentration)[1]
-
 vec_LR = rep(-1, dim(table_concentration)[1])  # empty likelihood ratio vector
 for (i in 1:dim(table_concentration)[1]){
   # print(i)
@@ -276,6 +279,30 @@ calculate_LR(table_concentration) %>% head()
 
 ```
 
+## b. 2nd trial
+Because the simulations did not agree with the theoretical predictions. I'll reconstruct the function to trouble shoot.
+
+```{r}
+calculate_diseased_LR <- function(table_concentration){
+  # only use the likelihood ratio where diseased likelihood is in the numerator.
+  diseased_LR <- function(x){dgamma(x, scale = 1,shape = 2) / dgamma(x, scale = 0.5, shape = 2)}
+
+  vec_LR = rep(-1, dim(table_concentration)[1])  # empty likelihood ratio vector
+  for (i in 1:dim(table_concentration)[1]){
+    vec_LR[i] = diseased_LR(table_concentration[,"x"][i])
+  }
+  
+  head(vec_LR)
+  # bind to the table as another column
+  table_LR <- cbind(table_concentration, LR = vec_LR)
+  return(table_LR)
+}
+
+# example
+calculate_diseased_LR(table_concentration) %>% head()
+```
+
+
 ## c.
 Use the above functions to answer the following question by simulation. \
 Suppose we screen a population of individuals, 20% of which are diseased, and compute the LR for each individual screened. 
@@ -301,7 +328,7 @@ df_LR1 <- data.frame(table_LR1)
 
 # Individuals with an LR “near” c
 df_near <- df_LR1 %>% filter(LR <= c + eps & LR >= c - eps)
-df_near
+df_near %>% head()
 # proportion are truly diseased?
 qD <- sum(df_near$z)/dim(df_near)[1]
 
@@ -354,7 +381,7 @@ plot(log10(c), vec_qD, type="l", xlab="log10(c)", ylab="qD(c): proportion of tru
 
 
 # Function
-plot_qD <- function(c, eps){
+plot_qD <- function(table_LR1, c, eps){
   vec_qD <- c()
   for (i in 1:length(c)){
     # print(i)
@@ -364,13 +391,33 @@ plot_qD <- function(c, eps){
   plot(log10(c), vec_qD, type="l", xlab="log10(c)", ylab="qD(c): proportion of truly diseased", main=paste0("Proportion are truly diseased (eps= ",eps,")"))
 }
 
-plot_qD(c, eps=0.1)
-plot_qD(c, eps=0.2)
-plot_qD(c, eps=0.3)
-plot_qD(c, eps=2)
+plot_qD(table_LR1, c, eps=0.1)
+plot_qD(table_LR1, c, eps=0.2)
+plot_qD(table_LR1, c, eps=0.3)
+plot_qD(table_LR1, c, eps=2)
 
 
 ```
+
+## c. 2nd trial
+
+Using the new LR. 
+```{r}
+
+table_concentration1 <- simulate_disease(p_dis=0.2, n_ind=10000)
+table_LR1 <- calculate_diseased_LR(table_concentration1)
+
+c <- seq(from = 1/10, to = 10, length.out = 1000)
+
+plot_qD(table_LR1, c, eps=0.1)
+plot_qD(table_LR1, c, eps=0.2)
+plot_qD(table_LR1, c, eps=0.3)
+plot_qD(table_LR1, c, eps=2)
+
+
+```
+
+
 
 ## d.
 Use the computations introduced in this vignette to compute the theoretical value for qD(c), and plot these on the same graph as your simulation results to demonstrate that your simulations match the theory. [It should provide a good agreement, provided your simulation is large enough.] \
@@ -391,7 +438,7 @@ calc_qD_vig <- function(c, p_dis){
 
 # plot theoretical
 c <- seq(from = 1/10, to = 10, length.out = 1000)
-calc_qD_vig(c, p_dis = 0.2)
+calc_qD_vig(c, p_dis = 0.2) %>% head()
 
 plot(log10(c), calc_qD_vig(c, p_dis = 0.2), type="l", xlab="log10(c)", ylab="qD(c)", main="Theoretical value of qD(c)")
 
@@ -405,14 +452,12 @@ for (i in 1:length(c)){
 plot(log10(c), vec_qD, type="l", xlab="log10(c)", ylab="qD(c): proportion of truly diseased", main="Theoretical value of qD(c) vs. Simulated")
 
 lines(log10(c), calc_qD_vig(c, p_dis = 0.2), col="blue")
-legend(-0.9, 0.9, legend=c('Simulated', 'Theoretical'),
+legend(-0.9, 0.8, legend=c('Simulated', 'Theoretical'),
        col=c("Black", "Blue"), lty=1, cex=0.7, box.lty=0)
-
 
 
 ```
 The theoretical prediction cannot capture the local increase and decrease at -0.5 < log10(c) < 0.
-
 
 ## e.
 Repeat the above, but in the case where only 2% of the screened population are diseased.
@@ -436,7 +481,7 @@ for (i in 1:length(c)){
 
 plot(log10(c), vec_qD, type="l", xlab="log10(c)", ylab="qD(c): proportion of truly diseased", main="Theoretical value of qD(c) vs. Simulated")
 
-lines(log10(c), calc_qD_vig(c, p_dis = 0.2), col="blue")
+lines(log10(c), calc_qD_vig(c, p_dis = 0.02), col="blue")
 legend(-0.9, 0.9, legend=c('Simulated', 'Theoretical'),
        col=c("Black", "Blue"), lty=1, cex=0.7, box.lty=0)
 
@@ -456,11 +501,59 @@ for (i in 1:length(c)){
 
 plot(log10(c), vec_qD, type="l", xlab="log10(c)", ylab="qD(c): proportion of truly diseased", main="Theoretical value of qD(c) vs. Simulated")
 
-lines(log10(c), calc_qD_vig(c, p_dis = 0.2), col="blue")
+lines(log10(c), calc_qD_vig(c, p_dis = 0.02), col="blue")
 legend(-0.9, 0.9, legend=c('Simulated', 'Theoretical'),
        col=c("Black", "Blue"), lty=1, cex=0.7, box.lty=0)
 
 ```
 
+## e. 2nd trial
+
+With the new LR function
+```{r}
+# simulation
+table_concentration2 <- simulate_disease(p_dis=0.02, n_ind=10000)
+head(table_concentration2)
+
+table_LR2 <- calculate_diseased_LR(table_concentration2)
+head(table_LR2)
+
+# overlay simulated qD above
+c <- seq(from = 1/10, to = 10, length.out = 1000)
+
+vec_qD <- c()
+for (i in 1:length(c)){
+  # print(i)
+  vec_qD[i] = calc_qD(table_LR2, c[i], eps=0.05)
+}
+
+plot(log10(c), vec_qD, type="l", xlab="log10(c)", ylab="qD(c): proportion of truly diseased", main="Theoretical value of qD(c) vs. Simulated")
+
+lines(log10(c), calc_qD_vig(c, p_dis = 0.02), col="blue")
+legend(-0.9, 0.9, legend=c('Simulated', 'Theoretical'),
+       col=c("Black", "Blue"), lty=1, cex=0.7, box.lty=0)
 
 
+
+```
+
+Try with larger c range
+```{r}
+c <- seq(from = 1/50, to = 50, length.out = 1000)
+
+# overlay simulated qD above
+vec_qD <- c()
+for (i in 1:length(c)){
+  # print(i)
+  vec_qD[i] = calc_qD(table_LR2, c[i], eps=c[i]/10)
+}
+
+plot(log10(c), vec_qD, type="l", xlab="log10(c)", ylab="qD(c): proportion of truly diseased", main="Theoretical value of qD(c) vs. Simulated")
+
+lines(log10(c), calc_qD_vig(c, p_dis = 0.02), col="blue")
+legend(-0.9, 0.9, legend=c('Simulated', 'Theoretical'),
+       col=c("Black", "Blue"), lty=1, cex=0.7, box.lty=0)
+
+```
+
+Compared with disease proportion of 0.2, this 0.02 simulation result agrees less with the theoretical prediction.
