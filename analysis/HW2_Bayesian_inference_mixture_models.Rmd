@@ -1,0 +1,381 @@
+---
+title: "HW2_Bayesian_inference_mixture_models"
+author: "Kiseok Lee"
+date: "2022-01-22"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r global_options, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(fig.width=11, fig.height=9,
+                      error=TRUE, echo=TRUE, eval=TRUE, warning=FALSE, message=FALSE,
+                      tidy.opts=list(width.cutoff=40),tidy=TRUE)
+```
+
+## HW2 Bayesian inference; mixture models
+Name: **Kiseok Lee** \
+Date: 1/22/22 \
+Class: **HGEN 486 Computational Biology**
+
+```{r, echo=FALSE}
+# libraries
+library(dplyr)
+library(ggplot2)
+library(RColorBrewer)
+library(vegan)
+library(tidyverse)
+library(magrittr)
+library(readxl)
+library(reshape2)
+library(gtools)
+library(devtools)
+library(openxlsx)
+library(ape)
+library(stringr)
+library(tidyr)
+library(ggrepel)
+library(ggpubr)
+
+## theme for ggplot
+mytheme <- theme_bw() + 
+  theme(text = element_text(family="serif")) +
+  theme(plot.title = element_text(size = 19,hjust = 0.5, family="serif")) + 
+  theme(axis.title.x = element_text(size = 17,hjust = 0.5, family="serif")) + 
+  theme(axis.title.y = element_text(size = 17,hjust = 0.5, family="serif")) + 
+  theme(axis.text.x = element_text(hjust = 0.5, vjust=0.3,size=13, family="serif"))+
+  theme(axis.text.y = element_text(size=10, family="serif"))+
+  theme(panel.grid.major = element_blank()) +
+  theme(panel.grid.minor = element_blank(),panel.background=element_blank(),panel.border=element_blank(),plot.background=element_blank())+
+  theme(axis.ticks = element_line(size = 1.1))
+
+mytheme_2d <- theme_bw() + 
+  theme(text = element_text(family="serif")) +
+  theme(plot.title = element_text(size = 19,hjust = 0.5, family="serif")) + 
+  theme(axis.title.x = element_text(size = 17,hjust = 0.5, family="serif")) + 
+  theme(axis.title.y = element_text(size = 17,hjust = 0.5, family="serif")) + 
+  theme(axis.text.x = element_text(hjust = 0.5, vjust=0.3,size=13, family="serif"))+
+  theme(axis.text.y = element_text(size=13, family="serif"))+
+  # theme(panel.grid.major = element_blank()) +
+  # theme(panel.grid.minor = element_blank(),panel.background=element_blank(),plot.background=element_blank()) +
+  theme(axis.ticks = element_line(size = 1.1))
+
+
+# color collection
+my_color_collection <- c(
+  "#CBD588", "#5F7FC7", "orange", "#AD6F3B", "#673770", 
+  "#D14285", "#652926", "#C84248", "#8569D5", "#5E738F",
+  "#D1A33D", "#8A7C64", "#599861","#616163", "#FFCDB2",
+  "#6D9F71", "#242F40",
+  "#CCA43B", "#F92A82", "#ED7B84", "#7EB77F", 
+  "#DEC4A1", "#E5D1D0", '#0E8482', '#C9DAEA', '#337357', 
+  '#95C623', '#E55812', '#04471C', '#F2D7EE', '#D3BCC0', 
+  '#A5668B', '#69306D', '#0E103D', '#1A535C', '#4ECDC4', 
+  '#F7FFF7', '#FF6B6B', '#FFE66D', '#6699CC', '#FFF275', 
+  '#FF8C42', '#FF3C38', '#A23E48', '#000000', '#CF5C36', 
+  '#EEE5E9', '#7C7C7C', '#EFC88B', '#2E5266', '#6E8898', 
+  '#9FB1BC', '#D3D0CB', '#E2C044', '#5BC0EB', '#FDE74C', 
+  '#9BC53D', '#E55934', '#FA7921', "#CD9BCD", "#508578", "#DA5724")
+
+# for git push, use this instead of using wflow_git_push()
+# git push -u origin master (in the Git app / in the working directory)
+
+# for making pdf file
+library(rmarkdown)
+# render("analysis/~~.Rmd", "pdf_document")
+
+```
+
+## A-(2) Calculate point estimate and interval estimate
+
+```{r}
+# plot gamma distribution
+shape = 12
+scale = 1 / 9
+#define x-values
+x <- seq(0, 3, by=0.01)   
+#calculate gamma density for each x-value
+y <- dgamma(x, shape=12, scale=1 / 9) 
+  
+#create density plot
+plot(x, y, type="l", col='blue', xlab="x", ylab="density", main="Gamma density function (k=12, theta=1/9)")
+require(pracma)
+trapz(x,y) # area sum to 1
+
+# posterior median
+qgamma(0.5, shape = 12, scale = 1/9)
+
+# 90% credible interval
+lower = qgamma(0.05, shape = 12, scale = 1/9)
+lower
+upper = qgamma(0.95, shape = 12, scale = 1/9)
+upper
+
+plot(x, y, type="l", col='blue', xlab="x", ylab="density", main="90% credibility interval")
+abline(v=lower, col='red')
+abline(v=upper, col='red')
+
+```
+
+## B. Mixture simulation
+
+## B-a) 
+Write an R function to simulate genetic data on (haploid) tusks from a mixture distribution: that is, sampled from a population in which each tusk comes from one of K populations. \
+
+reference1: https://stephens999.github.io/fiveMinuteStats/mixture_models_01.html \
+reference2: https://stephens999.github.io/fiveMinuteStats/likelihood_ratio_simple_models.html \
+
+First let's build the components of the function.
+```{r}
+# Input
+#' @param N  number of tusks to simulate
+#' @param vec_w vector of mixture proportions, a non-negative vector of lenght K that sums to 1.
+#' @param M  number of markers
+#' @param mat_F K by M matrix, F, of allele frequencies
+
+# Output
+#' @param vec_z  # Z vector of component memberships
+#' @param mat_X  # N by M matrix of simulated data
+
+# 2 step process
+
+
+N = 1000 # number of tusks to simulate
+M = 6 # number of markers
+vec_w = c(0.25, 0.75) # c(Savanna, Forest population)
+
+mat_F = rbind(c(0.40, 0.12, 0.21, 0.12, 0.02, 0.32), c(0.80, 0.20, 0.11, 0.17, 0.23, 0.25))  # K by M matrix, F, of allele frequencies
+mat_F[1,] # savanna allele frequencies
+mat_F[2,] # forest allele frequencies
+
+# output setting
+vec_z = rep(-1, N) # Z vector of component memberships
+length(vec_z)
+mat_X = matrix(NA, nrow=N, ncol=6) # N by M matrix of simulated data
+dim(mat_X)
+
+# simulating data
+for(i in 1:N){
+  # print(paste0("i: ",i))
+  # generate latent variable Z in the first step
+  if(runif(1)<0.25){
+    vec_z[i] = 0 # z = 0 is Savanna, z = 1, is forest
+    # print(vec_z[i])
+    mat_X[i,] = rbinom(M, rep(1,M), mat_F[1,])  # simulate genotype
+    # print(mat_X[i,])
+  } 
+
+  else{
+    vec_z[i] = 1 # z = 0 is Savanna, z = 1, is forest
+    # print(vec_z[i])
+    mat_X[i,] = rbinom(M, rep(1,M), mat_F[2,]) # simulate genotype
+    # print(mat_X[i,])
+  }
+}
+
+# confirm that I simulated right
+mean(vec_z)
+colMeans(mat_X[vec_z ==0,]) - mat_F[1,] # similar
+colMeans(mat_X[vec_z ==1,]) - mat_F[2,] # similar
+
+```
+
+Wrap it into a function
+```{r}
+## Wrapping into a function
+
+# Input
+#' @param N  number of tusks to simulate
+#' @param vec_w vector of mixture proportions, a non-negative vector of lenght K that sums to 1.
+#' @param M  number of markers
+#' @param mat_F K by M matrix, F, of allele frequencies
+
+# Output
+#' @param vec_z  # Z vector of component memberships
+#' @param mat_X  # N by M matrix of simulated data
+
+simulate_data <- function(N, vec_w, M, mat_F){
+  # output setting
+  vec_z = rep(-1, N) # Z vector of component memberships
+  length(vec_z)
+  mat_X = matrix(NA, nrow=N, ncol=6) # N by M matrix of simulated data
+  dim(mat_X)
+  
+  # simulating data
+  for(i in 1:N){
+    # print(paste0("i: ",i))
+    # generate latent variable Z in the first step
+    if(runif(1)<0.25){
+      vec_z[i] = 0 # z = 0 is Savanna, z = 1, is forest
+      # print(vec_z[i])
+      mat_X[i,] = rbinom(M, rep(1,M), mat_F[1,])  # simulate genotype
+      # print(mat_X[i,])
+    } 
+  
+    else{
+      vec_z[i] = 1 # z = 0 is Savanna, z = 1, is forest
+      # print(vec_z[i])
+      mat_X[i,] = rbinom(M, rep(1,M), mat_F[2,]) # simulate genotype
+      # print(mat_X[i,])
+    }
+  }
+  out_list =list(Component_membership = vec_z, Simulated_data = mat_X)
+  return(out_list)
+
+}
+
+# example
+N = 1000 # number of tusks to simulate
+M = 6 # number of markers
+vec_w = c(0.25, 0.75) # c(Savanna, Forest population)
+
+mat_F = rbind(c(0.40, 0.12, 0.21, 0.12, 0.02, 0.32), c(0.80, 0.20, 0.11, 0.17, 0.23, 0.25))  # K by M matrix, F, of allele frequencies
+
+output_list <- simulate_data(N=N, vec_w=vec_w, M=M, mat_F=mat_F)
+
+output_list$Component_membership
+head(output_list$Simulated_data)
+```
+
+
+## B-b)
+Write an R function to compute the log-likelihood l(w) for a data set simulated from the mixture model you have just implemented. \
+
+Construct the elements of the function
+```{r}
+
+X <- output_list$Simulated_data
+
+# Input
+#' @param X  simulated data matrix
+#' @param vec_w vector of mixture proportions, a non-negative vector of lenght K that sums to 1.
+#' @param mat_F K by M matrix, F, of allele frequencies
+
+# likelihood under model
+likelihood_under_model = function(p,x){
+  return(prod(p^x*(1-p)^(1-x)))
+}
+
+# loop thru whole dataset and multiply to get likelihood
+log_likelihood = 0
+for (i in 1:dim(X)[1]){
+  # get likelihood of one simulation
+  likelihood_each_simulation = vec_w[1] * likelihood_under_model(mat_F[1,],X[i,]) + vec_w[2] * likelihood_under_model(mat_F[2,],X[i,])
+  # print(likelihood_each_simulation)
+  log_likelihood = log_likelihood + log(likelihood_each_simulation)
+  # print(likelihood)
+}
+
+
+# function
+log_lik <- function(w_1, X, mat_F){
+  log_likelihood = 0
+  for (i in 1:dim(X)[1]){
+    # get likelihood of one simulation
+    likelihood_each_simulation = w_1 * likelihood_under_model(mat_F[1,],X[i,]) + (1 - w_1) * likelihood_under_model(mat_F[2,],X[i,])
+    # print(likelihood_each_simulation)
+    log_likelihood = log_likelihood + log(likelihood_each_simulation)
+    # print(likelihood)
+  }
+  return(log_likelihood)
+}
+
+```
+
+## B-c)
+Perform a preliminary test of your likelihood and simulation programs
+
+```{r}
+# example
+N = 1000 # number of tusks to simulate
+M = 6 # number of markers
+vec_w = c(0.25, 0.75) # c(Savanna, Forest population)
+
+mat_F = rbind(c(0.40, 0.12, 0.21, 0.12, 0.02, 0.32), c(0.80, 0.20, 0.11, 0.17, 0.23, 0.25))  # K by M matrix, F, of allele frequencies
+
+output_list <- simulate_data(N=N, vec_w=vec_w, M=M, mat_F=mat_F)
+
+X <- output_list$Simulated_data
+
+vec_w1 = seq(0,1, length=100)
+vec_loglik = rep(-1, 100)
+for(i in 1:length(vec_w1)){
+  vec_loglik[i] <- log_lik(vec_w1[i], X, mat_F)
+}
+
+plot(vec_w1, vec_loglik, type='l',main = "log-likelihood", xlab = "w_1", ylab="Log likelihood")
+
+# zoom in 
+plot(vec_w1, vec_loglik - max(vec_loglik), ylim=c(-10, 0), type='l',main = "log-likelihood", xlab = "w_1", ylab="Log likelihood")
+abline(v = 0.25, col='red')
+
+```
+
+It is not exactly maximized at 0.25 but still close enough.
+
+## C. EM algorithm for estimating mixture component proportions 
+
+Reread https://stephens999.github.io/fiveMinuteStats/em_algorithm_01.html
+```{r}
+# Input
+#' @param L  function
+#' @param k components
+#' @param mat_F K by M matrix, F, of allele frequencies
+
+n = length(x)
+pi1 = rep(0,niter+1)
+pi1[1] = pi1.init
+L = matrix(nrow=n,ncol=2)
+L[,1] = dgamma(x,scale=0.5,shape=2) 
+L[,2] = dgamma(x,scale=1,shape=2) 
+w = matrix(nrow=n,ncol=2)
+for(iter in 1:niter){
+  w[,1] = pi1[iter]*L[,1]
+  w[,2] = (1-pi1[iter])*L[,2]
+  for(i in 1:n){ # normalize the rows of w to sum to 1
+    w[i,] = w[i,]/(w[i,1]+w[i,2])  
+  }
+  pi1[iter+1] = mean(w[,1]) 
+}
+  
+  
+
+simple_em = function(x, pi1.init=0.5, niter = 100){
+  n = length(x)
+  pi1 = rep(0,niter+1)
+  pi1[1] = pi1.init
+  L = matrix(nrow=n,ncol=2)
+  L[,1] = dgamma(x,scale=0.5,shape=2) 
+  L[,2] = dgamma(x,scale=1,shape=2) 
+  w = matrix(nrow=n,ncol=2)
+  for(iter in 1:niter){
+    w[,1] = pi1[iter]*L[,1]
+    w[,2] = (1-pi1[iter])*L[,2]
+    for(i in 1:n){ # normalize the rows of w to sum to 1
+      w[i,] = w[i,]/(w[i,1]+w[i,2])  
+    }
+    pi1[iter+1] = mean(w[,1]) 
+  }
+  return(pi1)
+  
+}
+
+pi1.iter = simple_em(x)
+plot(pi1.iter, xlab="iteration", ylab="pi1")
+
+
+
+
+
+
+```
+
+
+
+
+
+
+
+
+
