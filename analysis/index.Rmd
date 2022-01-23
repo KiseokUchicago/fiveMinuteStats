@@ -3,6 +3,14 @@ site: workflowr::wflow_site
 title: "Home"
 ---
 
+## Kiseok's homework
+*  [HW1_Basic_Monte_Carlo_and_Bayesian_inference (1/15/22)](HW1_Basic_Monte_Carlo_and_Bayesian_inference.html)
+*  [HW2_Bayesian_inference_mixture_models (1/22/22)](HW2_Bayesian_inference_mixture_models.html)
+
+## Class activity
+*  [220113_r_simplemix]([220113_r_simplemix.html)
+*  [220120_mixture_models_01](220120_mixture_models_01.html)
+
 ## Inference
 
 ### Likelihood Ratio and Likelihood
