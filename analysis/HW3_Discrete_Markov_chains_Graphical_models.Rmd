@@ -1,0 +1,260 @@
+---
+title: "HW3_Discrete_Markov_chains_Graphical_models"
+author: "Kiseok Lee"
+date: "2022-01-29"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r global_options, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(fig.width=11, fig.height=9,
+                      error=TRUE, echo=TRUE, eval=TRUE, warning=FALSE, message=FALSE,
+                      tidy.opts=list(width.cutoff=40),tidy=TRUE)
+```
+
+## HW3 Discrete Markov chains Graphical models
+Name: **Kiseok Lee** \
+Date: 1/29/22 \
+Class: **HGEN 486 Computational Biology**
+
+```{r, echo=FALSE}
+# libraries
+library(dplyr)
+library(ggplot2)
+library(RColorBrewer)
+library(vegan)
+library(tidyverse)
+library(magrittr)
+library(readxl)
+library(reshape2)
+library(gtools)
+library(devtools)
+library(openxlsx)
+library(ape)
+library(stringr)
+library(tidyr)
+library(ggrepel)
+library(ggpubr)
+
+## theme for ggplot
+mytheme <- theme_bw() + 
+  theme(text = element_text(family="serif")) +
+  theme(plot.title = element_text(size = 19,hjust = 0.5, family="serif")) + 
+  theme(axis.title.x = element_text(size = 17,hjust = 0.5, family="serif")) + 
+  theme(axis.title.y = element_text(size = 17,hjust = 0.5, family="serif")) + 
+  theme(axis.text.x = element_text(hjust = 0.5, vjust=0.3,size=13, family="serif"))+
+  theme(axis.text.y = element_text(size=10, family="serif"))+
+  theme(panel.grid.major = element_blank()) +
+  theme(panel.grid.minor = element_blank(),panel.background=element_blank(),panel.border=element_blank(),plot.background=element_blank())+
+  theme(axis.ticks = element_line(size = 1.1))
+
+mytheme_2d <- theme_bw() + 
+  theme(text = element_text(family="serif")) +
+  theme(plot.title = element_text(size = 19,hjust = 0.5, family="serif")) + 
+  theme(axis.title.x = element_text(size = 17,hjust = 0.5, family="serif")) + 
+  theme(axis.title.y = element_text(size = 17,hjust = 0.5, family="serif")) + 
+  theme(axis.text.x = element_text(hjust = 0.5, vjust=0.3,size=13, family="serif"))+
+  theme(axis.text.y = element_text(size=13, family="serif"))+
+  # theme(panel.grid.major = element_blank()) +
+  # theme(panel.grid.minor = element_blank(),panel.background=element_blank(),plot.background=element_blank()) +
+  theme(axis.ticks = element_line(size = 1.1))
+
+
+# color collection
+my_color_collection <- c(
+  "#CBD588", "#5F7FC7", "orange", "#AD6F3B", "#673770", 
+  "#D14285", "#652926", "#C84248", "#8569D5", "#5E738F",
+  "#D1A33D", "#8A7C64", "#599861","#616163", "#FFCDB2",
+  "#6D9F71", "#242F40",
+  "#CCA43B", "#F92A82", "#ED7B84", "#7EB77F", 
+  "#DEC4A1", "#E5D1D0", '#0E8482', '#C9DAEA', '#337357', 
+  '#95C623', '#E55812', '#04471C', '#F2D7EE', '#D3BCC0', 
+  '#A5668B', '#69306D', '#0E103D', '#1A535C', '#4ECDC4', 
+  '#F7FFF7', '#FF6B6B', '#FFE66D', '#6699CC', '#FFF275', 
+  '#FF8C42', '#FF3C38', '#A23E48', '#000000', '#CF5C36', 
+  '#EEE5E9', '#7C7C7C', '#EFC88B', '#2E5266', '#6E8898', 
+  '#9FB1BC', '#D3D0CB', '#E2C044', '#5BC0EB', '#FDE74C', 
+  '#9BC53D', '#E55934', '#FA7921', "#CD9BCD", "#508578", "#DA5724")
+
+# for git push, use this instead of using wflow_git_push()
+# git push -u origin master (in the Git app / in the working directory)
+
+# for making pdf file
+library(rmarkdown)
+# render("analysis/~~.Rmd", "pdf_document")
+
+```
+
+## A-a). Sequence of nucleotides
+Assuming you look at a random location in the sequence, kilobases away from its starting point, calculate the probability of observing the sequence TATA under this model.  (Hint: Consider the sequence of elementary events that compose the event TATA and note that you are sampling from the stationary distribution). \
+
+First, let's get the stationary distribution
+```{r}
+
+# probability transition matrix
+P <- matrix(c(0.1,0.35,0.3,0.6,0.8,0.1,0.2,0.1,0.05,0.1,0.2,0.25,0.05,0.45,0.3,0.05),nrow=4)
+
+# function from a vignette
+# https://stephens999.github.io/fiveMinuteStats/stationary_distribution.html
+
+states <- c("a","c","t","g")
+stationary <- function(transition) {
+  stopifnot(is.matrix(transition) &&
+        nrow(transition)==ncol(transition) &&
+            all(transition>=0 & transition<=1))
+  p <- diag(nrow(transition)) - transition
+  A <- rbind(t(p),
+         rep(1, ncol(transition)))
+  b <- c(rep(0, nrow(transition)),
+         1)
+  res <- qr.solve(A, b)
+  names(res) <- paste0("state.", states[1:nrow(transition)])
+  return(res)
+}
+
+stationary(P)
+
+```
+
+Then let's get the probability of TATA.
+Pr(TATA) = pi(t) * Pt->a * Pa->t * Pt->a
+Pr(TATA) = 0.00058295
+
+```{r}
+vec_pi <- stationary(P)
+names(vec_pi) <- NULL
+vec_pi[3] * P[3,1] * P[1,3] * P[3,1]
+```
+
+## A-b)
+
+```{r}
+
+# simulate discrete Markov chains
+# source: https://stephens999.github.io/fiveMinuteStats/stationary_distribution.html
+run.mc.sim <- function( P,   # probability transition matrix
+                        num.iters=50, 
+                        num.chains=150 )
+  {
+  
+  # number of possible states
+  num.states <- nrow(P)
+  
+  # states X_t for all chains
+  states     <- matrix(NA, ncol=num.chains, nrow=num.iters)
+  
+  # probability vectors pi^n through time
+  all_probs  <- matrix(NA, nrow=num.iters, ncol=num.states)
+  
+  # forces chains to start in state 1
+  pi_0      <- c(1, rep(0, num.states-1))
+
+  # initialize variables for first state 
+  P_n           <- P
+  all_probs[1,] <- pi_0
+  states[1,]    <- 1
+
+  for(t in 2:num.iters) {
+    
+    # pi^n for this iteration
+    pi_n           <- pi_0 %*% P_n
+    all_probs[t,]  <- pi_n
+    
+    for(chain_num in seq_len(num.chains)) {
+      # probability vector to simulating next state 
+      p                     <- P[ states[t-1,chain_num], ]
+      states[t,chain_num]   <- which(rmultinom(1, 1, p) == 1)
+    }
+    
+    # update probability transition matrix
+    P_n           <- P_n %*% P
+  }
+  return(list(all.probs=all_probs, states=states))
+}
+
+# 10000 is burn-in, the next is the stationary phase
+l_result <- run.mc.sim(P, num.iters=20000, num.chains=1000)
+dim_states <- dim(l_result$states)
+dim_states
+
+# get the stationary phase (after the burn-in)
+stationary_states <- l_result$states[10001:dim_states[1],]
+dim(stationary_states)
+
+# get every 100th base
+seq(from=1, to=dim(stationary_states)[1],by=100)
+states_100th <- stationary_states[seq(from=1, to=dim(stationary_states)[1],by=100),]
+dim(states_100th)
+
+# put all the state values into a vector (from a state matrix)
+c(states_100th) %>% head()
+# frequncy table
+t_state <- table(c(states_100th)) / length(c(states_100th))
+t_state
+names(t_state) <- c("A","C","T","G")
+df_state <- data.frame(t_state)
+
+# plot
+ggplot(df_state, aes(x=Var1, y=Freq)) +
+  geom_bar(stat="identity", fill="maroon") +
+  # scale_fill_manual(values=cols) +
+  ylab("Probability of observing at stationary distribution \n") +
+  xlab("\n Base (stationary phase)") +
+  scale_y_continuous(limits=c(0,1),breaks=seq(0,1,0.1))+
+  ggtitle("Probability in stationary distribution \n")+
+  geom_text(aes(label = round(Freq,3)), size = 3, vjust = -1.5, family="serif", show.legend = FALSE, position = position_dodge(0.8))+
+  mytheme_2d
+
+vec_pi
+```
+The Monte Carlo estimate is very close to the exact solution.
+
+## B-d) Simulation of graphical models
+Show code for how in the software R, you would go about using the random number generators (rbinom, rpois) to simulate 1000 realizations for the following parameter values: p=0.5, n=500. Run the simulations and store the values for the following problems.
+
+```{r}
+p = 0.5
+n = 500
+r = 1000 # realizations
+
+X1 <- rbinom(r, n, p)
+N1 <- rpois(r, lambda = n)
+
+X2 <- rbinom(r, size=N1, prob=X1/N1)
+N2 <- rpois(r, lambda = N1)
+
+X3 <- rbinom(r, size=N2, prob=X2/N2)
+N3 <- rpois(r, lambda = N2)
+
+X4 <- rbinom(r, size=N3, prob=X3/N3)
+N4 <- rpois(r, lambda = N3)
+
+```
+
+## B-e) Monte carlo estimation
+Monte Carlo estimate and the n*p (from derivation) are close.
+```{r}
+# Monte Carlo estimate of E[X2]
+mean(X2)
+
+# From derivation of E[X2]
+n*p
+
+# difference
+mean(X2) - n*p
+```
+
+## B-f) MC estimation of P(X4>X1)
+It is approximately 0.5.
+E[X1]=E[X2]=E[X3]=E[X4]. Therefore, P(X4 > X1) will be 0.5.
+```{r}
+# Monte Carlo estimation of P(X4>X1)
+mean(X4>X1)
+
+```
+
+
+
+
