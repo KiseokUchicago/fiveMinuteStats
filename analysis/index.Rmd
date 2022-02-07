@@ -7,6 +7,7 @@ title: "Home"
 *  [HW1_Basic_Monte_Carlo_and_Bayesian_inference (1/15/22)](HW1_Basic_Monte_Carlo_and_Bayesian_inference.html)
 *  [HW2_Bayesian_inference_mixture_models (1/22/22)](HW2_Bayesian_inference_mixture_models.html)
 *  [HW3_Discrete_Markov_chains_Graphical_models (1/29/22)](HW3_Discrete_Markov_chains_Graphical_models.html)
+*  [HW4_MCMC (2/4/22)](HW4_MCMC.html)
 
 ## Class activity
 *  [220113_r_simplemix]([220113_r_simplemix.html)
