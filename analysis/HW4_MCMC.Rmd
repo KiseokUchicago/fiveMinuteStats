@@ -1,0 +1,956 @@
+---
+title: "HW4_MCMC"
+author: "Kiseok Lee"
+date: "2022-02-04"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r global_options, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(fig.width=11, fig.height=9,
+                      error=TRUE, echo=TRUE, eval=TRUE, warning=FALSE, message=FALSE,
+                      tidy.opts=list(width.cutoff=40),tidy=TRUE)
+```
+
+## HW4 MCMC: Markov chain monte carlo methods: Metropolis Hastings & Gibbs algorithm
+Name: **Kiseok Lee** \
+Date: 2/4/22 \
+Class: **HGEN 486 Computational Biology**
+
+```{r, echo=FALSE}
+# libraries
+library(dplyr)
+library(ggplot2)
+library(RColorBrewer)
+library(vegan)
+library(tidyverse)
+library(magrittr)
+library(readxl)
+library(reshape2)
+library(gtools)
+library(devtools)
+library(openxlsx)
+library(ape)
+library(stringr)
+library(tidyr)
+library(ggrepel)
+library(ggpubr)
+
+## theme for ggplot
+mytheme <- theme_bw() + 
+  theme(text = element_text(family="serif")) +
+  theme(plot.title = element_text(size = 19,hjust = 0.5, family="serif")) + 
+  theme(axis.title.x = element_text(size = 17,hjust = 0.5, family="serif")) + 
+  theme(axis.title.y = element_text(size = 17,hjust = 0.5, family="serif")) + 
+  theme(axis.text.x = element_text(hjust = 0.5, vjust=0.3,size=13, family="serif"))+
+  theme(axis.text.y = element_text(size=10, family="serif"))+
+  theme(panel.grid.major = element_blank()) +
+  theme(panel.grid.minor = element_blank(),panel.background=element_blank(),panel.border=element_blank(),plot.background=element_blank())+
+  theme(axis.ticks = element_line(size = 1.1))
+
+mytheme_2d <- theme_bw() + 
+  theme(text = element_text(family="serif")) +
+  theme(plot.title = element_text(size = 19,hjust = 0.5, family="serif")) + 
+  theme(axis.title.x = element_text(size = 17,hjust = 0.5, family="serif")) + 
+  theme(axis.title.y = element_text(size = 17,hjust = 0.5, family="serif")) + 
+  theme(axis.text.x = element_text(hjust = 0.5, vjust=0.3,size=13, family="serif"))+
+  theme(axis.text.y = element_text(size=13, family="serif"))+
+  # theme(panel.grid.major = element_blank()) +
+  # theme(panel.grid.minor = element_blank(),panel.background=element_blank(),plot.background=element_blank()) +
+  theme(axis.ticks = element_line(size = 1.1))
+
+
+# color collection
+my_color_collection <- c(
+  "#CBD588", "#5F7FC7", "orange", "#AD6F3B", "#673770", 
+  "#D14285", "#652926", "#C84248", "#8569D5", "#5E738F",
+  "#D1A33D", "#8A7C64", "#599861","#616163", "#FFCDB2",
+  "#6D9F71", "#242F40",
+  "#CCA43B", "#F92A82", "#ED7B84", "#7EB77F", 
+  "#DEC4A1", "#E5D1D0", '#0E8482', '#C9DAEA', '#337357', 
+  '#95C623', '#E55812', '#04471C', '#F2D7EE', '#D3BCC0', 
+  '#A5668B', '#69306D', '#0E103D', '#1A535C', '#4ECDC4', 
+  '#F7FFF7', '#FF6B6B', '#FFE66D', '#6699CC', '#FFF275', 
+  '#FF8C42', '#FF3C38', '#A23E48', '#000000', '#CF5C36', 
+  '#EEE5E9', '#7C7C7C', '#EFC88B', '#2E5266', '#6E8898', 
+  '#9FB1BC', '#D3D0CB', '#E2C044', '#5BC0EB', '#FDE74C', 
+  '#9BC53D', '#E55934', '#FA7921', "#CD9BCD", "#508578", "#DA5724")
+
+# for git push, use this instead of using wflow_git_push()
+# git push -u origin master (in the Git app / in the working directory)
+
+# for making pdf file
+library(rmarkdown)
+# render("analysis/~~.Rmd", "pdf_document")
+
+```
+
+## A. Metropolis-Hastings Algorithm
+https://stephens999.github.io/fiveMinuteStats/MH-examples1.html
+
+## A-1) Exercise from Example 1: sampling from an exponential distribution using MCMC
+
+First, let's set up the Metropolis-Hastings Algorithm first
+```{r}
+# Any MCMC scheme aims to produce (dependent) samples from a ``target" distribution. In this case we are going to use the exponential distribution with mean 1 as our target distribution. So we start by defining our target density:
+target = function(x){
+  if(x<0){
+    return(0)}
+  else {
+    return( exp(-x))
+  }
+}
+
+# Having defined the function, we can now use it to compute a couple of values (just to illustrate the idea of a function):
+target(1)
+target(-1)
+
+# Next, we will program a Metropolis--Hastings scheme to sample from a distribution proportional to the target
+x = rep(0,1000)
+x[1] = 3     #this is just a starting value, which I've set arbitrarily to 3
+for(i in 2:1000){
+  currentx = x[i-1]
+  proposedx = currentx + rnorm(1,mean=0,sd=1)
+  A = target(proposedx)/target(currentx) 
+  if(runif(1)<A){
+    x[i] = proposedx       # accept move with probabily min(1,A)
+  } else {
+    x[i] = currentx        # otherwise "reject" move, and stay where we are
+  }
+}
+
+plot(x)
+
+hist(x)
+
+# We can wrap this up in a function to make things a bit neater, and make it easy to try changing starting values and proposal distributions
+
+easyMCMC = function(niter, startval, proposalsd){
+  x = rep(0,niter)
+  x[1] = startval     
+  for(i in 2:niter){
+    currentx = x[i-1]
+    proposedx = rnorm(1,mean=currentx,sd=proposalsd) 
+    A = target(proposedx)/target(currentx)
+    if(runif(1)<A){
+      x[i] = proposedx       # accept move with probabily min(1,A)
+    } else {
+      x[i] = currentx        # otherwise "reject" move, and stay where we are
+    }
+  }
+  return(x)
+}
+
+
+z1=easyMCMC(1000,3,1)
+plot(dexp(z1))
+plot(dexp(z1, log = T))
+
+dev.off()
+
+```
+
+## Exercise A-1-a) how do different starting values affect the MCMC scheme?
+
+As the starting value gets larger from 1, it takes more iterations to arrive (bigger burn-in) at exponential distribution.
+Therefore, if I plot the histogram to see if the distribution is similar to exponential distribution, the MH sampling starting from smaller values (>1) are more closer to exponential distribution.
+```{r}
+# Plot realizations
+par(mfrow = c(3, 5))
+
+for (i in seq(1, 50, length.out=15)){
+  plot(easyMCMC(niter = 1000, startval =i, proposalsd = 1), xlab = "Iterations", ylab="Realizations", main = paste0("Start-value= ",i))
+}
+
+# Histogram
+par(mfrow = c(3, 5))
+for (i in seq(1, 50, length.out=15)){
+  hist(easyMCMC(niter = 1000, startval =i, proposalsd = 1), probability = T, main = paste0("Histogram: Start-value= ",i))
+  xx = seq(0,100, length=1000)
+  lines(xx, target(xx), col = 'red')
+}
+
+```
+
+To prove that my hypothesis is right, I can only plot the histogram with the realizations after the burn-in (only plotting x after 200 iterations). In the plot below, indeed the histogram is more closer to exponential distribution.
+
+```{r}
+# Histogram
+par(mfrow = c(3, 5))
+for (i in seq(1, 50, length.out=15)){
+  hist(easyMCMC(niter = 1000, startval =i, proposalsd = 1)[200:1000], probability = T, main = paste0("Histogram: Start-value= ",i))
+  xx = seq(0,100, length=1000)
+  lines(xx, target(xx), col = 'red')
+}
+
+par(mfrow = c(1, 1))
+
+```
+
+## Exercise A-1-b) what is the effect of having a bigger/smaller proposal standard deviation?
+
+As the proposal standard deviation gets bigger from 0 to 1, the MH simulations that have values closer to 1 performs better. (need less burn-in to reach exponential distribution). Extremely small standard deviations will make the realizations move too slowly.
+```{r}
+# Plot realizations
+par(mfrow = c(3, 5))
+
+# (1) Let's start with sd below 1
+for (i in seq(0, 1, length.out=15)){
+  plot(easyMCMC(niter = 1000, startval =1, proposalsd = i), xlab = "Iterations", ylab="Realizations", main = paste0("Proposal_sd= ",i))
+}
+
+par(mfrow = c(3, 5))
+# Histogram
+for (i in seq(0, 1, length.out=15)){
+  hist(easyMCMC(niter = 1000, startval =1, proposalsd = i), probability = T, main = paste0("Proposal_sd= ",i))
+  xx = seq(0,100, length=1000)
+  lines(xx, target(xx), col = 'red')
+}
+
+```
+
+As the proposal standard deviation gets bigger from 1 to 50, the MH simulations performs worse. In many iterations, the proposal is rejected, creating a streak of same realizations throughout some periods of iterations. This is because bigger proposed value is more likely to get rejected. 
+```{r}
+# Plot realizations
+par(mfrow = c(3, 5))
+
+# (1) Let's start with sd below 1
+for (i in seq(1, 50, length.out=15)){
+  plot(easyMCMC(niter = 1000, startval =1, proposalsd = i), xlab = "Iterations", ylab="Realizations", main = paste0("Proposal_sd= ",i))
+}
+
+par(mfrow = c(3, 5))
+# Histogram
+for (i in seq(1, 50, length.out=15)){
+  hist(easyMCMC(niter = 1000, startval =1, proposalsd = i), probability = T, main = paste0("Proposal_sd= ",i))
+  xx = seq(0,100, length=1000)
+  lines(xx, target(xx), col = 'red')
+}
+
+par(mfrow = c(1, 1))
+
+```
+
+## Exercise A-1-c) try changing the target function to the following
+
+```{r}
+target = function(x){
+  return((x>0 & x <1) + (x>2 & x<3))
+}
+
+easyMCMC = function(niter, startval, proposalsd){
+  x = rep(0,niter)
+  x[1] = startval     
+  for(i in 2:niter){
+    currentx = x[i-1]
+    proposedx = rnorm(1,mean=currentx,sd=proposalsd) 
+    A = target(proposedx)/target(currentx)
+    if(runif(1) < A){
+      x[i] = proposedx       # accept move with probabily min(1,A)
+    } else {
+      x[i] = currentx        # otherwise "reject" move, and stay where we are
+    }
+  }
+  return(x)
+}
+# see distribution
+xx = seq(0, 5, length=100)
+plot(xx, target(xx))
+
+## proposal sd = 1
+plot(easyMCMC(niter = 1000, startval =0.5, proposalsd = 1), xlab = "Iterations", ylab="Realizations", main = paste0("Different target function"))
+
+hist(easyMCMC(niter = 1000, startval =0.5, proposalsd = 1), probability = T, main = paste0("Histogram for Different target function"))
+lines(xx, target(xx)/2, col = 'red')
+
+## proposal sd = 0.1
+plot(easyMCMC(niter = 1000, startval =0.5, proposalsd = 0.1), xlab = "Iterations", ylab="Realizations", main = paste0("Different target function"))
+
+hist(easyMCMC(niter = 1000, startval =0.5, proposalsd = 0.1), xlim=c(0,4), probability = T, main = paste0("Histogram for Different target function"))
+lines(xx, target(xx)/2, col = 'red')
+
+```
+When proposal sd is too small (as in 0.1 case), the realization x cannot jump from 1 region to another. Therefore, the optimal sd hyperparameter is contingent upon the sampled distribution.
+
+## Example A-2) Estimating an allele frequency
+
+A standard assumption when modelling genotypes of bi-allelic loci (e.g. loci with alleles $A$ and $a$) is that the population is "randomly mating". From this assumption it follows that the population will be in  "Hardy Weinberg Equilibrium" (HWE), which means that 
+if $p$ is the frequency of the allele $A$ then the genotypes $AA$, $Aa$ and $aa$ will have frequencies
+$p^2, 2p(1-p)$ and $(1-p)^2$ respectively.
+
+A simple prior for $p$ is to assume it is uniform on $[0,1]$.
+Suppose that we sample $n$ individuals, and observe $n_{AA}$ with genotype $AA$,
+$n_{Aa}$ with genotype $Aa$ and $n_{aa}$ with genotype $aa$.  
+
+The following R code gives a short MCMC routine to sample from the posterior
+distribution of $p$. Try to go through the code to see how it works. \
+
+Import code first.
+```{r}
+prior = function(p){
+  if((p<0) || (p>1)){  # || here means "or"
+    return(0)}
+  else{
+    return(1)}
+}
+
+likelihood = function(p, nAA, nAa, naa){
+  return(p^(2*nAA) * (2*p*(1-p))^nAa * (1-p)^(2*naa))
+}
+
+psampler = function(nAA, nAa, naa, niter, pstartval, pproposalsd){
+  p = rep(0,niter)
+  p[1] = pstartval
+  for(i in 2:niter){
+    currentp = p[i-1]
+    newp = currentp + rnorm(1,0,pproposalsd)
+    A = prior(newp)*likelihood(newp,nAA,nAa,naa)/(prior(currentp) * likelihood(currentp,nAA,nAa,naa))
+    if(runif(1)<A){
+      p[i] = newp       # accept move with probabily min(1,A)
+    } else {
+      p[i] = currentp        # otherwise "reject" move, and stay where we are
+    }
+  }
+  return(p)
+}
+
+```
+
+Running this sample for $n_{AA}$ = 50, $n_{Aa}$ = 21, $n_{aa}$=29.
+```{r}
+z=psampler(nAA=50, nAa=21, naa=29, niter=10000, pstartval=0.5, pproposalsd=0.01)
+
+x=seq(0,1,length=1000)
+hist(z,prob=T)
+lines(x,dbeta(x,122, 80))  # overlays beta density on histogram (Theoretical)
+
+# You might also like to discard the first 5000 z's as "burnin". Here's one way in R to select only the last 5000 z's
+hist(z[5001:10000], prob=T)
+lines(x,dbeta(x,122, 80))  # overlays beta density on histogram (Theoretical)
+
+```
+
+Investigate how the starting point and proposal standard deviation affect the convergence of the algorithm. 
+
+(1) Starting point
+As the starting value gets larger from 0 to 0.5, it takes more iterations to arrive (bigger burn-in) at exponential distribution.
+Therefore, if I plot the histogram to see if the distribution is similar to beta distribution, the MCMC sampling starting from values closer to 0.5 are more closer to exponential distribution.
+```{r}
+# Plot realizations
+par(mfrow = c(2, 4))
+
+for (i in seq(0.01, 0.5, length.out=8)){
+  plot(psampler(nAA=50, nAa=21, naa=29, niter=10000, pstartval=i, pproposalsd=0.01), xlab = "Iterations", ylab="Realizations", main = paste0("Start-value= ",i))
+}
+
+# Histogram
+par(mfrow = c(2, 4))
+for (i in seq(0.01, 0.5, length.out=8)){
+  hist(psampler(nAA=50, nAa=21, naa=29, niter=10000, pstartval=i, pproposalsd=0.01), xlab = "p", probability = T, main = paste0("Histogram: Start-value= ",i))
+  x=seq(0,1,length=1000)
+  lines(x,dbeta(x,122, 80), col = 'red')
+}
+
+```
+
+To prove that my hypothesis is right, I can only plot the histogram with the realizations after the burn-in (only plotting x after 1000 iterations). In the plot below, indeed the histogram is more closer to exponential distribution.
+
+```{r}
+# Histogram
+par(mfrow = c(2, 4))
+for (i in seq(0.01, 0.5, length.out=8)){
+  hist(psampler(nAA=50, nAa=21, naa=29, niter=10000, pstartval=i, pproposalsd=0.01)[1000:10000], xlab = "p", probability = T, main = paste0("Histogram: Start-value= ",i))
+  x=seq(0,1,length=1000)
+  lines(x,dbeta(x,122, 80), col = 'red')
+}
+
+par(mfrow = c(1, 1))
+
+```
+
+
+(2) Standard deviation
+As the proposal standard deviation gets bigger from 0 to 0.1, all the MCMC simulations except for sd=0 works. Therefore, sd as small as 0.01 still works nicely. However, when you have a sd bigger than 0.1, the rejection rate becomes higher and deviates a little from the beta distribution. Strangely, sd with 0.07 performs similarly to sd = 0.01 case.
+```{r}
+# Plot realizations
+par(mfrow = c(2, 4))
+
+for (i in seq(0, 0.1, length.out=8)){
+  plot(psampler(nAA=50, nAa=21, naa=29, niter=10000, pstartval=0.3, pproposalsd=i), xlab = "Iterations", ylab="Realizations", main = paste0("Proposed_std= ",i))
+}
+
+# Histogram
+par(mfrow = c(2, 4))
+for (i in seq(0, 0.1, length.out=8)){
+  hist(psampler(nAA=50, nAa=21, naa=29, niter=10000, pstartval=0.3, pproposalsd=i), xlab = "p", probability = T, main = paste0("Histogram: Proposed_std= ",i))
+  x=seq(0,1,length=1000)
+  lines(x,dbeta(x,122, 80), col = 'red')
+}
+
+par(mfrow = c(1, 1))
+
+```
+
+## Example A-3) Estimating an allele frequency and inbreeding coefficient
+
+A slightly more complex alternative than HWE is to assume that there is a tendency for people to mate with others who are slightly more closely-related than "random" (as might happen in a geographically-structured population, for example). This will result in an excess of homozygotes compared with HWE. A simple way to capture this is to introduce an extra parameter, the "inbreeding coefficient" $f$, and assume that the genotypes $AA$, $Aa$ and $aa$ have frequencies $fp + (1-f)p*p, (1-f) 2p(1-p)$, and $f(1-p) + (1-f)(1-p)(1-p)$.
+
+In most cases it would be natural to treat $f$ as a feature of the population, and therefore assume $f$ is constant across loci. For simplicity we will consider just a single locus.
+
+Note that both $f$ and $p$ are constrained to lie between 0 and 1 (inclusive). A simple prior for each of these two parameters is to assume that they are independent, uniform on $[0,1]$. Suppose that we sample $n$ individuals, and observe $n_{AA}$ with genotype $AA$,
+$n_{Aa}$ with genotype $Aa$ and $n_{aa}$ with genotype $aa$. 
+
+```{r}
+pf_likelihood = function(p, f, nAA, nAa, naa){
+  return(prod((f*p+(1-f)*p*p)^nAA,((1-f)*2*p*(1-p))^nAa,(f*(1-p)+(1-f)*(1-p)*(1-p))^naa))
+}
+
+fpsampler = function(nAA, nAa, naa, niter, fstartval, pstartval, fproposalsd, pproposalsd){
+  f = rep(0,niter)
+  p = rep(0,niter)
+  f[1] = fstartval
+  p[1] = pstartval
+  for(i in 2:niter){
+    currentf = f[i-1]
+    currentp = p[i-1]
+    newf = currentf + rnorm(1, 0, fproposalsd)
+    newp = currentp + rnorm(1, 0, pproposalsd)
+    # Acceptance probability
+    A = prior(newp)*pf_likelihood(p=newp,f=newf,nAA,nAa,naa)/(prior(currentp) * pf_likelihood(p=currentp,f=currentf,nAA,nAa,naa))
+    if(runif(1)<A){
+      p[i] = newp       # accept move with probabily min(1,A)
+    } else {
+      p[i] = currentp        # otherwise "reject" move, and stay where we are
+    }
+  }
+  return(list(f=f,p=p)) # return a "list" with two elements named f and p
+}
+
+fp_list = fpsampler(nAA=50, nAa=21, naa=29, niter=10000, fstartval=0.3, pstartval=0.3, fproposalsd=0.001, pproposalsd=0.01)
+
+# f
+plot(fp_list$f, xlab = "Iterations", ylab="f Realizations", main = paste0("f sampling"))
+
+# p
+plot(fp_list$p, xlab = "Iterations", ylab="p Realizations", main = paste0("p sampling"))
+
+# posterior mean
+mean(fp_list$f)
+mean(fp_list$p)
+
+# 90% credible intervals
+lower = qbeta(0.05, 122, 80)
+lower
+upper = qbeta(0.95, 122, 80)
+upper
+
+```
+posterior mean of f is almost 0. posterior mean of p is about 0.6.
+90% posterior credible interval is [0.547, 0.66].
+
+## B. Gibbs sampling for genetic mixtures 
+Read: http://stephenslab.uchicago.edu/assets/papers/Pritchard2000a.pdf.\
+Consider the following simplified version of the model from Pritchard et al (2000). \
+
+Suppose you have a number of samples from a "population" that contains an unknown fraction of forest or savannah elephants. (Assume elephants are haploid for simplicity.) Introduce the following notation
+
+## First, let's learn from the example code 
+from https://stephens999.github.io/fiveMinuteStats/gibbs_structure_simple.html
+```{r}
+set.seed(33)
+
+# generate from mixture of normals
+#' @param n number of samples
+#' @param P a 2 by R matrix of allele frequencies
+r_simplemix = function(n,P){
+  R = ncol(P)
+  z = sample(1:2,prob=c(0.5,0.5),size=n,replace=TRUE) #simulate z as 1 or 2
+  x = matrix(nrow = n, ncol=R)
+  for(i in 1:n){
+    x[i,] = rbinom(R,rep(1,R),P[z[i],])
+  }
+  return(list(x=x,z=z))
+}
+P = rbind(c(0.5,0.5,0.5,0.5,0.5,0.5),c(0.001,0.999,0.001,0.999,0.001,0.999))
+sim = r_simplemix(n=50,P)
+x = sim$x
+
+# Gibbs sampler code
+
+#' @param x an R vector of data
+#' @param P a K by R matrix of allele frequencies
+#' @return the log-likelihood for each of the K populations
+log_pr_x_given_P = function(x,P){
+  tP = t(P) #transpose P so tP is R by K
+  return(colSums(x*log(tP)+(1-x)*log(1-tP)))
+}
+
+normalize = function(x){return(x/sum(x))} #used in sample_z below
+
+#' @param x an n by R matrix of data
+#' @param P a K by R matrix of allele frequencies
+#' @return an n vector of group memberships
+sample_z = function(x,P){
+  K = nrow(P)
+  loglik_matrix = apply(x, 1, log_pr_x_given_P, P=P)
+  lik_matrix = exp(loglik_matrix) 
+  p.z.given.x = apply(lik_matrix,2,normalize) # normalize columns
+  z = rep(0, nrow(x))
+  for(i in 1:length(z)){
+    z[i] = sample(1:K, size=1,prob=p.z.given.x[,i],replace=TRUE)
+  }
+  return(z)
+}
+
+
+#' @param x an n by R matrix of data
+#' @param z an n vector of cluster allocations
+#' @return a 2 by R matrix of allele frequencies
+sample_P = function(x, z){
+  R = ncol(x)
+  P = matrix(ncol=R,nrow=2)
+  for(i in 1:2){
+    sample_size = sum(z==i)
+    if(sample_size==0){
+      number_of_ones=rep(0,R) 
+    } else {
+      number_of_ones = colSums(x[z==i,])
+    }
+    P[i,] = rbeta(R,1+number_of_ones,1+sample_size-number_of_ones) 
+  }
+  return(P)
+}
+
+gibbs = function(x,niter = 100){
+  z = sample(1:2,nrow(x),replace=TRUE)
+  res = list(z = matrix(nrow=niter, ncol=nrow(x)))
+  res$z[1,]=z 
+  
+  for(i in 2:niter){
+    P = sample_P(x,z)
+    z = sample_z(x,P)
+    res$z[i,] = z
+  }
+  return(res)
+}
+
+# Try the Gibbs sampler on the data simulated above. 
+
+res = gibbs(x,100)
+table(res$z[1,],sim$z)
+table(res$z[100,],sim$z)
+image(t(res$z))
+
+```
+
+## Another example code 
+from https://stephens999.github.io/fiveMinuteStats/gibbs2.html
+
+```{r}
+# To illustrate, let’s simulate data from this model:
+set.seed(33)
+
+# generate from mixture of normals
+#' @param n number of samples
+#' @param pi mixture proportions
+#' @param mu mixture means
+#' @param s mixture standard deviations
+rmix = function(n,pi,mu,s){
+  z = sample(1:length(pi),prob=pi,size=n,replace=TRUE)
+  x = rnorm(n,mu[z],s[z])
+  return(x)
+}
+
+x = rmix(n=1000,pi=c(0.5,0.5),mu=c(-2,2),s=c(1,1))
+hist(x)
+
+#' @param x an n vector of data
+#' @param pi a k vector
+#' @param mu a k vector
+
+mu = rnorm(k,0,10)
+length(mu)
+pi
+dmat = outer(mu,x,"-")
+dim(dmat)
+as.vector(pi)
+p.z.given.x = as.vector(pi) * dnorm(dmat,0,1)[,1:3]
+as.vector(pi) * dnorm(dmat,0,1)[,1]
+dim(p.z.given.x)
+
+sample_z = function(x,pi,mu){
+  dmat = outer(mu,x,"-") # k by n matrix, d_kj =(mu_k - x_j)
+  p.z.given.x = as.vector(pi) * dnorm(dmat,0,1) 
+  p.z.given.x = apply(p.z.given.x,2,normalize) # normalize columns
+  z = rep(0, length(x))
+  for(i in 1:length(z)){
+    z[i] = sample(1:length(pi), size=1,prob=p.z.given.x[,i],replace=TRUE)
+  }
+  return(z)
+}
+
+#' @param z an n vector of cluster allocations (1...k)
+#' @param k the number of clusters
+sample_pi = function(z,k){
+  counts = colSums(outer(z,1:k,FUN="=="))
+  pi = gtools::rdirichlet(1,counts+1)
+  return(pi)
+}
+
+mat_o <- outer(z, 1:k, FUN= "==")
+dim(mat_o)
+counts = colSums(outer(z,1:k,FUN="=="))
+counts
+
+#' @param x an n vector of data
+#' @param z an n vector of cluster allocations
+#' @param k the number o clusters
+#' @param prior.mean the prior mean for mu
+#' @param prior.prec the prior precision for mu
+sample_mu = function(x, z, k, prior){
+  df = data.frame(x=x,z=z)
+  mu = rep(0,k)
+  for(i in 1:k){
+    sample.size = sum(z==i)
+    sample.mean = ifelse(sample.size==0,0,mean(x[z==i]))
+    
+    post.prec = sample.size+prior$prec
+    post.mean = (prior$mean * prior$prec + sample.mean * sample.size)/post.prec
+    mu[i] = rnorm(1,post.mean,sqrt(1/post.prec))
+  }
+  return(mu)
+}
+
+gibbs = function(x,k,niter =1000,muprior = list(mean=0,prec=0.1)){
+  pi = rep(1/k,k) # initialize
+  mu = rnorm(k,0,10)
+  z = sample_z(x,pi,mu)
+  res = list(mu=matrix(nrow=niter, ncol=k), pi = matrix(nrow=niter,ncol=k), z = matrix(nrow=niter, ncol=length(x)))
+  res$mu[1,]=mu
+  res$pi[1,]=pi
+  res$z[1,]=z 
+  for(i in 2:niter){
+      pi = sample_pi(z,k)
+      mu = sample_mu(x,z,k,muprior)
+      z = sample_z(x,pi,mu)
+      res$mu[i,] = mu
+      res$pi[i,] = pi
+      res$z[i,] = z
+  }
+  return(res)
+}
+
+res = gibbs(x,2)
+plot(res$mu[,1],ylim=c(-4,4),type="l")
+lines(res$mu[,2],col=2)
+
+```
+
+
+## Adapt the above code to our problem 
+
+(1) Simulate savannah and forest elephant data 
+number of samples = 1000, allele frequency same as https://stephens999.github.io/fiveMinuteStats/likelihood_ratio_simple_models.html. \
+popoulation weight/composition = 0.3, 0.7.
+
+```{r}
+
+#' @param n number of samples
+#' @param P a 2 by R matrix of allele frequencies
+#' @param pi a vector with population composition, (savannah, forest)
+
+r_simplemix = function(n,P,pi){
+  R = ncol(P) # number of markers
+  z = sample(1:2, prob=pi, size=n,replace=TRUE) #simulate z as 1 or 2
+  x = matrix(nrow = n, ncol=R)
+  for(i in 1:n){
+    x[i,] = rbinom(R,rep(1,R),P[z[i],]) # get R observations from size = 1, probability as laid out in matrix P (row 1: z=1, row2: 1=2)
+  }
+  return(list(x=x,z=z))
+}
+
+n = 1000  # number of tusks to simulate
+R = 6  # number of markers
+K = 2  # number of components(populations)
+P = rbind(c(0.4, 0.12, 0.21, 0.12, 0.02, 0.32), # savannah allele frequency
+          c(0.8, 0.2, 0.11, 0.17, 0.23, 0.25)) # forest allele frequency
+pi = c(0.4, 0.6) # population composition, (savannah, forest)
+
+sim = r_simplemix(n=1000, P=P, pi=pi)
+x = sim$x
+dim(x)
+
+# community composition
+table(sim$z)
+
+```
+
+(2) Implement the Gibbs sampler
+We assume that prior distribution of P and pi are independent.
+p(pi, P) = p(pi) * p(P)
+```{r}
+#' @param x an R vector of data
+#' @param P a K by R matrix of allele frequencies
+#' @return the log-likelihood for each of the K populations
+
+log_pr_x_given_P = function(x,P){
+  tP = t(P) #transpose P so tP is R by K
+  return(colSums(x*log(tP)+(1-x)*log(1-tP)))
+}
+
+normalize = function(x){return(x/sum(x))} #used in sample_z below
+
+## Sample Z function
+#' @param x an n by R matrix of data
+#' @param P a K by R matrix of allele frequencies
+#' @param pi a vector with population composition, (savannah, forest)
+#' @return an n vector of group memberships
+
+sample_z = function(x, pi, P){
+  K = nrow(P)
+  loglik_matrix = apply(x, 1, log_pr_x_given_P, P=P)
+  dim(loglik_matrix)
+  lik_matrix = exp(loglik_matrix) 
+  # multiply pi
+  lik_matrix = as.vector(pi) * lik_matrix
+  dim(lik_matrix)
+  p.z.given.x = apply(lik_matrix,2,normalize) # normalize columns
+  z = rep(0, nrow(x))
+  for(i in 1:length(z)){
+    z[i] = sample(1:K, size=1, prob=p.z.given.x[,i],replace=TRUE)
+  }
+  return(z)
+}
+
+## Sample P function
+#' @param x an n by R matrix of data
+#' @param z an n vector of cluster allocations
+#' @param pi a vector with population composition, (savannah, forest)
+#' @return a 2 by R matrix of allele frequencies
+
+# We assume that prior distribution of P and pi are independent.
+sample_P = function(x, z, pi, k){
+  R = ncol(x)
+  P = matrix(ncol=R,nrow=k)
+  for(i in 1:k){
+    sample_size = sum(z==i)
+    if(sample_size==0){
+      number_of_ones=rep(0,R) 
+    } else {
+      number_of_ones = colSums(x[z==i,,drop=F])
+    }
+    P[i,] = rbeta(R,1+number_of_ones,1+sample_size-number_of_ones) 
+  }
+  return(P)
+}
+
+## Sample pi function
+#' @param z an n vector of cluster allocations (1...k)
+#' @param k the number of clusters
+sample_pi = function(z,k){
+  counts = colSums(outer(z,1:k,FUN="=="))
+  pi = gtools::rdirichlet(1,counts+1)
+  return(pi)
+}
+
+## Gibbs sampler function
+
+gibbs = function(x, k, niter = 1000){
+  # number of population
+  print(paste0("k(number of population) is ",k))
+  # number of markers
+  R = ncol(x)
+  print(paste0("R(number of markers) is ",R))
+  # number of samples
+  print(paste0("n(number of samples) is ",nrow(x)))
+  # initialize
+  pi = rep(1/k, k)
+  P = matrix(rep(0.5, k*R), nrow=k, ncol=R) # initialize from uniform distribution
+  z = sample_z(x, pi, P)
+  # print(z)
+  
+  res = list(z = matrix(nrow=niter, ncol=nrow(x)), pi = matrix(nrow = niter, ncol = k), mat_P = matrix(nrow = niter, ncol = k * R))
+  res$z[1,]=z 
+  res$pi[1,]=pi
+  res$mat_P[1,] = c(t(P))
+
+  for(i in 2:niter){
+    if (i %% 100 ==0){
+      print(paste0("niter: ",i,", pi: ",pi))
+    }
+    pi = sample_pi(z, k)
+    P = sample_P(x, z, pi, k)
+    z = sample_z(x, pi, P)
+    res$z[i,] = z
+    res$pi[i,] = pi
+    # print(paste0("niter: ",i,", pi: ",pi))
+    res$mat_P[i,] = c(t(P))
+  }
+  return(res)
+}
+
+
+# Try the Gibbs sampler on the data simulated above. 
+
+res = gibbs(x, k=2, niter = 1000)
+
+```
+
+## Evaluate the gibbs sampling
+```{r}
+# (1) Pi is it converging? 
+plot(res$pi[,1], xlab="iteration", ylab="Component proportion", col='red', type = "b",lty = 1, pch=19,lwd=1, main="MCMC (Gibbs)", ylim = c(0, 1))
+lines(res$pi[,2], col='blue', type = "b",lty = 1, pch=19,lwd=1)
+abline(h = 0.4, col = 'red', lty=3, lwd=2)
+abline(h = 0.6, col = 'blue', lty=3, lwd=2)
+legend("bottomright", legend=c('Savannah', 'Forest', 'Truth'), col=c("Red", "Blue", "Black"), lty=c(1,1,3), cex=0.8, box.lty=0)
+
+# (2) Accuracy
+table(res$z[1,],sim$z)
+table(res$z[100,],sim$z)
+table(res$z[200,],sim$z)
+table(res$z[300,],sim$z)
+table(res$z[1000,],sim$z)
+
+vec_accuracy = rep(-1, dim(res$z)[1])
+niter = dim(res$z)[1]
+for (i in 1:dim(res$z)[1]){
+  t_iter = table(res$z[i,],sim$z)
+  vec_accuracy[i] = (t_iter[1,1] + t_iter[2,2]) / sum(t_iter)
+}
+
+plot(vec_accuracy, xlab="iteration", ylab="Accuracy (right Z prediction / number_of_samples)", col='red', type = "b",lty = 1, pch=19,lwd=1, main="MCMC (Gibbs) and accuracy", ylim = c(0, 1))
+
+# (3) P (allele frequency)
+# res$mat_P[niter,]
+vec_allele <- c(paste0("F0_",1:6),paste0("F1_",1:6))
+
+P = rbind(c(0.4, 0.12, 0.21, 0.12, 0.02, 0.32), # savannah allele frequency
+          c(0.8, 0.2, 0.11, 0.17, 0.23, 0.25))
+vec_true <- c(t(P))
+df_freq <- rbind(data.frame(Allele=vec_allele, Frequency = vec_true, Data="True_value"),
+                 data.frame(Allele=vec_allele, Frequency = res$mat_P[niter,], Data="Prediction"))
+
+ggplot(df_freq, aes(x=Allele, y=Frequency, group=Data, color=Data)) +
+  geom_line(size = 2) +
+  # scale_fill_manual(values=cols) +
+  ylab("Allele frequency \n") +
+  xlab("\n f k_j: Allele position j of population k") +
+  scale_y_continuous(limits=c(0,1),breaks=seq(0,1,0.1))+
+  ggtitle("True allele frequency and prediction \n")+
+  # geom_text(aes(label = round(Freq,3)), size = 3, vjust = -1.5, family="serif", show.legend = FALSE, position = position_dodge(0.8))+
+  mytheme_2d
+
+
+
+```
+
+
+## Extra points: increase k to arbitrary number between 3 to 5.
+
+```{r}
+r_sim_arbitraryK = function(n,R){ # n = number of samples, R = number of markers, pi = population composition
+  # pick k
+  k = sample(3:5, 1)
+  # generate P
+  P = matrix(nrow = k, ncol = R)
+  for (j in 1:k){
+    # print(j)
+    frequency = runif(R, 0, 1)
+    P[j,] = frequency
+  }
+  # generate pi
+  pi = runif(k)
+  pi = pi / sum(pi)
+  
+  # sample z
+  z = sample(1:k, prob=pi, size=n,replace=TRUE) #simulate z as 1 or 2
+  x = matrix(nrow = n, ncol=R)
+  for(i in 1:n){
+    x[i,] = rbinom(R,rep(1,R),P[z[i],]) # get R observations from size = 1, probability as laid out in matrix P (row 1: z=1, row2: 1=2)
+  }
+  return(list(x=x,z=z,k=k,P=P,pi=pi))
+}
+
+n = 1000  # number of tusks to simulate
+R = 6  # number of markers
+
+arb_sim = r_sim_arbitraryK(n=1000, R=6)
+x_arb = arb_sim$x
+dim(x_arb)
+arb_sim$z
+arb_sim$k
+arb_sim$pi
+arb_sim$P
+
+# community composition
+table(arb_sim$z)
+```
+
+Gibbs simulation
+```{r}
+res_arb = gibbs(x_arb, k=5, niter = 1000)
+
+```
+
+
+Evaluate the gibbs sampling
+```{r}
+# (1) Pi is it converging? 
+plot(res_arb$pi[,1], xlab="iteration", ylab="Component proportion", col='red', type = "b",lty = 1, pch=19,lwd=1, main="MCMC (Gibbs)", ylim = c(0, 1))
+lines(res_arb$pi[,2], col='blue', type = "b",lty = 1, pch=19,lwd=1)
+lines(res_arb$pi[,3], col='green', type = "b",lty = 1, pch=19,lwd=1)
+
+abline(h = arb_sim$pi[1], col = 'red', lty=3, lwd=2)
+abline(h = arb_sim$pi[2], col = 'blue', lty=3, lwd=2)
+abline(h = arb_sim$pi[3], col = 'green', lty=3, lwd=2)
+
+legend("bottomright", legend=c('Pop1', 'Pop2', 'Pop3', 'Truth'), col=c("Red", "Blue", "Green", "Black"), lty=c(1,1,1,3), cex=0.8, box.lty=0)
+
+# (2) Accuracy
+table(res_arb$z[1,],arb_sim$z)
+table(res_arb$z[100,],arb_sim$z)
+table(res_arb$z[200,],arb_sim$z)
+table(res_arb$z[300,],arb_sim$z)
+table(res_arb$z[1000,],arb_sim$z)
+
+vec_accuracy = rep(-1, dim(res_arb$z)[1])
+niter = dim(res_arb$z)[1]
+for (i in 1:dim(res_arb$z)[1]){
+  t_iter = table(res_arb$z[i,],arb_sim$z)
+  vec_accuracy[i] = sum(diag(t_iter)) / sum(t_iter)
+}
+
+plot(vec_accuracy, xlab="iteration", ylab="Accuracy (right Z prediction / number_of_samples)", col='red', type = "b",lty = 1, pch=19,lwd=1, main="MCMC (Gibbs) and accuracy", ylim = c(0, 1))
+
+# (3) P (allele frequency)
+# res_arb$mat_P[niter,]
+K = arb_sim$k
+R = 6
+
+# name of the allele
+vec_allele <- c()
+for (i in 1:K){
+  vec_allele <- c(vec_allele, rep(paste0("F",i),R))
+}
+
+vec_allele <- paste0(vec_allele, "_" ,rep(1:R,K))
+
+vec_true <- c(t(arb_sim$P))
+df_freq <- rbind(data.frame(Allele=vec_allele, Frequency = vec_true, Data="True_value"),
+                 data.frame(Allele=vec_allele, Frequency = res_arb$mat_P[niter,], Data="Prediction"))
+
+ggplot(df_freq, aes(x=Allele, y=Frequency, group=Data, color=Data)) +
+  geom_line(size = 2) +
+  # scale_fill_manual(values=cols) +
+  ylab("Allele frequency \n") +
+  xlab("\n f k_j: Allele position j of population k") +
+  scale_y_continuous(limits=c(0,1),breaks=seq(0,1,0.1))+
+  ggtitle("True allele frequency and prediction \n")+
+  # geom_text(aes(label = round(Freq,3)), size = 3, vjust = -1.5, family="serif", show.legend = FALSE, position = position_dodge(0.8))+
+  mytheme_2d
+
+```
+
