@@ -8,6 +8,8 @@ title: "Home"
 *  [HW2_Bayesian_inference_mixture_models (1/22/22)](HW2_Bayesian_inference_mixture_models.html)
 *  [HW3_Discrete_Markov_chains_Graphical_models (1/29/22)](HW3_Discrete_Markov_chains_Graphical_models.html)
 *  [HW4_MCMC (2/4/22)](HW4_MCMC.html)
+*  [HW5_HMM_Poisson_processes (2/24/22)](HW5_HMM_Poisson_processes.html)
+*  [HW6_Continuous_time_process (2/24/22)](HW6_Continuous_time_process.html)
 
 ## Class activity
 *  [220113_r_simplemix]([220113_r_simplemix.html)
