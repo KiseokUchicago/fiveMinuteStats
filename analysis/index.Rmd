@@ -10,6 +10,7 @@ title: "Home"
 *  [HW4_MCMC (2/4/22)](HW4_MCMC.html)
 *  [HW5_HMM_Poisson_processes (2/24/22)](HW5_HMM_Poisson_processes.html)
 *  [HW6_Continuous_time_process (2/24/22)](HW6_Continuous_time_process.html)
+*  [HW7_Brownian_Motion_Gaussian_process (3/5/22)](HW7_Brownian_Motion_Gaussian_process.html)
 
 ## Class activity
 *  [220113_r_simplemix]([220113_r_simplemix.html)
