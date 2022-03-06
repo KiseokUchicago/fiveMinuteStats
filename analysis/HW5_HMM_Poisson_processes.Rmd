@@ -1,0 +1,203 @@
+---
+title: "HW5_HMM_Poisson_processes"
+author: "Kiseok Lee"
+date: "2022-02-24"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r global_options, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(fig.width=11, fig.height=9,
+                      error=TRUE, echo=TRUE, eval=TRUE, warning=FALSE, message=FALSE,
+                      tidy.opts=list(width.cutoff=60),tidy=TRUE)
+```
+
+## HW5 HMMs (Hidden Markov models), Poisson processes
+Name: **Kiseok Lee** \
+Date: 2/24/22 \
+Class: **HGEN 486 Computational Biology**
+
+
+```{r, echo=FALSE}
+# libraries
+library(dplyr)
+library(ggplot2)
+library(RColorBrewer)
+library(vegan)
+library(tidyverse)
+library(magrittr)
+library(readxl)
+library(reshape2)
+library(gtools)
+library(devtools)
+library(openxlsx)
+library(ape)
+library(stringr)
+library(tidyr)
+library(ggrepel)
+library(ggpubr)
+
+## theme for ggplot
+mytheme <- theme_bw() + 
+  theme(text = element_text(family="serif")) +
+  theme(plot.title = element_text(size = 19,hjust = 0.5, family="serif")) + 
+  theme(axis.title.x = element_text(size = 17,hjust = 0.5, family="serif")) + 
+  theme(axis.title.y = element_text(size = 17,hjust = 0.5, family="serif")) + 
+  theme(axis.text.x = element_text(hjust = 0.5, vjust=0.3,size=13, family="serif"))+
+  theme(axis.text.y = element_text(size=10, family="serif"))+
+  theme(panel.grid.major = element_blank()) +
+  theme(panel.grid.minor = element_blank(),panel.background=element_blank(),panel.border=element_blank(),plot.background=element_blank())+
+  theme(axis.ticks = element_line(size = 1.1))
+
+mytheme_2d <- theme_bw() + 
+  theme(text = element_text(family="serif")) +
+  theme(plot.title = element_text(size = 19,hjust = 0.5, family="serif")) + 
+  theme(axis.title.x = element_text(size = 17,hjust = 0.5, family="serif")) + 
+  theme(axis.title.y = element_text(size = 17,hjust = 0.5, family="serif")) + 
+  theme(axis.text.x = element_text(hjust = 0.5, vjust=0.3,size=13, family="serif"))+
+  theme(axis.text.y = element_text(size=13, family="serif"))+
+  # theme(panel.grid.major = element_blank()) +
+  # theme(panel.grid.minor = element_blank(),panel.background=element_blank(),plot.background=element_blank()) +
+  theme(axis.ticks = element_line(size = 1.1))
+
+
+# color collection
+my_color_collection <- c(
+  "#CBD588", "#5F7FC7", "orange", "#AD6F3B", "#673770", 
+  "#D14285", "#652926", "#C84248", "#8569D5", "#5E738F",
+  "#D1A33D", "#8A7C64", "#599861","#616163", "#FFCDB2",
+  "#6D9F71", "#242F40",
+  "#CCA43B", "#F92A82", "#ED7B84", "#7EB77F", 
+  "#DEC4A1", "#E5D1D0", '#0E8482', '#C9DAEA', '#337357', 
+  '#95C623', '#E55812', '#04471C', '#F2D7EE', '#D3BCC0', 
+  '#A5668B', '#69306D', '#0E103D', '#1A535C', '#4ECDC4', 
+  '#F7FFF7', '#FF6B6B', '#FFE66D', '#6699CC', '#FFF275', 
+  '#FF8C42', '#FF3C38', '#A23E48', '#000000', '#CF5C36', 
+  '#EEE5E9', '#7C7C7C', '#EFC88B', '#2E5266', '#6E8898', 
+  '#9FB1BC', '#D3D0CB', '#E2C044', '#5BC0EB', '#FDE74C', 
+  '#9BC53D', '#E55934', '#FA7921', "#CD9BCD", "#508578", "#DA5724")
+
+# for git push, use this instead of using wflow_git_push()
+# git push -u origin master (in the Git app / in the working directory)
+
+# for making pdf file
+library(rmarkdown)
+# render("analysis/~~.Rmd", "pdf_document")
+
+```
+
+## A. HMM: Pott's data on chromatin accessibility
+- Pott's data introduction: http://stephens999.github.io/hgen48600/potts_1.html \
+- Data here: https://github.com/stephens999/hgen48600/tree/master/data/potts \
+
+## A-a) Implement forward algorithm
+Implement the forward algorithm for an HMM and using these parameters, compute the probability of the observed Potts data. Spot-check that these are good MLE values by perturbing the values by a few percent of their values and seeing that the likelihood does not increase (or if it does, that the increase is not substantial!)
+```{r}
+# Input data 
+setwd("C:/Users/there/Desktop/Computational_Biology_2022_Winter/fiveMinuteStats")
+df_pott <- read.csv("data/Pott_methylation.tsv", sep = "\t", header=F, stringsAsFactors = FALSE)
+head(df_pott)
+
+# binarized data
+m = 1*(df_pott$V7 > 0)
+X = m + 1 # in order to put into matrix row index
+
+# Transition Probability
+mat_P = rbind(c(0.957, 1 - 0.957), c(1 - 0.58, 0.58))
+
+# Emission probability
+mat_E = rbind(c(1 - 0.067, 0.067), c(1 - 0.451, 0.451))
+
+# prior distribution
+pi = c(0.5, 0.5)
+
+# Alpha
+T = dim(df_pott)[1]
+K = 2
+mat_alpha = matrix(nrow = T,ncol=K)
+
+# Initialize alpha[1,]
+mat_alpha[1,] = pi * mat_E[,X[1]]
+# mat_alpha[1,] = mat_alpha[1,] / sum(mat_alpha[1,])
+head(mat_alpha)
+
+# Forward algorithm
+for(t in 1:(T-2)){
+  mat_alpha[t+1,] = (mat_alpha[t,] %*% mat_P) * mat_E[,X[t+1]]
+  # renormalize?
+  mat_alpha[t+1,] = mat_alpha[t+1,] / sum(mat_alpha[t+1,])
+
+}
+
+head(mat_alpha)
+tail(mat_alpha)
+
+# calculating the last step
+mat_alpha[T,] = (mat_alpha[T-1,] %*% mat_P) * mat_E[,X[T]]
+
+# probability
+sum(mat_alpha[T,])
+
+```
+
+Applying small perturbation
+```{r}
+# make it into a function
+
+
+perturb_forward_HMM <- function(perturb=0.1){
+  # Transition Probability
+  mat_P = rbind(c(0.957*(1-perturb), 1 - 0.957*(1-perturb)), c(1 - 0.58*(1-perturb), 0.58*(1-perturb)))
+  
+  # Emission probability
+  mat_E = rbind(c(1 - 0.067*(1-perturb), 0.067*(1-perturb)), c(1 - 0.451*(1-perturb), 0.451*(1-perturb)))
+  # Alpha
+  T = dim(df_pott)[1]
+  K = 2
+  mat_alpha = matrix(nrow = T,ncol=K)
+  
+  # Initialize alpha[1,]
+  mat_alpha[1,] = pi * mat_E[,X[1]]
+  # mat_alpha[1,] = mat_alpha[1,] / sum(mat_alpha[1,])
+  head(mat_alpha)
+  
+  # Forward algorithm
+  for(t in 1:(T-2)){
+    mat_alpha[t+1,] = (mat_alpha[t,] %*% mat_P) * mat_E[,X[t+1]]
+    # renormalize?
+    mat_alpha[t+1,] = mat_alpha[t+1,] / sum(mat_alpha[t+1,])
+  
+  }
+  
+  # calculating the last step
+  mat_alpha[T,] = (mat_alpha[T-1,] %*% mat_P) * mat_E[,X[T]]
+
+  return(sum(mat_alpha[T,]))
+}
+
+perturb_forward_HMM(perturb=0)
+perturb_forward_HMM(perturb=0.01)
+perturb_forward_HMM(perturb=0.1)
+perturb_forward_HMM(perturb=0.3)
+perturb_forward_HMM(perturb=0.5)
+perturb_forward_HMM(perturb=0.9)
+```
+
+The perturbation does not change the probability. However, I've discovered that perturbation by 90% actually increases the likelihood. This may be due to the symmetric scheme of perturbation
+
+## A-b)
+Using the parameter values specified above, provide a maximum a posteriori decoding of the sequence in terms of where it is "open" and "closed". Do so by implementing the Viterbi algorithm. 
+
+```{r}
+
+
+
+
+```
+
+
+
+
+
