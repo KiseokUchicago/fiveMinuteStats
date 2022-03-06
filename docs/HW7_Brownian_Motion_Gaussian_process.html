@@ -475,16 +475,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomKiseokUchicagofiveMinuteStatstree05afe4433eea209667985ddb30f62e7bf8bd8d58targetblank05afe44a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/KiseokUchicago/fiveMinuteStats/tree/05afe4433eea209667985ddb30f62e7bf8bd8d58" target="_blank">05afe44</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomKiseokUchicagofiveMinuteStatstree852bdd69012ce9729942b2a164417e8dab8f3eebtargetblank852bdd6a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/KiseokUchicago/fiveMinuteStats/tree/852bdd69012ce9729942b2a164417e8dab8f3eeb" target="_blank">852bdd6</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomKiseokUchicagofiveMinuteStatstree05afe4433eea209667985ddb30f62e7bf8bd8d58targetblank05afe44a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomKiseokUchicagofiveMinuteStatstree852bdd69012ce9729942b2a164417e8dab8f3eebtargetblank852bdd6a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/KiseokUchicago/fiveMinuteStats/tree/05afe4433eea209667985ddb30f62e7bf8bd8d58" target="_blank">05afe44</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/KiseokUchicago/fiveMinuteStats/tree/852bdd69012ce9729942b2a164417e8dab8f3eeb" target="_blank">852bdd6</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -496,6 +496,7 @@ Ignored files:
     Ignored:    analysis/bernoulli_poisson_process_cache/
 
 Untracked files:
+    Untracked:  analysis/HW7_Brownian_Motion_Gaussian_process.log
     Untracked:  analysis/HW7_Brownian_Motion_Gaussian_process.tex
     Untracked:  data/
     Untracked:  texput.log
@@ -537,6 +538,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/KiseokUchicago/fiveMinuteStats/blob/852bdd69012ce9729942b2a164417e8dab8f3eeb/analysis/HW7_Brownian_Motion_Gaussian_process.Rmd" target="_blank">852bdd6</a>
+</td>
+<td>
+Kiseok Lee
+</td>
+<td>
+2022-03-06
+</td>
+<td>
+wflow_publish(“analysis/HW7_Brownian_Motion_Gaussian_process.Rmd”)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/KiseokUchicago/fiveMinuteStats/240bd6bd2f5f0f95a0780157360fea36f3284a8c/docs/HW7_Brownian_Motion_Gaussian_process.html" target="_blank">240bd6b</a>
+</td>
+<td>
+Kiseok Lee
+</td>
+<td>
+2022-03-06
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -703,10 +738,10 @@ plot(standard_sim$t, standard_sim$X, xlab = &quot;t&quot;, ylab = &quot;X(t)&quo
 <h2>A-b) Scaled Brownian motion</h2>
 <p>variance parameter <span class="math display">\[\sigma ^ 2 \]</span></p>
 <p>Markov chain <span class="math display">\[ X_{t+\mu} | X_t \sim N(0, \mu \sigma ^ 2) \]</span></p>
-<p>likelihood of data given $where standard deviation of the normal distribution is <span class="math display">\[ \sigma \sqrt{t_{k} - t_{k-1}} \]</span></p>
+<p>likelihood of data given <span class="math inline">\(\sigma\)</span> where standard deviation of the normal distribution is <span class="math display">\[ \sigma \sqrt{t_{k} - t_{k-1}} \]</span></p>
 <p><span class="math display">\[ P(X | \sigma) = \prod_{i=2}^k  \frac{1}{\sigma\sqrt{2\pi(t_i-t_{i-1})}} e^{-\frac{1}{2}({\frac{X_i - X_{i-1}}{\sigma \sqrt{(t_i-t_{i-1})}}})^2} \]</span> log-likelihood</p>
 <p><span class="math display">\[ log P(X | \sigma)= \sum_{i=2}^k ( -\frac{1}{2}({\frac{X_i - X_{i-1}}{\sigma \sqrt{(t_i-t_{i-1})}}})^2 - log(\sigma\sqrt{2\pi(t_i-t_{i-1})}) )  \]</span></p>
-<p>Plot the log-likelihood as a function of $</p>
+<p>Plot the log-likelihood as a function of <span class="math inline">\(\sigma\)</span></p>
 <pre class="r"><code>calculate_loglikelihood &lt;- function(sigma = 1, standard_sim) {
     vec_ll &lt;- c()  # vector to store log-likelihood
     X = standard_sim$X
