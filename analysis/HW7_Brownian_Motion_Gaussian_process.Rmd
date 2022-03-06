@@ -539,8 +539,8 @@ Consider the data from http://journals.plos.org/plosbiology/article?id=10.1371/j
 Read and transform the data.
 ```{r}
 # load data
-setwd("C:/Users/there/Desktop/Computational_Biology_2022_Winter/fiveMinuteStats")
-ccr5 = read.table("data/CCR5.freq.txt",header=TRUE)
+# setwd("C:/Users/there/Desktop/Computational_Biology_2022_Winter/fiveMinuteStats")
+ccr5 = read.table("../data/CCR5.freq.txt",header=TRUE)
 ccr5[,1] = ifelse(ccr5[,1]>180,ccr5[,1]-360,ccr5[,1]) # changes longitudes>180 to negative
 
 # transform frequency
@@ -729,24 +729,14 @@ $$ \Sigma = \Sigma_{11} - \Sigma_{12} \Sigma_{22}^{-1}\Sigma_{21} $$
 This is an application of standard results for the conditional mean of a Gaussian from, e.g. https://en.wikipedia.org/wiki/Multivariate_normal_distribution#Conditional_distributions. \
 
 From our fiveMinute notes:
-$$ E(Y_1|Y_2) = -(1/\Omega_{11})\Omega_{12}Y_2   $$
-where \Omega is the precision matrix and $Y_1$ is $X_1$, $Y_2$ is ($X_2$, ..., $X_r$). \
+$$ E(Y_1|Y_2) = -(1/\Omega_{11})\Omega_{12}Y_2 $$
+
+where $\Omega$ is the precision matrix and $Y_1$ is $X_1$, $Y_2$ is ($X_2$, ..., $X_r$). \
 
 
 
 ```{r}
 # compute covariance matrix with distance matrix
-# load data
-ccr5 = read.table("data/CCR5.freq.txt",header=TRUE)
-ccr5[,1] = ifelse(ccr5[,1]>180,ccr5[,1]-360,ccr5[,1]) # changes longitudes>180 to negative
-
-# transform frequency
-ccr5$x = log(ccr5$Freq / (1-ccr5$Freq))
-# note that some x are -Inf
-
-# remove -Inf values from the dataset (This is to ensure that dmvnorm works in the later part)
-ccr5 = ccr5[ccr5$x != -Inf,]
-
 y_ccr5 <- ccr5[,c("Long","Lat")]
 mat_d <- dist(y_ccr5, diag=T, upper=T)
 class(mat_d)
