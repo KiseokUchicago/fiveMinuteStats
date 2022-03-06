@@ -475,16 +475,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomKiseokUchicagofiveMinuteStatstreeb961ae995f6046e000bba5f33e3d75a9514ae3aftargetblankb961ae9a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/KiseokUchicago/fiveMinuteStats/tree/b961ae995f6046e000bba5f33e3d75a9514ae3af" target="_blank">b961ae9</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomKiseokUchicagofiveMinuteStatstreebc25563eac06f2f28adece53dfdd208d31b19b95targetblankbc25563a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/KiseokUchicago/fiveMinuteStats/tree/bc25563eac06f2f28adece53dfdd208d31b19b95" target="_blank">bc25563</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomKiseokUchicagofiveMinuteStatstreeb961ae995f6046e000bba5f33e3d75a9514ae3aftargetblankb961ae9a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomKiseokUchicagofiveMinuteStatstreebc25563eac06f2f28adece53dfdd208d31b19b95targetblankbc25563a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/KiseokUchicago/fiveMinuteStats/tree/b961ae995f6046e000bba5f33e3d75a9514ae3af" target="_blank">b961ae9</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/KiseokUchicago/fiveMinuteStats/tree/bc25563eac06f2f28adece53dfdd208d31b19b95" target="_blank">bc25563</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -539,6 +539,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/KiseokUchicago/fiveMinuteStats/blob/bc25563eac06f2f28adece53dfdd208d31b19b95/analysis/HW7_Brownian_Motion_Gaussian_process.Rmd" target="_blank">bc25563</a>
+</td>
+<td>
+Kiseok Lee
+</td>
+<td>
+2022-03-06
+</td>
+<td>
+wflow_publish(“analysis/HW7_Brownian_Motion_Gaussian_process.Rmd”)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/KiseokUchicago/fiveMinuteStats/c341b6eea15b7081d5ac4ab7aa0fd63094b6a3b4/docs/HW7_Brownian_Motion_Gaussian_process.html" target="_blank">c341b6e</a>
+</td>
+<td>
+Kiseok Lee
+</td>
+<td>
+2022-03-06
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1132,15 +1166,239 @@ Therefore, sparsity patterns depends on the conditional dependence/independence 
 <h2>B. Spatial Gaussian Processes.</h2>
 <p>Consider the data from <a href="http://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.0030339" class="uri">http://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.0030339</a>, available at <a href="https://github.com/stephens999/hgen48600/tree/master/data/CCR5" class="uri">https://github.com/stephens999/hgen48600/tree/master/data/CCR5</a> which you can read into R using code from <a href="https://stephens999.github.io/hgen48600/ccr5.html" class="uri">https://stephens999.github.io/hgen48600/ccr5.html</a><br />
 </p>
-<p>Read the data.</p>
+<p>Read and transform the data.</p>
 <pre class="r"><code># load data
 ccr5 = read.table(&quot;data/CCR5.freq.txt&quot;, header = TRUE)</code></pre>
 <pre><code>Error in file(file, &quot;rt&quot;): cannot open the connection</code></pre>
 <pre class="r"><code>ccr5[, 1] = ifelse(ccr5[, 1] &gt; 180, ccr5[, 1] - 360, ccr5[, 1])  # changes longitudes&gt;180 to negative</code></pre>
 <pre><code>Error in ifelse(ccr5[, 1] &gt; 180, ccr5[, 1] - 360, ccr5[, 1]): object &#39;ccr5&#39; not found</code></pre>
+<pre class="r"><code># transform frequency
+ccr5$x = log(ccr5$Freq/(1 - ccr5$Freq))</code></pre>
+<pre><code>Error in eval(expr, envir, enclos): object &#39;ccr5&#39; not found</code></pre>
+<pre class="r"><code># note that some x are -Inf
+
+# remove -Inf values from the dataset (This is to ensure
+# that dmvnorm works in the later part)
+ccr5 = ccr5[ccr5$x != -Inf, ]</code></pre>
+<pre><code>Error in eval(expr, envir, enclos): object &#39;ccr5&#39; not found</code></pre>
 </div>
-<div id="b-a" class="section level2">
-<h2>B-a)</h2>
+<div id="b-a-covariance-matrix-given-value-of-a" class="section level2">
+<h2>B-a) Covariance matrix given value of a</h2>
+<p><span class="math display">\[ \Sigma(y_1, y_2) = K(d(y_1, y_2)) = a_1 exp(-(d/a_2)^2) \]</span></p>
+<pre class="r"><code># compute distance matrix (euclidean distance)
+rownames(ccr5)</code></pre>
+<pre><code>Error in rownames(ccr5): object &#39;ccr5&#39; not found</code></pre>
+<pre class="r"><code>y_ccr5 &lt;- ccr5[, c(&quot;Long&quot;, &quot;Lat&quot;)]</code></pre>
+<pre><code>Error in eval(expr, envir, enclos): object &#39;ccr5&#39; not found</code></pre>
+<pre class="r"><code>mat_d &lt;- dist(y_ccr5, diag = T, upper = T)</code></pre>
+<pre><code>Error in as.matrix(x): object &#39;y_ccr5&#39; not found</code></pre>
+<pre class="r"><code>class(mat_d)</code></pre>
+<pre><code>Error in eval(expr, envir, enclos): object &#39;mat_d&#39; not found</code></pre>
+<pre class="r"><code>mat_d &lt;- as.matrix(mat_d)</code></pre>
+<pre><code>Error in as.matrix(mat_d): object &#39;mat_d&#39; not found</code></pre>
+<pre class="r"><code>a1 = 1
+a2 = 1
+a = c(a1, a2)
+
+# compute covariance matrix with distance matrix
+mat_c &lt;- a1 * exp(-(mat_d/a2)^2)</code></pre>
+<pre><code>Error in eval(expr, envir, enclos): object &#39;mat_d&#39; not found</code></pre>
+<pre class="r"><code>class(mat_c)</code></pre>
+<pre><code>Error in eval(expr, envir, enclos): object &#39;mat_c&#39; not found</code></pre>
+<pre class="r"><code># is it positive semi-definite?
+eigen(mat_c, only.values = T)$values</code></pre>
+<pre><code>Error in as.matrix(x): object &#39;mat_c&#39; not found</code></pre>
+<pre class="r"><code>any(eigen(mat_c, only.values = T)$values &lt; 0)</code></pre>
+<pre><code>Error in as.matrix(x): object &#39;mat_c&#39; not found</code></pre>
+<pre class="r"><code># check again with function
+library(matrixcalc)
+is.positive.semi.definite(mat_c, tol = 1e-08)</code></pre>
+<pre><code>Error in is.square.matrix(x): object &#39;mat_c&#39; not found</code></pre>
+<p>The resulting covariance matrix is valid (it is positive semi-definite) when <span class="math inline">\(a_1\)</span> and <span class="math inline">\(a_2\)</span> are 1.</p>
+<pre class="r"><code>covariance_is_valid &lt;- function(mat_d, a1, a2) {
+    # compute covariance matrix with distance matrix
+    mat_c &lt;- a1 * exp(-(mat_d/a2)^2)
+    class(mat_c)
+
+    # is it positive semi-definite?
+    eigen(mat_c, only.values = T)$values
+
+    return(is.positive.semi.definite(mat_c, tol = 1e-08))
+}
+
+# test 1
+covariance_is_valid(mat_d, a1 = 0.1, a2 = 0.1)</code></pre>
+<pre><code>Error in covariance_is_valid(mat_d, a1 = 0.1, a2 = 0.1): object &#39;mat_d&#39; not found</code></pre>
+<pre class="r"><code># test 2
+covariance_is_valid(mat_d, a1 = 0.5, a2 = 0.1)</code></pre>
+<pre><code>Error in covariance_is_valid(mat_d, a1 = 0.5, a2 = 0.1): object &#39;mat_d&#39; not found</code></pre>
+<pre class="r"><code># test 3
+covariance_is_valid(mat_d, a1 = 0.5, a2 = 10)</code></pre>
+<pre><code>Error in covariance_is_valid(mat_d, a1 = 0.5, a2 = 10): object &#39;mat_d&#39; not found</code></pre>
+<p>The resulting covariance matrix is valid (it is positive semi-definite) for other <span class="math inline">\(a_1\)</span>, <span class="math inline">\(a_2\)</span> values</p>
+</div>
+<div id="b-b-compute-log-likelihood" class="section level2">
+<h2>B-b) Compute log-likelihood</h2>
+<pre class="r"><code># function for computing log-likelihood
+compute_ll &lt;- function(ccr5, m, a1, a2) {
+    # compute covariance matrix with distance matrix
+    y_ccr5 &lt;- ccr5[, c(&quot;Long&quot;, &quot;Lat&quot;)]
+    mat_d &lt;- dist(y_ccr5, diag = T, upper = T)
+    class(mat_d)
+    mat_d &lt;- as.matrix(mat_d)
+    mat_c &lt;- a1 * exp(-(mat_d/a2)^2)
+
+    # is it positive semi-definite?  print(&#39;Is covariance
+    # matrix positive semi-definite?&#39;)
+    # print(is.positive.semi.definite(mat_c, tol=1e-8))
+    # print(eigen(mat_c, only.values = T)$values)
+
+    # get observed X values
+    X_obs &lt;- ccr5$x
+    ll &lt;- mvtnorm::dmvnorm(x = X_obs, mean = rep(m, dim(mat_c)[1]),
+        sigma = mat_c, log = T)
+    return(ll)
+}
+compute_ll(ccr5, m = 1, a1 = 1, a2 = 1)</code></pre>
+<pre><code>Error in compute_ll(ccr5, m = 1, a1 = 1, a2 = 1): object &#39;ccr5&#39; not found</code></pre>
+<pre class="r"><code># modify function to apply optim function
+
+compute_ll_optim &lt;- function(par, data) {
+    # par = c(&#39;m&#39;, &#39;a1&#39;, &#39;a2&#39;)
+    mat_c &lt;- par[2] * exp(-(mat_d/par[3])^2)
+    # get observed X values
+    ll &lt;- mvtnorm::dmvnorm(x = data, mean = rep(par[1], dim(mat_c)[1]),
+        sigma = mat_c, log = T)
+    return(-ll)  # because optim minimizes, put (-)
+}
+
+# Optimize log-likelihood over a, m using optim function
+# https://www.magesblog.com/post/2013-03-12-how-to-use-optim-in-r/
+X_obs &lt;- ccr5$x</code></pre>
+<pre><code>Error in eval(expr, envir, enclos): object &#39;ccr5&#39; not found</code></pre>
+<pre class="r"><code>optim(par = c(1, 1, 1), fn = compute_ll_optim, data = X_obs)</code></pre>
+<pre><code>Error in fn(par, ...): object &#39;mat_d&#39; not found</code></pre>
+<pre class="r"><code>optim(par = c(0.1, 0.1, 0.1), fn = compute_ll_optim, data = X_obs)</code></pre>
+<pre><code>Error in fn(par, ...): object &#39;mat_d&#39; not found</code></pre>
+<p>It converged to m = -2.7486638, a1 = 0.5299463, a2 = 1.6820251. This is pretty stable to initial parameter change<br />
+Let’s do a grid search around these values to visualize it in a heatmap.</p>
+<pre class="r"><code>n = 100
+
+# mv = seq(1e-8, 3, length.out = n)
+m = -2.7486638
+a1 = seq(0.1, 3, length.out = n)
+a2 = seq(0.1, 3, length.out = n)
+
+# mat_ll &lt;- array(-Inf, c(n, n, n))
+
+mat_ll &lt;- matrix(nrow = n, ncol = n)
+
+# 3 dimensional for (m in 1:n){ print(m) for (i in 1:n){
+# for (j in 1:n){ mat_ll[m,i,j] &lt;- compute_ll(ccr5, mv[m],
+# a1=a1[i], a2=a2[j]) } } }
+
+# 2 dimensional
+
+for (i in 1:n) {
+    # print(i)
+    for (j in 1:n) {
+        mat_ll[i, j] &lt;- compute_ll(ccr5, m, a1 = a1[i], a2 = a2[j])
+    }
+}</code></pre>
+<pre><code>Error in compute_ll(ccr5, m, a1 = a1[i], a2 = a2[j]): object &#39;ccr5&#39; not found</code></pre>
+<pre class="r"><code>head(mat_ll)</code></pre>
+<pre><code>     [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11] [,12] [,13] [,14]
+[1,]   NA   NA   NA   NA   NA   NA   NA   NA   NA    NA    NA    NA    NA    NA
+[2,]   NA   NA   NA   NA   NA   NA   NA   NA   NA    NA    NA    NA    NA    NA
+[3,]   NA   NA   NA   NA   NA   NA   NA   NA   NA    NA    NA    NA    NA    NA
+[4,]   NA   NA   NA   NA   NA   NA   NA   NA   NA    NA    NA    NA    NA    NA
+[5,]   NA   NA   NA   NA   NA   NA   NA   NA   NA    NA    NA    NA    NA    NA
+[6,]   NA   NA   NA   NA   NA   NA   NA   NA   NA    NA    NA    NA    NA    NA
+     [,15] [,16] [,17] [,18] [,19] [,20] [,21] [,22] [,23] [,24] [,25] [,26]
+[1,]    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+[2,]    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+[3,]    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+[4,]    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+[5,]    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+[6,]    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+     [,27] [,28] [,29] [,30] [,31] [,32] [,33] [,34] [,35] [,36] [,37] [,38]
+[1,]    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+[2,]    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+[3,]    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+[4,]    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+[5,]    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+[6,]    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+     [,39] [,40] [,41] [,42] [,43] [,44] [,45] [,46] [,47] [,48] [,49] [,50]
+[1,]    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+[2,]    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+[3,]    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+[4,]    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+[5,]    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+[6,]    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+     [,51] [,52] [,53] [,54] [,55] [,56] [,57] [,58] [,59] [,60] [,61] [,62]
+[1,]    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+[2,]    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+[3,]    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+[4,]    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+[5,]    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+[6,]    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+     [,63] [,64] [,65] [,66] [,67] [,68] [,69] [,70] [,71] [,72] [,73] [,74]
+[1,]    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+[2,]    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+[3,]    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+[4,]    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+[5,]    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+[6,]    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+     [,75] [,76] [,77] [,78] [,79] [,80] [,81] [,82] [,83] [,84] [,85] [,86]
+[1,]    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+[2,]    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+[3,]    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+[4,]    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+[5,]    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+[6,]    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+     [,87] [,88] [,89] [,90] [,91] [,92] [,93] [,94] [,95] [,96] [,97] [,98]
+[1,]    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+[2,]    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+[3,]    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+[4,]    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+[5,]    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+[6,]    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+     [,99] [,100]
+[1,]    NA     NA
+[2,]    NA     NA
+[3,]    NA     NA
+[4,]    NA     NA
+[5,]    NA     NA
+[6,]    NA     NA</code></pre>
+<pre class="r"><code>rownames(mat_ll) &lt;- a1
+colnames(mat_ll) &lt;- a2
+
+# histogram
+hist(c(mat_ll))</code></pre>
+<pre><code>Error in hist.default(c(mat_ll)): &#39;x&#39; must be numeric</code></pre>
+<pre class="r"><code># plot heatmap
+col_bwr &lt;- colorRampPalette(c(&quot;blue&quot;, &quot;white&quot;, &quot;Red&quot;))
+
+m_ll &lt;- reshape2::melt(mat_ll)
+colnames(m_ll) &lt;- c(&quot;a1&quot;, &quot;a2&quot;, &quot;Log-likelihood&quot;)
+
+ggplot(data = m_ll, aes(x = a1, y = a2)) + geom_tile(aes(fill = `Log-likelihood`)) +
+    scale_fill_gradientn(colours = col_bwr(100), na.value = &quot;grey90&quot;) +
+    ylab(&quot;a2 \n&quot;) + xlab(&quot;\n a1 &quot;) + scale_y_continuous(expand = c(0,
+    0)) + scale_x_continuous(expand = c(0, 0)) + ggtitle(&quot;Heatmap of log-likelihood (varying a1, a2) \n&quot;) +
+    mytheme</code></pre>
+<pre><code>Error: Discrete value supplied to continuous scale</code></pre>
+<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-16-1.png" width="1056" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># maximum likelihood
+max(mat_ll)</code></pre>
+<pre><code>[1] NA</code></pre>
+<pre class="r"><code>which(mat_ll == max(mat_ll), arr.ind = TRUE)</code></pre>
+<pre><code>     row col</code></pre>
+<pre class="r"><code># find which a1, a2 value
+a1[which(mat_ll == max(mat_ll), arr.ind = TRUE)[1]]</code></pre>
+<pre><code>[1] NA</code></pre>
+<pre class="r"><code>a2[which(mat_ll == max(mat_ll), arr.ind = TRUE)[2]]</code></pre>
+<pre><code>[1] NA</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1166,39 +1424,40 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] pracma_2.3.3       matlib_0.9.4       gridExtra_2.3      rmarkdown_2.9     
- [5] ggpubr_0.4.0       ggrepel_0.9.1      ape_5.5            openxlsx_4.2.3    
- [9] devtools_2.4.0     usethis_2.0.1      gtools_3.8.2       reshape2_1.4.4    
-[13] readxl_1.3.1       magrittr_2.0.1     forcats_0.5.1      stringr_1.4.0     
-[17] purrr_0.3.4        readr_1.4.0        tidyr_1.1.3        tibble_3.0.4      
-[21] tidyverse_1.3.1    vegan_2.5-7        lattice_0.20-41    permute_0.9-5     
-[25] RColorBrewer_1.1-2 ggplot2_3.3.5      dplyr_1.0.5        knitr_1.37        
+ [1] matrixcalc_1.0-5   pracma_2.3.3       matlib_0.9.4       gridExtra_2.3     
+ [5] rmarkdown_2.9      ggpubr_0.4.0       ggrepel_0.9.1      ape_5.5           
+ [9] openxlsx_4.2.3     devtools_2.4.0     usethis_2.0.1      gtools_3.8.2      
+[13] reshape2_1.4.4     readxl_1.3.1       magrittr_2.0.1     forcats_0.5.1     
+[17] stringr_1.4.0      purrr_0.3.4        readr_1.4.0        tidyr_1.1.3       
+[21] tibble_3.0.4       tidyverse_1.3.1    vegan_2.5-7        lattice_0.20-41   
+[25] permute_0.9-5      RColorBrewer_1.1-2 ggplot2_3.3.5      dplyr_1.0.5       
+[29] knitr_1.37        
 
 loaded via a namespace (and not attached):
  [1] colorspace_2.0-0  ggsignif_0.6.2    ellipsis_0.3.2    rio_0.5.27       
- [5] rprojroot_2.0.2   fs_1.5.0          rstudioapi_0.13   remotes_2.4.0    
- [9] fansi_0.4.2       lubridate_1.7.10  xml2_1.3.2        splines_4.0.3    
-[13] cachem_1.0.4      pkgload_1.2.1     jsonlite_1.7.2    workflowr_1.6.2  
-[17] broom_0.7.9       cluster_2.1.0     dbplyr_2.1.1      compiler_4.0.3   
-[21] httr_1.4.2        backports_1.2.1   assertthat_0.2.1  Matrix_1.2-18    
-[25] fastmap_1.1.0     cli_3.0.1         formatR_1.11      later_1.2.0      
-[29] htmltools_0.5.1.1 prettyunits_1.1.1 tools_4.0.3       gtable_0.3.0     
-[33] glue_1.4.2        Rcpp_1.0.5        carData_3.0-4     cellranger_1.1.0 
-[37] jquerylib_0.1.4   vctrs_0.3.8       nlme_3.1-149      crosstalk_1.1.1  
-[41] xfun_0.29         ps_1.6.0          testthat_3.0.2    rvest_1.0.1      
-[45] lifecycle_1.0.0   rstatix_0.7.0     MASS_7.3-53       scales_1.1.1     
-[49] hms_1.1.0         promises_1.2.0.1  parallel_4.0.3    yaml_2.2.1       
-[53] curl_4.3.2        memoise_2.0.0     sass_0.4.0        stringi_1.5.3    
-[57] highr_0.9         desc_1.3.0        pkgbuild_1.2.0    zip_2.1.1        
-[61] rlang_0.4.10      pkgconfig_2.0.3   rgl_0.107.10      evaluate_0.14    
-[65] htmlwidgets_1.5.3 tidyselect_1.1.1  processx_3.5.1    plyr_1.8.6       
-[69] R6_2.5.0          generics_0.1.0    DBI_1.1.1         pillar_1.6.0     
-[73] haven_2.4.1       whisker_0.4       foreign_0.8-80    withr_2.4.2      
-[77] mgcv_1.8-33       abind_1.4-5       modelr_0.1.8      crayon_1.4.1     
-[81] car_3.0-11        utf8_1.1.4        grid_4.0.3        data.table_1.14.0
-[85] callr_3.7.0       git2r_0.28.0      reprex_2.0.0      digest_0.6.27    
-[89] xtable_1.8-4      httpuv_1.6.0      munsell_0.5.0     bslib_0.2.5.1    
-[93] sessioninfo_1.1.1</code></pre>
+ [5] rprojroot_2.0.2   fs_1.5.0          rstudioapi_0.13   farver_2.1.0     
+ [9] remotes_2.4.0     fansi_0.4.2       lubridate_1.7.10  xml2_1.3.2       
+[13] splines_4.0.3     cachem_1.0.4      pkgload_1.2.1     jsonlite_1.7.2   
+[17] workflowr_1.6.2   broom_0.7.9       cluster_2.1.0     dbplyr_2.1.1     
+[21] compiler_4.0.3    httr_1.4.2        backports_1.2.1   assertthat_0.2.1 
+[25] Matrix_1.2-18     fastmap_1.1.0     cli_3.0.1         formatR_1.11     
+[29] later_1.2.0       htmltools_0.5.1.1 prettyunits_1.1.1 tools_4.0.3      
+[33] gtable_0.3.0      glue_1.4.2        Rcpp_1.0.5        carData_3.0-4    
+[37] cellranger_1.1.0  jquerylib_0.1.4   vctrs_0.3.8       nlme_3.1-149     
+[41] crosstalk_1.1.1   xfun_0.29         ps_1.6.0          testthat_3.0.2   
+[45] rvest_1.0.1       lifecycle_1.0.0   rstatix_0.7.0     MASS_7.3-53      
+[49] scales_1.1.1      hms_1.1.0         promises_1.2.0.1  parallel_4.0.3   
+[53] yaml_2.2.1        curl_4.3.2        memoise_2.0.0     sass_0.4.0       
+[57] stringi_1.5.3     highr_0.9         desc_1.3.0        pkgbuild_1.2.0   
+[61] zip_2.1.1         rlang_0.4.10      pkgconfig_2.0.3   rgl_0.107.10     
+[65] evaluate_0.14     labeling_0.4.2    htmlwidgets_1.5.3 tidyselect_1.1.1 
+[69] processx_3.5.1    plyr_1.8.6        R6_2.5.0          generics_0.1.0   
+[73] DBI_1.1.1         pillar_1.6.0      haven_2.4.1       whisker_0.4      
+[77] foreign_0.8-80    withr_2.4.2       mgcv_1.8-33       abind_1.4-5      
+[81] modelr_0.1.8      crayon_1.4.1      car_3.0-11        utf8_1.1.4       
+[85] grid_4.0.3        data.table_1.14.0 callr_3.7.0       git2r_0.28.0     
+[89] reprex_2.0.0      digest_0.6.27     xtable_1.8-4      httpuv_1.6.0     
+[93] munsell_0.5.0     bslib_0.2.5.1     sessioninfo_1.1.1</code></pre>
 </div>
 </div>
 
