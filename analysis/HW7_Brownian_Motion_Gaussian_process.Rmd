@@ -609,7 +609,7 @@ covariance_is_valid(mat_d, a1=0.5, a2=10)
 
 The resulting covariance matrix is valid (it is positive semi-definite) for other $a_1$, $a_2$ values
 
-## B-b) Compute log-likelihood
+## B-b) Compute log-likelihood and maximize
 
 ```{r}
 # function for computing log-likelihood
@@ -717,4 +717,215 @@ a2[which(mat_ll == max(mat_ll), arr.ind = TRUE)[2]]
 
 ```
 
+## B-c) Compute log-likelihood and maximize
 
+Conditional expectation of $X_1$ given $X_2$, ..., $X_r$
+
+$$ Y_1 | Y_2  \sim N(\mu, \Sigma)$$
+$$ \mu = \mu_1 + \Sigma_{12} \Sigma_{22}^{-1}(Y_2 - \mu_2)  $$
+
+$$ \Sigma = \Sigma_{11} - \Sigma_{12} \Sigma_{22}^{-1}\Sigma_{21} $$
+This is an application of standard results for the conditional mean of a Gaussian from, e.g. https://en.wikipedia.org/wiki/Multivariate_normal_distribution#Conditional_distributions. \
+
+From our fiveMinute notes:
+$$ E(Y_1|Y_2) = -(1/\Omega_{11})\Omega_{12}Y_2   $$
+where \Omega is the precision matrix and $Y_1$ is $X_1$, $Y_2$ is ($X_2$, ..., $X_r$). \
+
+
+
+```{r}
+# compute covariance matrix with distance matrix
+y_ccr5 <- ccr5[,c("Long","Lat")]
+mat_d <- dist(y_ccr5, diag=T, upper=T)
+class(mat_d)
+mat_d <- as.matrix(mat_d)
+# Covariance matrix
+a1 = 0.5299463; a2 = 1.6820251
+mat_c <- a1*exp(-(mat_d/a2)^2)
+
+# Precision matrix
+mat_precision <- inv(mat_c)
+
+# Compute \mu = \mu_1 + \Sigma_{12} \Sigma_{22}^{-1}(Y_2 - \mu_2)
+X <- ccr5$x
+mu_1 = X[1]
+
+dim_mat_c <- dim(mat_c)[2]
+Sigma_12 <-  mat_c[1, ,drop=F][2:dim_mat_c] # \Sigma_{12}
+class(Sigma_12)
+dim(Sigma_12)
+
+Sigma_22 <- mat_c[2:dim_mat_c, 2:dim_mat_c] # \Sigma_{22}^{-1}
+dim(Sigma_22)
+Omega_22 <- inv(Sigma_22)
+dim(Omega_22)
+
+Y_2 <- X[2:dim_mat_c]# Y_2
+Y_2 - mean(Y_2) # (Y_2 - \mu_2)
+
+# multiply
+dim(Sigma_12 %*% Omega_22)
+Sigma_12 %*% Omega_22 %*% (Y_2 - mean(Y_2))
+
+mu = mu_1 + Sigma_12 %*% Omega_22 %*% (Y_2 - mean(Y_2))
+
+
+# wrap it into function
+
+compute_exp_cond_first <- function(mat_c, ccr5){
+  # Precision matrix
+  mat_precision <- inv(mat_c)
+  
+  # Compute \mu = \mu_1 + \Sigma_{12} \Sigma_{22}^{-1}(Y_2 - \mu_2)
+  X <- ccr5$x
+  mu_1 = X[1]
+  
+  dim_mat_c <- dim(mat_c)[2]
+  Sigma_12 <-  mat_c[1, ,drop=F][2:dim_mat_c] # \Sigma_{12}
+  class(Sigma_12)
+  dim(Sigma_12)
+  
+  Sigma_22 <- mat_c[2:dim_mat_c, 2:dim_mat_c] # \Sigma_{22}^{-1}
+  dim(Sigma_22)
+  Omega_22 <- inv(Sigma_22)
+  dim(Omega_22)
+  
+  Y_2 <- X[2:dim_mat_c]# Y_2
+  Y_2 - mean(Y_2) # (Y_2 - \mu_2)
+  
+  # multiply
+  dim(Sigma_12 %*% Omega_22)
+  Sigma_12 %*% Omega_22 %*% (Y_2 - mean(Y_2))
+  
+  mu = mu_1 + Sigma_12 %*% Omega_22 %*% (Y_2 - mean(Y_2))
+  return(mu)
+}
+
+compute_exp_cond_first(mat_c, ccr5)
+
+
+
+```
+
+answer: -1.758 \
+
+Notice that this expectation ends up being a weighted linear combination of the other datapoints. Intuitively, if allele frequencies vary smoothly in space then this weighted linear combination should weight the nearby data points more. Does it? \
+
+The weight is determined by Sigma_12 %*% Omega_22. However, it does not seem that this weight vector give more weight to X_2 or X_3 compared to other X.
+
+Repeat this for each of the r datapoints.
+```{r}
+# this function only works for r = 2,3,4,...,67 (nrow of the matrix -1)
+compute_exp_Xr_cond <- function(mat_c, ccr5, r=2){ # compute this for all other X_2, X_3...
+  # Precision matrix
+  mat_precision <- inv(mat_c)
+  
+  # Compute \mu = \mu_1 + \Sigma_{12} \Sigma_{22}^{-1}(Y_2 - \mu_2)
+  X <- ccr5$x
+  mu_1 = X[r]
+  
+  dim_mat_c <- dim(mat_c)[2]
+  Sigma_12 <-  mat_c[r, ,drop=F][c(1:(r-1), (r+1):dim_mat_c)] # \Sigma_{12}
+  class(Sigma_12)
+  dim(Sigma_12)
+  
+  Sigma_22 <- mat_c[c(1:(r-1), (r+1):dim_mat_c), c(1:(r-1), (r+1):dim_mat_c)] # \Sigma_{22}^{-1}
+  dim(Sigma_22)
+  Omega_22 <- inv(Sigma_22)
+  dim(Omega_22)
+  
+  Y_2 <- X[c(1:(r-1), (r+1):dim_mat_c)]# Y_2
+  Y_2 - mean(Y_2) # (Y_2 - \mu_2)
+  
+  # multiply
+  dim(Sigma_12 %*% Omega_22)
+  Sigma_12 %*% Omega_22 %*% (Y_2 - mean(Y_2))
+  
+  mu = mu_1 + Sigma_12 %*% Omega_22 %*% (Y_2 - mean(Y_2))
+  return(mu)
+}
+
+# compute
+vec_middle <- c()
+for (r in 2:(nrow(mat_c)-1)){
+  # print(r)
+  mu_r <- compute_exp_Xr_cond(mat_c, ccr5, r)
+  vec_middle <- c(vec_middle, mu_r)
+}
+
+length(vec_middle)
+vec_middle
+
+# compute the last X_r
+compute_exp_cond_last <- function(mat_c, ccr5){
+  r_last = nrow(mat_c)
+  
+  # Precision matrix
+  mat_precision <- inv(mat_c)
+  
+  # Compute \mu = \mu_1 + \Sigma_{12} \Sigma_{22}^{-1}(Y_2 - \mu_2)
+  X <- ccr5$x
+  mu_1 = X[r_last]
+
+  Sigma_12 <-  mat_c[r_last, ,drop=F][1:(r_last-1)] # \Sigma_{12}
+  class(Sigma_12)
+  dim(Sigma_12)
+  
+  Sigma_22 <- mat_c[1:(r_last-1), 1:(r_last-1)] # \Sigma_{22}^{-1}
+  dim(Sigma_22)
+  Omega_22 <- inv(Sigma_22)
+  dim(Omega_22)
+  
+  Y_2 <- X[1:(r_last-1)]# Y_2
+  Y_2 - mean(Y_2) # (Y_2 - \mu_2)
+  
+  # multiply
+  dim(Sigma_12 %*% Omega_22)
+  Sigma_12 %*% Omega_22 %*% (Y_2 - mean(Y_2))
+  
+  mu = mu_1 + Sigma_12 %*% Omega_22 %*% (Y_2 - mean(Y_2))
+  return(mu)
+}
+
+compute_exp_cond_last(mat_c, ccr5)
+
+# vector for all conditional expectations
+vec_exp_cond <- c(compute_exp_cond_first(mat_c, ccr5), 
+                  vec_middle,
+                  compute_exp_cond_last(mat_c, ccr5))
+
+length(vec_exp_cond)
+
+vec_exp_cond
+
+```
+
+Comparing the accuracy of this imputation scheme with just using the mean of the other datapoints.
+```{r}
+# Accuracy of Kriging
+
+X # observed
+vec_exp_cond # kriging
+
+# calculated distance
+sqrt(sum( (X - vec_exp_cond)^2 ))
+```
+
+distance calculated against the observed X is only 2.4
+
+```{r}
+# When only using the mean of other datapoints
+
+X # observed
+vec_mean <- rep(Inf, length(X))
+
+for (i in 1:length(X)){
+  # print(i)
+  vec_mean[i] <- mean(X[-i])
+}
+
+# calculate distance
+sqrt(sum( (X - vec_mean)^2 ))
+```
+
+distance calculated against the observed X is only 6.03, which is larger than the Kriging scheme.
