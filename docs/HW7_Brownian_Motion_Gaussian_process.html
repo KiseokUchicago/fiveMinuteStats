@@ -499,16 +499,16 @@ C:/Users/there/Desktop/Computational_Biology_2022_Winter/fiveMinuteStats
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomKiseokUchicagofiveMinuteStatstree5a55388937f56e7c390255d488380fccaca9000dtargetblank5a55388a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/KiseokUchicago/fiveMinuteStats/tree/5a55388937f56e7c390255d488380fccaca9000d" target="_blank">5a55388</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomKiseokUchicagofiveMinuteStatstreea7eadcc97b4c7c11520408d89bd7f6ed9da0e0bdtargetblanka7eadcca"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/KiseokUchicago/fiveMinuteStats/tree/a7eadcc97b4c7c11520408d89bd7f6ed9da0e0bd" target="_blank">a7eadcc</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomKiseokUchicagofiveMinuteStatstree5a55388937f56e7c390255d488380fccaca9000dtargetblank5a55388a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomKiseokUchicagofiveMinuteStatstreea7eadcc97b4c7c11520408d89bd7f6ed9da0e0bdtargetblanka7eadcca" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/KiseokUchicago/fiveMinuteStats/tree/5a55388937f56e7c390255d488380fccaca9000d" target="_blank">5a55388</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/KiseokUchicago/fiveMinuteStats/tree/a7eadcc97b4c7c11520408d89bd7f6ed9da0e0bd" target="_blank">a7eadcc</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -562,6 +562,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/KiseokUchicago/fiveMinuteStats/blob/a7eadcc97b4c7c11520408d89bd7f6ed9da0e0bd/analysis/HW7_Brownian_Motion_Gaussian_process.Rmd" target="_blank">a7eadcc</a>
+</td>
+<td>
+Kiseok Lee
+</td>
+<td>
+2022-03-06
+</td>
+<td>
+wflow_publish(“analysis/HW7_Brownian_Motion_Gaussian_process.Rmd”)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/KiseokUchicago/fiveMinuteStats/3a6c4062d22ab65cc541cf32d95ca961c02c7f09/docs/HW7_Brownian_Motion_Gaussian_process.html" target="_blank">3a6c406</a>
+</td>
+<td>
+Kiseok Lee
+</td>
+<td>
+2022-03-06
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1327,8 +1361,8 @@ Therefore, sparsity patterns depends on the conditional dependence/independence 
 </p>
 <p>Read and transform the data.</p>
 <pre class="r"><code># load data
-setwd(&quot;C:/Users/there/Desktop/Computational_Biology_2022_Winter/fiveMinuteStats&quot;)
-ccr5 = read.table(&quot;data/CCR5.freq.txt&quot;, header = TRUE)
+# setwd(&#39;C:/Users/there/Desktop/Computational_Biology_2022_Winter/fiveMinuteStats&#39;)
+ccr5 = read.table(&quot;../data/CCR5.freq.txt&quot;, header = TRUE)
 ccr5[, 1] = ifelse(ccr5[, 1] &gt; 180, ccr5[, 1] - 360, ccr5[, 1])  # changes longitudes&gt;180 to negative
 
 # transform frequency
@@ -1538,21 +1572,10 @@ a1[which(mat_ll == max(mat_ll), arr.ind = TRUE)[1]]</code></pre>
 <p><span class="math display">\[ Y_1 | Y_2  \sim N(\mu, \Sigma)\]</span> <span class="math display">\[ \mu = \mu_1 + \Sigma_{12} \Sigma_{22}^{-1}(Y_2 - \mu_2)  \]</span></p>
 <p><span class="math display">\[ \Sigma = \Sigma_{11} - \Sigma_{12} \Sigma_{22}^{-1}\Sigma_{21} \]</span> This is an application of standard results for the conditional mean of a Gaussian from, e.g. <a href="https://en.wikipedia.org/wiki/Multivariate_normal_distribution#Conditional_distributions" class="uri">https://en.wikipedia.org/wiki/Multivariate_normal_distribution#Conditional_distributions</a>.<br />
 </p>
-<p>From our fiveMinute notes: <span class="math display">\[ E(Y_1|Y_2) = -(1/\Omega_{11})\Omega_{12}Y_2   \]</span> where is the precision matrix and <span class="math inline">\(Y_1\)</span> is <span class="math inline">\(X_1\)</span>, <span class="math inline">\(Y_2\)</span> is (<span class="math inline">\(X_2\)</span>, …, <span class="math inline">\(X_r\)</span>).<br />
+<p>From our fiveMinute notes: <span class="math display">\[ E(Y_1|Y_2) = -(1/\Omega_{11})\Omega_{12}Y_2 \]</span></p>
+<p>where <span class="math inline">\(\Omega\)</span> is the precision matrix and <span class="math inline">\(Y_1\)</span> is <span class="math inline">\(X_1\)</span>, <span class="math inline">\(Y_2\)</span> is (<span class="math inline">\(X_2\)</span>, …, <span class="math inline">\(X_r\)</span>).<br />
 </p>
-<pre class="r"><code># compute covariance matrix with distance matrix load data
-ccr5 = read.table(&quot;data/CCR5.freq.txt&quot;, header = TRUE)</code></pre>
-<pre><code>Error in file(file, &quot;rt&quot;): cannot open the connection</code></pre>
-<pre class="r"><code>ccr5[, 1] = ifelse(ccr5[, 1] &gt; 180, ccr5[, 1] - 360, ccr5[, 1])  # changes longitudes&gt;180 to negative
-
-# transform frequency
-ccr5$x = log(ccr5$Freq/(1 - ccr5$Freq))
-# note that some x are -Inf
-
-# remove -Inf values from the dataset (This is to ensure
-# that dmvnorm works in the later part)
-ccr5 = ccr5[ccr5$x != -Inf, ]
-
+<pre class="r"><code># compute covariance matrix with distance matrix
 y_ccr5 &lt;- ccr5[, c(&quot;Long&quot;, &quot;Lat&quot;)]
 mat_d &lt;- dist(y_ccr5, diag = T, upper = T)
 class(mat_d)</code></pre>
