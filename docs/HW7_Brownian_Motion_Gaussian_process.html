@@ -366,7 +366,7 @@ div.tocify {
 
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
-<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
 </button>
 </p>
 <div id="workflowr-report" class="collapse">
@@ -375,7 +375,7 @@ div.tocify {
 <a data-toggle="tab" href="#summary">Summary</a>
 </li>
 <li>
-<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -387,7 +387,7 @@ div.tocify {
 <strong>Last updated:</strong> 2022-03-06
 </p>
 <p>
-<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
 </p>
 <p>
 <strong>Knit directory:</strong> <code>fiveMinuteStats/analysis/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
@@ -463,28 +463,52 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongabsolute"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>File paths:</strong> absolute </a>
 </p>
 </div>
-<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div id="strongFilepathsstrongabsolute" class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+<p>
+Using absolute paths to the files within your workflowr project makes it difficult for you and others to run your code on a different machine. Change the absolute path(s) below to the suggested relative path(s) to make your code more reproducible.
+</p>
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th style="text-align:left;">
+absolute
+</th>
+<th style="text-align:left;">
+relative
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+C:/Users/there/Desktop/Computational_Biology_2022_Winter/fiveMinuteStats
+</td>
+<td style="text-align:left;">
+..
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomKiseokUchicagofiveMinuteStatstree852bdd69012ce9729942b2a164417e8dab8f3eebtargetblank852bdd6a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/KiseokUchicago/fiveMinuteStats/tree/852bdd69012ce9729942b2a164417e8dab8f3eeb" target="_blank">852bdd6</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomKiseokUchicagofiveMinuteStatstree5a55388937f56e7c390255d488380fccaca9000dtargetblank5a55388a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/KiseokUchicago/fiveMinuteStats/tree/5a55388937f56e7c390255d488380fccaca9000d" target="_blank">5a55388</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomKiseokUchicagofiveMinuteStatstree852bdd69012ce9729942b2a164417e8dab8f3eebtargetblank852bdd6a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomKiseokUchicagofiveMinuteStatstree5a55388937f56e7c390255d488380fccaca9000dtargetblank5a55388a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/KiseokUchicago/fiveMinuteStats/tree/852bdd69012ce9729942b2a164417e8dab8f3eeb" target="_blank">852bdd6</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/KiseokUchicago/fiveMinuteStats/tree/5a55388937f56e7c390255d488380fccaca9000d" target="_blank">5a55388</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -538,6 +562,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/KiseokUchicago/fiveMinuteStats/blob/5a55388937f56e7c390255d488380fccaca9000d/analysis/HW7_Brownian_Motion_Gaussian_process.Rmd" target="_blank">5a55388</a>
+</td>
+<td>
+Kiseok Lee
+</td>
+<td>
+2022-03-06
+</td>
+<td>
+wflow_publish(“analysis/HW7_Brownian_Motion_Gaussian_process.Rmd”)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/KiseokUchicago/fiveMinuteStats/813579a03b9196bf751a38866abef46d6aec1aa4/docs/HW7_Brownian_Motion_Gaussian_process.html" target="_blank">813579a</a>
+</td>
+<td>
+Kiseok Lee
+</td>
+<td>
+2022-03-06
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1269,52 +1327,60 @@ Therefore, sparsity patterns depends on the conditional dependence/independence 
 </p>
 <p>Read and transform the data.</p>
 <pre class="r"><code># load data
-ccr5 = read.table(&quot;data/CCR5.freq.txt&quot;, header = TRUE)</code></pre>
-<pre><code>Error in file(file, &quot;rt&quot;): cannot open the connection</code></pre>
-<pre class="r"><code>ccr5[, 1] = ifelse(ccr5[, 1] &gt; 180, ccr5[, 1] - 360, ccr5[, 1])  # changes longitudes&gt;180 to negative</code></pre>
-<pre><code>Error in ifelse(ccr5[, 1] &gt; 180, ccr5[, 1] - 360, ccr5[, 1]): object &#39;ccr5&#39; not found</code></pre>
-<pre class="r"><code># transform frequency
-ccr5$x = log(ccr5$Freq/(1 - ccr5$Freq))</code></pre>
-<pre><code>Error in eval(expr, envir, enclos): object &#39;ccr5&#39; not found</code></pre>
-<pre class="r"><code># note that some x are -Inf
+setwd(&quot;C:/Users/there/Desktop/Computational_Biology_2022_Winter/fiveMinuteStats&quot;)
+ccr5 = read.table(&quot;data/CCR5.freq.txt&quot;, header = TRUE)
+ccr5[, 1] = ifelse(ccr5[, 1] &gt; 180, ccr5[, 1] - 360, ccr5[, 1])  # changes longitudes&gt;180 to negative
+
+# transform frequency
+ccr5$x = log(ccr5$Freq/(1 - ccr5$Freq))
+# note that some x are -Inf
 
 # remove -Inf values from the dataset (This is to ensure
 # that dmvnorm works in the later part)
 ccr5 = ccr5[ccr5$x != -Inf, ]</code></pre>
-<pre><code>Error in eval(expr, envir, enclos): object &#39;ccr5&#39; not found</code></pre>
 </div>
 <div id="b-a-covariance-matrix-given-value-of-a" class="section level2">
 <h2>B-a) Covariance matrix given value of a</h2>
 <p><span class="math display">\[ \Sigma(y_1, y_2) = K(d(y_1, y_2)) = a_1 exp(-(d/a_2)^2) \]</span></p>
 <pre class="r"><code># compute distance matrix (euclidean distance)
 rownames(ccr5)</code></pre>
-<pre><code>Error in rownames(ccr5): object &#39;ccr5&#39; not found</code></pre>
-<pre class="r"><code>y_ccr5 &lt;- ccr5[, c(&quot;Long&quot;, &quot;Lat&quot;)]</code></pre>
-<pre><code>Error in eval(expr, envir, enclos): object &#39;ccr5&#39; not found</code></pre>
-<pre class="r"><code>mat_d &lt;- dist(y_ccr5, diag = T, upper = T)</code></pre>
-<pre><code>Error in as.matrix(x): object &#39;y_ccr5&#39; not found</code></pre>
-<pre class="r"><code>class(mat_d)</code></pre>
-<pre><code>Error in eval(expr, envir, enclos): object &#39;mat_d&#39; not found</code></pre>
-<pre class="r"><code>mat_d &lt;- as.matrix(mat_d)</code></pre>
-<pre><code>Error in as.matrix(mat_d): object &#39;mat_d&#39; not found</code></pre>
-<pre class="r"><code>a1 = 1
+<pre><code> [1] &quot;1&quot;  &quot;2&quot;  &quot;3&quot;  &quot;4&quot;  &quot;5&quot;  &quot;6&quot;  &quot;7&quot;  &quot;8&quot;  &quot;9&quot;  &quot;10&quot; &quot;11&quot; &quot;12&quot; &quot;13&quot; &quot;14&quot; &quot;15&quot;
+[16] &quot;16&quot; &quot;17&quot; &quot;18&quot; &quot;19&quot; &quot;20&quot; &quot;21&quot; &quot;22&quot; &quot;23&quot; &quot;24&quot; &quot;25&quot; &quot;26&quot; &quot;27&quot; &quot;28&quot; &quot;29&quot; &quot;30&quot;
+[31] &quot;31&quot; &quot;32&quot; &quot;33&quot; &quot;34&quot; &quot;35&quot; &quot;36&quot; &quot;37&quot; &quot;38&quot; &quot;39&quot; &quot;40&quot; &quot;41&quot; &quot;42&quot; &quot;43&quot; &quot;44&quot; &quot;45&quot;
+[46] &quot;46&quot; &quot;47&quot; &quot;48&quot; &quot;49&quot; &quot;50&quot; &quot;51&quot; &quot;52&quot; &quot;53&quot; &quot;54&quot; &quot;55&quot; &quot;56&quot; &quot;57&quot; &quot;58&quot; &quot;59&quot; &quot;60&quot;
+[61] &quot;61&quot; &quot;62&quot; &quot;63&quot; &quot;64&quot; &quot;65&quot; &quot;66&quot; &quot;67&quot; &quot;68&quot;</code></pre>
+<pre class="r"><code>y_ccr5 &lt;- ccr5[, c(&quot;Long&quot;, &quot;Lat&quot;)]
+mat_d &lt;- dist(y_ccr5, diag = T, upper = T)
+class(mat_d)</code></pre>
+<pre><code>[1] &quot;dist&quot;</code></pre>
+<pre class="r"><code>mat_d &lt;- as.matrix(mat_d)
+
+a1 = 1
 a2 = 1
 a = c(a1, a2)
 
 # compute covariance matrix with distance matrix
-mat_c &lt;- a1 * exp(-(mat_d/a2)^2)</code></pre>
-<pre><code>Error in eval(expr, envir, enclos): object &#39;mat_d&#39; not found</code></pre>
-<pre class="r"><code>class(mat_c)</code></pre>
-<pre><code>Error in eval(expr, envir, enclos): object &#39;mat_c&#39; not found</code></pre>
+mat_c &lt;- a1 * exp(-(mat_d/a2)^2)
+class(mat_c)</code></pre>
+<pre><code>[1] &quot;matrix&quot; &quot;array&quot; </code></pre>
 <pre class="r"><code># is it positive semi-definite?
 eigen(mat_c, only.values = T)$values</code></pre>
-<pre><code>Error in as.matrix(x): object &#39;mat_c&#39; not found</code></pre>
+<pre><code> [1] 1.6172017 1.5294986 1.3952727 1.3687310 1.3678794 1.3678794 1.2607939
+ [8] 1.2413514 1.1718709 1.1358492 1.1353353 1.1347790 1.0183156 1.0067379
+[15] 1.0067378 1.0059563 1.0003355 1.0001234 1.0000454 1.0000023 1.0000003
+[22] 1.0000000 1.0000000 1.0000000 1.0000000 1.0000000 1.0000000 1.0000000
+[29] 1.0000000 1.0000000 1.0000000 1.0000000 1.0000000 1.0000000 1.0000000
+[36] 1.0000000 1.0000000 1.0000000 1.0000000 1.0000000 1.0000000 1.0000000
+[43] 1.0000000 1.0000000 0.9999977 0.9999546 0.9998766 0.9996645 0.9993307
+[50] 0.9956502 0.9932621 0.9932620 0.9816844 0.9816843 0.9815147 0.9795053
+[57] 0.8646647 0.8643531 0.8639913 0.8298705 0.7713373 0.7236844 0.6321206
+[64] 0.6321206 0.6319381 0.6099453 0.4888170 0.4170729</code></pre>
 <pre class="r"><code>any(eigen(mat_c, only.values = T)$values &lt; 0)</code></pre>
-<pre><code>Error in as.matrix(x): object &#39;mat_c&#39; not found</code></pre>
+<pre><code>[1] FALSE</code></pre>
 <pre class="r"><code># check again with function
 library(matrixcalc)
 is.positive.semi.definite(mat_c, tol = 1e-08)</code></pre>
-<pre><code>Error in is.square.matrix(x): object &#39;mat_c&#39; not found</code></pre>
+<pre><code>[1] TRUE</code></pre>
 <p>The resulting covariance matrix is valid (it is positive semi-definite) when <span class="math inline">\(a_1\)</span> and <span class="math inline">\(a_2\)</span> are 1.</p>
 <pre class="r"><code>covariance_is_valid &lt;- function(mat_d, a1, a2) {
     # compute covariance matrix with distance matrix
@@ -1329,13 +1395,13 @@ is.positive.semi.definite(mat_c, tol = 1e-08)</code></pre>
 
 # test 1
 covariance_is_valid(mat_d, a1 = 0.1, a2 = 0.1)</code></pre>
-<pre><code>Error in covariance_is_valid(mat_d, a1 = 0.1, a2 = 0.1): object &#39;mat_d&#39; not found</code></pre>
+<pre><code>[1] TRUE</code></pre>
 <pre class="r"><code># test 2
 covariance_is_valid(mat_d, a1 = 0.5, a2 = 0.1)</code></pre>
-<pre><code>Error in covariance_is_valid(mat_d, a1 = 0.5, a2 = 0.1): object &#39;mat_d&#39; not found</code></pre>
+<pre><code>[1] TRUE</code></pre>
 <pre class="r"><code># test 3
 covariance_is_valid(mat_d, a1 = 0.5, a2 = 10)</code></pre>
-<pre><code>Error in covariance_is_valid(mat_d, a1 = 0.5, a2 = 10): object &#39;mat_d&#39; not found</code></pre>
+<pre><code>[1] TRUE</code></pre>
 <p>The resulting covariance matrix is valid (it is positive semi-definite) for other <span class="math inline">\(a_1\)</span>, <span class="math inline">\(a_2\)</span> values</p>
 </div>
 <div id="b-b-compute-log-likelihood-and-maximize" class="section level2">
@@ -1361,7 +1427,7 @@ compute_ll &lt;- function(ccr5, m, a1, a2) {
     return(ll)
 }
 compute_ll(ccr5, m = 1, a1 = 1, a2 = 1)</code></pre>
-<pre><code>Error in compute_ll(ccr5, m = 1, a1 = 1, a2 = 1): object &#39;ccr5&#39; not found</code></pre>
+<pre><code>[1] -494.7394</code></pre>
 <pre class="r"><code># modify function to apply optim function
 
 compute_ll_optim &lt;- function(par, data) {
@@ -1375,12 +1441,40 @@ compute_ll_optim &lt;- function(par, data) {
 
 # Optimize log-likelihood over a, m using optim function
 # https://www.magesblog.com/post/2013-03-12-how-to-use-optim-in-r/
-X_obs &lt;- ccr5$x</code></pre>
-<pre><code>Error in eval(expr, envir, enclos): object &#39;ccr5&#39; not found</code></pre>
-<pre class="r"><code>optim(par = c(1, 1, 1), fn = compute_ll_optim, data = X_obs)</code></pre>
-<pre><code>Error in fn(par, ...): object &#39;mat_d&#39; not found</code></pre>
+X_obs &lt;- ccr5$x
+
+optim(par = c(1, 1, 1), fn = compute_ll_optim, data = X_obs)</code></pre>
+<pre><code>$par
+[1] -2.7486638  0.5299463  1.6820251
+
+$value
+[1] 69.52806
+
+$counts
+function gradient 
+     148       NA 
+
+$convergence
+[1] 0
+
+$message
+NULL</code></pre>
 <pre class="r"><code>optim(par = c(0.1, 0.1, 0.1), fn = compute_ll_optim, data = X_obs)</code></pre>
-<pre><code>Error in fn(par, ...): object &#39;mat_d&#39; not found</code></pre>
+<pre><code>$par
+[1] -2.7484053  0.5300537  1.6810833
+
+$value
+[1] 69.52807
+
+$counts
+function gradient 
+     226       NA 
+
+$convergence
+[1] 0
+
+$message
+NULL</code></pre>
 <p>It converged to m = -2.7486638, a1 = 0.5299463, a2 = 1.6820251. This is pretty stable to initial parameter change<br />
 Let’s do a grid search around these values to visualize it in a heatmap.</p>
 <pre class="r"><code>n = 100
@@ -1405,15 +1499,15 @@ for (i in 1:n) {
     for (j in 1:n) {
         mat_ll[i, j] &lt;- compute_ll(ccr5, m, a1 = a1[i], a2 = a2[j])
     }
-}</code></pre>
-<pre><code>Error in compute_ll(ccr5, m, a1 = a1[i], a2 = a2[j]): object &#39;ccr5&#39; not found</code></pre>
-<pre class="r"><code># head(mat_ll)
+}
+
+# head(mat_ll)
 rownames(mat_ll) &lt;- a1
 colnames(mat_ll) &lt;- a2
 
 # histogram
 hist(c(mat_ll))</code></pre>
-<pre><code>Error in hist.default(c(mat_ll)): &#39;x&#39; must be numeric</code></pre>
+<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-16-1.png" width="1056" style="display: block; margin: auto;" /></p>
 <pre class="r"><code># plot heatmap
 col_bwr &lt;- colorRampPalette(c(&quot;blue&quot;, &quot;white&quot;, &quot;Red&quot;))
 
@@ -1425,18 +1519,18 @@ ggplot(data = m_ll, aes(x = a1, y = a2)) + geom_tile(aes(fill = `Log-likelihood`
     ylab(&quot;a2 \n&quot;) + xlab(&quot;\n a1 &quot;) + scale_y_continuous(expand = c(0,
     0)) + scale_x_continuous(expand = c(0, 0)) + ggtitle(&quot;Heatmap of log-likelihood (varying a1, a2) \n&quot;) +
     mytheme</code></pre>
-<pre><code>Error: Discrete value supplied to continuous scale</code></pre>
-<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-16-1.png" width="1056" style="display: block; margin: auto;" /></p>
+<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-16-2.png" width="1056" style="display: block; margin: auto;" /></p>
 <pre class="r"><code># maximum likelihood
 max(mat_ll)</code></pre>
-<pre><code>[1] NA</code></pre>
+<pre><code>[1] -69.53353</code></pre>
 <pre class="r"><code>which(mat_ll == max(mat_ll), arr.ind = TRUE)</code></pre>
-<pre><code>     row col</code></pre>
+<pre><code>                  row col
+0.539393939393939  16  55</code></pre>
 <pre class="r"><code># find which a1, a2 value
 a1[which(mat_ll == max(mat_ll), arr.ind = TRUE)[1]]</code></pre>
-<pre><code>[1] NA</code></pre>
+<pre><code>[1] 0.5393939</code></pre>
 <pre class="r"><code>a2[which(mat_ll == max(mat_ll), arr.ind = TRUE)[2]]</code></pre>
-<pre><code>[1] NA</code></pre>
+<pre><code>[1] 1.681818</code></pre>
 </div>
 <div id="b-c-compute-log-likelihood-and-maximize" class="section level2">
 <h2>B-c) Compute log-likelihood and maximize</h2>
@@ -1446,57 +1540,73 @@ a1[which(mat_ll == max(mat_ll), arr.ind = TRUE)[1]]</code></pre>
 </p>
 <p>From our fiveMinute notes: <span class="math display">\[ E(Y_1|Y_2) = -(1/\Omega_{11})\Omega_{12}Y_2   \]</span> where is the precision matrix and <span class="math inline">\(Y_1\)</span> is <span class="math inline">\(X_1\)</span>, <span class="math inline">\(Y_2\)</span> is (<span class="math inline">\(X_2\)</span>, …, <span class="math inline">\(X_r\)</span>).<br />
 </p>
-<pre class="r"><code># compute covariance matrix with distance matrix
-y_ccr5 &lt;- ccr5[, c(&quot;Long&quot;, &quot;Lat&quot;)]</code></pre>
-<pre><code>Error in eval(expr, envir, enclos): object &#39;ccr5&#39; not found</code></pre>
-<pre class="r"><code>mat_d &lt;- dist(y_ccr5, diag = T, upper = T)</code></pre>
-<pre><code>Error in as.matrix(x): object &#39;y_ccr5&#39; not found</code></pre>
-<pre class="r"><code>class(mat_d)</code></pre>
-<pre><code>Error in eval(expr, envir, enclos): object &#39;mat_d&#39; not found</code></pre>
-<pre class="r"><code>mat_d &lt;- as.matrix(mat_d)</code></pre>
-<pre><code>Error in as.matrix(mat_d): object &#39;mat_d&#39; not found</code></pre>
-<pre class="r"><code># Covariance matrix
+<pre class="r"><code># compute covariance matrix with distance matrix load data
+ccr5 = read.table(&quot;data/CCR5.freq.txt&quot;, header = TRUE)</code></pre>
+<pre><code>Error in file(file, &quot;rt&quot;): cannot open the connection</code></pre>
+<pre class="r"><code>ccr5[, 1] = ifelse(ccr5[, 1] &gt; 180, ccr5[, 1] - 360, ccr5[, 1])  # changes longitudes&gt;180 to negative
+
+# transform frequency
+ccr5$x = log(ccr5$Freq/(1 - ccr5$Freq))
+# note that some x are -Inf
+
+# remove -Inf values from the dataset (This is to ensure
+# that dmvnorm works in the later part)
+ccr5 = ccr5[ccr5$x != -Inf, ]
+
+y_ccr5 &lt;- ccr5[, c(&quot;Long&quot;, &quot;Lat&quot;)]
+mat_d &lt;- dist(y_ccr5, diag = T, upper = T)
+class(mat_d)</code></pre>
+<pre><code>[1] &quot;dist&quot;</code></pre>
+<pre class="r"><code>mat_d &lt;- as.matrix(mat_d)
+# Covariance matrix
 a1 = 0.5299463
 a2 = 1.6820251
-mat_c &lt;- a1 * exp(-(mat_d/a2)^2)</code></pre>
-<pre><code>Error in eval(expr, envir, enclos): object &#39;mat_d&#39; not found</code></pre>
-<pre class="r"><code># Precision matrix
-mat_precision &lt;- inv(mat_c)</code></pre>
-<pre><code>Error in inv(mat_c): object &#39;mat_c&#39; not found</code></pre>
-<pre class="r"><code># Compute \mu = \mu_1 + \Sigma_{12} \Sigma_{22}^{-1}(Y_2 -
+mat_c &lt;- a1 * exp(-(mat_d/a2)^2)
+
+# Precision matrix
+mat_precision &lt;- inv(mat_c)
+
+# Compute \mu = \mu_1 + \Sigma_{12} \Sigma_{22}^{-1}(Y_2 -
 # \mu_2)
-X &lt;- ccr5$x</code></pre>
-<pre><code>Error in eval(expr, envir, enclos): object &#39;ccr5&#39; not found</code></pre>
-<pre class="r"><code>mu_1 = X[1]</code></pre>
-<pre><code>Error in eval(expr, envir, enclos): object &#39;X&#39; not found</code></pre>
-<pre class="r"><code>dim_mat_c &lt;- dim(mat_c)[2]</code></pre>
-<pre><code>Error in eval(expr, envir, enclos): object &#39;mat_c&#39; not found</code></pre>
-<pre class="r"><code>Sigma_12 &lt;- mat_c[1, , drop = F][2:dim_mat_c]  # \Sigma_{12}</code></pre>
-<pre><code>Error in eval(expr, envir, enclos): object &#39;mat_c&#39; not found</code></pre>
-<pre class="r"><code>class(Sigma_12)</code></pre>
-<pre><code>Error in eval(expr, envir, enclos): object &#39;Sigma_12&#39; not found</code></pre>
+X &lt;- ccr5$x
+mu_1 = X[1]
+
+dim_mat_c &lt;- dim(mat_c)[2]
+Sigma_12 &lt;- mat_c[1, , drop = F][2:dim_mat_c]  # \Sigma_{12}
+class(Sigma_12)</code></pre>
+<pre><code>[1] &quot;numeric&quot;</code></pre>
 <pre class="r"><code>dim(Sigma_12)</code></pre>
-<pre><code>Error in eval(expr, envir, enclos): object &#39;Sigma_12&#39; not found</code></pre>
-<pre class="r"><code>Sigma_22 &lt;- mat_c[2:dim_mat_c, 2:dim_mat_c]  # \Sigma_{22}^{-1}</code></pre>
-<pre><code>Error in eval(expr, envir, enclos): object &#39;mat_c&#39; not found</code></pre>
-<pre class="r"><code>dim(Sigma_22)</code></pre>
-<pre><code>Error in eval(expr, envir, enclos): object &#39;Sigma_22&#39; not found</code></pre>
-<pre class="r"><code>Omega_22 &lt;- inv(Sigma_22)</code></pre>
-<pre><code>Error in inv(Sigma_22): object &#39;Sigma_22&#39; not found</code></pre>
-<pre class="r"><code>dim(Omega_22)</code></pre>
-<pre><code>Error in eval(expr, envir, enclos): object &#39;Omega_22&#39; not found</code></pre>
-<pre class="r"><code>Y_2 &lt;- X[2:dim_mat_c]  # Y_2</code></pre>
-<pre><code>Error in eval(expr, envir, enclos): object &#39;X&#39; not found</code></pre>
-<pre class="r"><code>Y_2 - mean(Y_2)  # (Y_2 - \mu_2)</code></pre>
-<pre><code>Error in eval(expr, envir, enclos): object &#39;Y_2&#39; not found</code></pre>
+<pre><code>NULL</code></pre>
+<pre class="r"><code>Sigma_22 &lt;- mat_c[2:dim_mat_c, 2:dim_mat_c]  # \Sigma_{22}^{-1}
+dim(Sigma_22)</code></pre>
+<pre><code>[1] 67 67</code></pre>
+<pre class="r"><code>Omega_22 &lt;- inv(Sigma_22)
+dim(Omega_22)</code></pre>
+<pre><code>[1] 67 67</code></pre>
+<pre class="r"><code>Y_2 &lt;- X[2:dim_mat_c]  # Y_2
+Y_2 - mean(Y_2)  # (Y_2 - \mu_2)</code></pre>
+<pre><code> [1]  1.00017131  0.98521441  0.97010290  0.85962235  0.83477882  0.80948151
+ [7]  0.75744063  0.74856982  0.66596923  0.66596923  0.65646526  0.61774387
+[13]  0.61774387  0.61774387  0.57783236  0.56765829  0.56765829  0.55740285
+[19]  0.52613271  0.51553602  0.47223687  0.43875235  0.41591822  0.41591822
+[25]  0.36894359  0.35691380  0.30757163  0.30757163  0.29491612  0.29491612
+[31]  0.28212658  0.28212658  0.25613253  0.24292125  0.21605236  0.08697053
+[37]  0.05624662 -0.02433300 -0.02433300 -0.04114916 -0.05821617 -0.09313592
+[43] -0.09313592 -0.11100630 -0.18545235 -0.24471139 -0.24471139 -0.26518377
+[49] -0.26518377 -0.28603959 -0.28603959 -0.28603959 -0.35106791 -0.46877877
+[55] -0.51965444 -0.81769930 -0.85263125 -1.00516226 -1.04700937 -1.13606783
+[61] -1.18360981 -1.34082016 -1.39899639 -1.52619205 -1.52619205 -1.59619963
+[67] -1.93672046</code></pre>
 <pre class="r"><code># multiply
 dim(Sigma_12 %*% Omega_22)</code></pre>
-<pre><code>Error in eval(expr, envir, enclos): object &#39;Sigma_12&#39; not found</code></pre>
+<pre><code>[1]  1 67</code></pre>
 <pre class="r"><code>Sigma_12 %*% Omega_22 %*% (Y_2 - mean(Y_2))</code></pre>
-<pre><code>Error in eval(expr, envir, enclos): object &#39;Sigma_12&#39; not found</code></pre>
-<pre class="r"><code>mu = mu_1 + Sigma_12 %*% Omega_22 %*% (Y_2 - mean(Y_2))</code></pre>
-<pre><code>Error in eval(expr, envir, enclos): object &#39;mu_1&#39; not found</code></pre>
-<pre class="r"><code># wrap it into function
+<pre><code>           [,1]
+[1,] -0.1217408</code></pre>
+<pre class="r"><code>mu = mu_1 + Sigma_12 %*% Omega_22 %*% (Y_2 - mean(Y_2))
+
+
+# wrap it into function
 
 compute_exp_cond_first &lt;- function(mat_c, ccr5) {
     # Precision matrix
@@ -1529,7 +1639,8 @@ compute_exp_cond_first &lt;- function(mat_c, ccr5) {
 }
 
 compute_exp_cond_first(mat_c, ccr5)</code></pre>
-<pre><code>Error in inv(mat_c): object &#39;mat_c&#39; not found</code></pre>
+<pre><code>          [,1]
+[1,] -1.757815</code></pre>
 <p>answer: -1.758<br />
 </p>
 <p>Notice that this expectation ends up being a weighted linear combination of the other datapoints. Intuitively, if allele frequencies vary smoothly in space then this weighted linear combination should weight the nearby data points more. Does it?<br />
@@ -1575,12 +1686,21 @@ for (r in 2:(nrow(mat_c) - 1)) {
     # print(r)
     mu_r &lt;- compute_exp_Xr_cond(mat_c, ccr5, r)
     vec_middle &lt;- c(vec_middle, mu_r)
-}</code></pre>
-<pre><code>Error in nrow(mat_c): object &#39;mat_c&#39; not found</code></pre>
-<pre class="r"><code>length(vec_middle)</code></pre>
-<pre><code>[1] 0</code></pre>
+}
+
+length(vec_middle)</code></pre>
+<pre><code>[1] 66</code></pre>
 <pre class="r"><code>vec_middle</code></pre>
-<pre><code>NULL</code></pre>
+<pre><code> [1] -1.224617 -1.299924 -1.026259 -1.798740 -1.709679 -1.485647 -1.417014
+ [8] -1.350783 -1.854711 -1.356266 -1.742532 -1.342490 -1.459067 -1.606622
+[15] -1.861533 -2.090308 -2.090589 -1.680297 -1.934899 -2.142387 -2.262485
+[22] -2.309269 -2.236445 -2.088814 -1.869665 -2.301496 -2.240443 -2.498986
+[29] -1.648594 -2.363483 -1.976553 -2.376273 -2.402144 -2.415547 -2.430576
+[36] -3.236374 -2.153978 -2.693547 -2.700576 -2.699549 -2.790354 -2.751426
+[43] -2.751535 -2.032550 -2.848668 -2.904907 -2.428991 -2.720902 -3.140217
+[50] -2.944403 -2.947033 -2.945710 -2.926516 -3.127178 -3.178140 -3.476155
+[57] -3.530239 -3.859709 -3.705409 -3.993962 -3.842009 -3.970004 -4.059541
+[64] -4.184591 -4.193554 -4.254599</code></pre>
 <pre class="r"><code># compute the last X_r
 compute_exp_cond_last &lt;- function(mat_c, ccr5) {
     r_last = nrow(mat_c)
@@ -1614,40 +1734,77 @@ compute_exp_cond_last &lt;- function(mat_c, ccr5) {
 }
 
 compute_exp_cond_last(mat_c, ccr5)</code></pre>
-<pre><code>Error in nrow(mat_c): object &#39;mat_c&#39; not found</code></pre>
+<pre><code>          [,1]
+[1,] -4.595113</code></pre>
 <pre class="r"><code># vector for all conditional expectations
 vec_exp_cond &lt;- c(compute_exp_cond_first(mat_c, ccr5), vec_middle,
-    compute_exp_cond_last(mat_c, ccr5))</code></pre>
-<pre><code>Error in inv(mat_c): object &#39;mat_c&#39; not found</code></pre>
-<pre class="r"><code>length(vec_exp_cond)</code></pre>
-<pre><code>Error in eval(expr, envir, enclos): object &#39;vec_exp_cond&#39; not found</code></pre>
+    compute_exp_cond_last(mat_c, ccr5))
+
+length(vec_exp_cond)</code></pre>
+<pre><code>[1] 68</code></pre>
 <pre class="r"><code>vec_exp_cond</code></pre>
-<pre><code>Error in eval(expr, envir, enclos): object &#39;vec_exp_cond&#39; not found</code></pre>
+<pre><code> [1] -1.757815 -1.224617 -1.299924 -1.026259 -1.798740 -1.709679 -1.485647
+ [8] -1.417014 -1.350783 -1.854711 -1.356266 -1.742532 -1.342490 -1.459067
+[15] -1.606622 -1.861533 -2.090308 -2.090589 -1.680297 -1.934899 -2.142387
+[22] -2.262485 -2.309269 -2.236445 -2.088814 -1.869665 -2.301496 -2.240443
+[29] -2.498986 -1.648594 -2.363483 -1.976553 -2.376273 -2.402144 -2.415547
+[36] -2.430576 -3.236374 -2.153978 -2.693547 -2.700576 -2.699549 -2.790354
+[43] -2.751426 -2.751535 -2.032550 -2.848668 -2.904907 -2.428991 -2.720902
+[50] -3.140217 -2.944403 -2.947033 -2.945710 -2.926516 -3.127178 -3.178140
+[57] -3.476155 -3.530239 -3.859709 -3.705409 -3.993962 -3.842009 -3.970004
+[64] -4.059541 -4.184591 -4.193554 -4.254599 -4.595113</code></pre>
 <p>Comparing the accuracy of this imputation scheme with just using the mean of the other datapoints.</p>
 <pre class="r"><code># Accuracy of Kriging
 
 X  # observed</code></pre>
-<pre><code>Error in eval(expr, envir, enclos): object &#39;X&#39; not found</code></pre>
+<pre><code> [1] -1.636074 -1.658228 -1.673185 -1.688296 -1.798777 -1.823621 -1.848918
+ [8] -1.900959 -1.909830 -1.992430 -1.992430 -2.001934 -2.040656 -2.040656
+[15] -2.040656 -2.080567 -2.090741 -2.090741 -2.100997 -2.132267 -2.142863
+[22] -2.186163 -2.219647 -2.242481 -2.242481 -2.289456 -2.301486 -2.350828
+[29] -2.350828 -2.363483 -2.363483 -2.376273 -2.376273 -2.402267 -2.415478
+[36] -2.442347 -2.571429 -2.602153 -2.682732 -2.682732 -2.699549 -2.716616
+[43] -2.751535 -2.751535 -2.769406 -2.843852 -2.903111 -2.903111 -2.923583
+[50] -2.923583 -2.944439 -2.944439 -2.944439 -3.009467 -3.127178 -3.178054
+[57] -3.476099 -3.511031 -3.663562 -3.705409 -3.794467 -3.842009 -3.999220
+[64] -4.057396 -4.184591 -4.184591 -4.254599 -4.595120</code></pre>
 <pre class="r"><code>vec_exp_cond  # kriging</code></pre>
-<pre><code>Error in eval(expr, envir, enclos): object &#39;vec_exp_cond&#39; not found</code></pre>
+<pre><code> [1] -1.757815 -1.224617 -1.299924 -1.026259 -1.798740 -1.709679 -1.485647
+ [8] -1.417014 -1.350783 -1.854711 -1.356266 -1.742532 -1.342490 -1.459067
+[15] -1.606622 -1.861533 -2.090308 -2.090589 -1.680297 -1.934899 -2.142387
+[22] -2.262485 -2.309269 -2.236445 -2.088814 -1.869665 -2.301496 -2.240443
+[29] -2.498986 -1.648594 -2.363483 -1.976553 -2.376273 -2.402144 -2.415547
+[36] -2.430576 -3.236374 -2.153978 -2.693547 -2.700576 -2.699549 -2.790354
+[43] -2.751426 -2.751535 -2.032550 -2.848668 -2.904907 -2.428991 -2.720902
+[50] -3.140217 -2.944403 -2.947033 -2.945710 -2.926516 -3.127178 -3.178140
+[57] -3.476155 -3.530239 -3.859709 -3.705409 -3.993962 -3.842009 -3.970004
+[64] -4.059541 -4.184591 -4.193554 -4.254599 -4.595113</code></pre>
 <pre class="r"><code># calculated distance
 sqrt(sum((X - vec_exp_cond)^2))</code></pre>
-<pre><code>Error in eval(expr, envir, enclos): object &#39;X&#39; not found</code></pre>
+<pre><code>[1] 2.398139</code></pre>
 <p>distance calculated against the observed X is only 2.4</p>
 <pre class="r"><code># When only using the mean of other datapoints
 
 X  # observed</code></pre>
-<pre><code>Error in eval(expr, envir, enclos): object &#39;X&#39; not found</code></pre>
-<pre class="r"><code>vec_mean &lt;- rep(Inf, length(X))</code></pre>
-<pre><code>Error in eval(expr, envir, enclos): object &#39;X&#39; not found</code></pre>
-<pre class="r"><code>for (i in 1:length(X)) {
+<pre><code> [1] -1.636074 -1.658228 -1.673185 -1.688296 -1.798777 -1.823621 -1.848918
+ [8] -1.900959 -1.909830 -1.992430 -1.992430 -2.001934 -2.040656 -2.040656
+[15] -2.040656 -2.080567 -2.090741 -2.090741 -2.100997 -2.132267 -2.142863
+[22] -2.186163 -2.219647 -2.242481 -2.242481 -2.289456 -2.301486 -2.350828
+[29] -2.350828 -2.363483 -2.363483 -2.376273 -2.376273 -2.402267 -2.415478
+[36] -2.442347 -2.571429 -2.602153 -2.682732 -2.682732 -2.699549 -2.716616
+[43] -2.751535 -2.751535 -2.769406 -2.843852 -2.903111 -2.903111 -2.923583
+[50] -2.923583 -2.944439 -2.944439 -2.944439 -3.009467 -3.127178 -3.178054
+[57] -3.476099 -3.511031 -3.663562 -3.705409 -3.794467 -3.842009 -3.999220
+[64] -4.057396 -4.184591 -4.184591 -4.254599 -4.595120</code></pre>
+<pre class="r"><code>vec_mean &lt;- rep(Inf, length(X))
+
+for (i in 1:length(X)) {
     # print(i)
     vec_mean[i] &lt;- mean(X[-i])
-}</code></pre>
-<pre><code>Error in eval(expr, envir, enclos): object &#39;X&#39; not found</code></pre>
-<pre class="r"><code># calculate distance
+}
+
+# calculate distance
 sqrt(sum((X - vec_mean)^2))</code></pre>
-<pre><code>Error in eval(expr, envir, enclos): object &#39;X&#39; not found</code></pre>
+<pre><code>[1] 6.028869</code></pre>
 <p>distance calculated against the observed X is only 6.03, which is larger than the Kriging scheme.</p>
 <br>
 <p>
@@ -1686,28 +1843,28 @@ other attached packages:
 loaded via a namespace (and not attached):
  [1] colorspace_2.0-0  ggsignif_0.6.2    ellipsis_0.3.2    rio_0.5.27       
  [5] rprojroot_2.0.2   fs_1.5.0          rstudioapi_0.13   farver_2.1.0     
- [9] remotes_2.4.0     fansi_0.4.2       lubridate_1.7.10  xml2_1.3.2       
-[13] splines_4.0.3     cachem_1.0.4      pkgload_1.2.1     jsonlite_1.7.2   
-[17] workflowr_1.6.2   broom_0.7.9       cluster_2.1.0     dbplyr_2.1.1     
-[21] compiler_4.0.3    httr_1.4.2        backports_1.2.1   assertthat_0.2.1 
-[25] Matrix_1.2-18     fastmap_1.1.0     cli_3.0.1         formatR_1.11     
-[29] later_1.2.0       htmltools_0.5.1.1 prettyunits_1.1.1 tools_4.0.3      
-[33] gtable_0.3.0      glue_1.4.2        Rcpp_1.0.5        carData_3.0-4    
-[37] cellranger_1.1.0  jquerylib_0.1.4   vctrs_0.3.8       nlme_3.1-149     
-[41] crosstalk_1.1.1   xfun_0.29         ps_1.6.0          testthat_3.0.2   
-[45] rvest_1.0.1       lifecycle_1.0.0   rstatix_0.7.0     MASS_7.3-53      
-[49] scales_1.1.1      hms_1.1.0         promises_1.2.0.1  parallel_4.0.3   
-[53] yaml_2.2.1        curl_4.3.2        memoise_2.0.0     sass_0.4.0       
-[57] stringi_1.5.3     highr_0.9         desc_1.3.0        pkgbuild_1.2.0   
-[61] zip_2.1.1         rlang_0.4.10      pkgconfig_2.0.3   rgl_0.107.10     
-[65] evaluate_0.14     labeling_0.4.2    htmlwidgets_1.5.3 tidyselect_1.1.1 
-[69] processx_3.5.1    plyr_1.8.6        R6_2.5.0          generics_0.1.0   
-[73] DBI_1.1.1         pillar_1.6.0      haven_2.4.1       whisker_0.4      
-[77] foreign_0.8-80    withr_2.4.2       mgcv_1.8-33       abind_1.4-5      
-[81] modelr_0.1.8      crayon_1.4.1      car_3.0-11        utf8_1.1.4       
-[85] grid_4.0.3        data.table_1.14.0 callr_3.7.0       git2r_0.28.0     
-[89] reprex_2.0.0      digest_0.6.27     xtable_1.8-4      httpuv_1.6.0     
-[93] munsell_0.5.0     bslib_0.2.5.1     sessioninfo_1.1.1</code></pre>
+ [9] remotes_2.4.0     mvtnorm_1.1-2     fansi_0.4.2       lubridate_1.7.10 
+[13] xml2_1.3.2        splines_4.0.3     cachem_1.0.4      pkgload_1.2.1    
+[17] jsonlite_1.7.2    workflowr_1.6.2   broom_0.7.9       cluster_2.1.0    
+[21] dbplyr_2.1.1      compiler_4.0.3    httr_1.4.2        backports_1.2.1  
+[25] assertthat_0.2.1  Matrix_1.2-18     fastmap_1.1.0     cli_3.0.1        
+[29] formatR_1.11      later_1.2.0       htmltools_0.5.1.1 prettyunits_1.1.1
+[33] tools_4.0.3       gtable_0.3.0      glue_1.4.2        Rcpp_1.0.5       
+[37] carData_3.0-4     cellranger_1.1.0  jquerylib_0.1.4   vctrs_0.3.8      
+[41] nlme_3.1-149      crosstalk_1.1.1   xfun_0.29         ps_1.6.0         
+[45] testthat_3.0.2    rvest_1.0.1       lifecycle_1.0.0   rstatix_0.7.0    
+[49] MASS_7.3-53       scales_1.1.1      hms_1.1.0         promises_1.2.0.1 
+[53] parallel_4.0.3    yaml_2.2.1        curl_4.3.2        memoise_2.0.0    
+[57] sass_0.4.0        stringi_1.5.3     highr_0.9         desc_1.3.0       
+[61] pkgbuild_1.2.0    zip_2.1.1         rlang_0.4.10      pkgconfig_2.0.3  
+[65] rgl_0.107.10      evaluate_0.14     labeling_0.4.2    htmlwidgets_1.5.3
+[69] tidyselect_1.1.1  processx_3.5.1    plyr_1.8.6        R6_2.5.0         
+[73] generics_0.1.0    DBI_1.1.1         pillar_1.6.0      haven_2.4.1      
+[77] whisker_0.4       foreign_0.8-80    withr_2.4.2       mgcv_1.8-33      
+[81] abind_1.4-5       modelr_0.1.8      crayon_1.4.1      car_3.0-11       
+[85] utf8_1.1.4        grid_4.0.3        data.table_1.14.0 callr_3.7.0      
+[89] git2r_0.28.0      reprex_2.0.0      digest_0.6.27     xtable_1.8-4     
+[93] httpuv_1.6.0      munsell_0.5.0     bslib_0.2.5.1     sessioninfo_1.1.1</code></pre>
 </div>
 </div>
 
