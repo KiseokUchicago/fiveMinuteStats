@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Kiseok Lee" />
+
+<meta name="date" content="2022-03-05" />
+
+<title>HW7_Brownian_Motion_Gaussian_process</title>
+
+<script src="site_libs/header-attrs-2.9/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">fiveMinuteStats</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/stephens999/fiveMinuteStats">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">HW7_Brownian_Motion_Gaussian_process</h1>
+<h4 class="author">Kiseok Lee</h4>
+<h4 class="date">2022-03-05</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2022-03-06
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>fiveMinuteStats/analysis/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.6.2). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed12345code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(12345)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed12345code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(12345)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomKiseokUchicagofiveMinuteStatstreeb961ae995f6046e000bba5f33e3d75a9514ae3aftargetblankb961ae9a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/KiseokUchicago/fiveMinuteStats/tree/b961ae995f6046e000bba5f33e3d75a9514ae3af" target="_blank">b961ae9</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomKiseokUchicagofiveMinuteStatstreeb961ae995f6046e000bba5f33e3d75a9514ae3aftargetblankb961ae9a" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version <a href="https://github.com/KiseokUchicago/fiveMinuteStats/tree/b961ae995f6046e000bba5f33e3d75a9514ae3af" target="_blank">b961ae9</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+
+Untracked files:
+    Untracked:  analysis/HW5_HMM_Poisson_processes.Rmd
+    Untracked:  data/
+    Untracked:  texput.log
+
+Unstaged changes:
+    Modified:   analysis/HW4_MCMC.Rmd
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/HW7_Brownian_Motion_Gaussian_process.Rmd</code>) and HTML (<code>docs/HW7_Brownian_Motion_Gaussian_process.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/KiseokUchicago/fiveMinuteStats/blob/b961ae995f6046e000bba5f33e3d75a9514ae3af/analysis/HW7_Brownian_Motion_Gaussian_process.Rmd" target="_blank">b961ae9</a>
+</td>
+<td>
+Kiseok Lee
+</td>
+<td>
+2022-03-06
+</td>
+<td>
+wflow_publish(“analysis/HW7_Brownian_Motion_Gaussian_process.Rmd”)
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="hw7-brownian-motion-gaussian-processes" class="section level2">
+<h2>HW7 Brownian Motion, Gaussian processes</h2>
+<p>Name: <strong>Kiseok Lee</strong><br />
+Date: 3/5/22<br />
+Class: <strong>HGEN 486 Computational Biology</strong></p>
+</div>
+<div id="a.-brownian-motion" class="section level2">
+<h2>A. Brownian Motion</h2>
+</div>
+<div id="a-a-standard-brownian-motion" class="section level2">
+<h2>A-a) Standard Brownian motion</h2>
+<p><span class="math display">\[ X_{t+\mu} | X_t \sim N(0, \mu) \]</span></p>
+<p>Let’s simulate this standard Brownian motion and plot</p>
+<pre class="r"><code>simulate_standard_Brownian = function(length = 1000) {
+    t = c(0, runif(999, min = 0, max = 1))
+    # increasing order
+    t = t[order(t)]
+
+    # Now Brownian motion
+    X = rep(0, length)
+    X[1] = 0  # X(0) = 0
+    for (k in 2:length) {
+        # print(k)
+        X[k] = X[k - 1] + rnorm(1, mean = 0, sd = t[k] - t[k -
+            1])
+    }
+    return(list(X = X, t = t))
+}
+
+set.seed(100)
+standard_sim &lt;- simulate_standard_Brownian(length = 1000)
+
+plot(standard_sim$t, standard_sim$X, xlab = &quot;t&quot;, ylab = &quot;X(t)&quot;,
+    main = paste0(&quot;Standard Brownian motion&quot;), col = &quot;royalblue&quot;)</code></pre>
+<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-2-1.png" width="1056" style="display: block; margin: auto;" /></p>
+</div>
+<div id="a-b-scaled-brownian-motion" class="section level2">
+<h2>A-b) Scaled Brownian motion</h2>
+<p>variance parameter <span class="math display">\[\sigma ^ 2 \]</span></p>
+<p>Markov chain <span class="math display">\[ X_{t+\mu} | X_t \sim N(0, \mu \sigma ^ 2) \]</span></p>
+<p>likelihood of data given $where standard deviation of the normal distribution is <span class="math display">\[ \sigma \sqrt{t_{k} - t_{k-1}} \]</span></p>
+<p><span class="math display">\[ P(X | \sigma) = \prod_{i=2}^k  \frac{1}{\sigma\sqrt{2\pi(t_i-t_{i-1})}} e^{-\frac{1}{2}({\frac{X_i - X_{i-1}}{\sigma \sqrt{(t_i-t_{i-1})}}})^2} \]</span> log-likelihood</p>
+<p><span class="math display">\[ log P(X | \sigma)= \sum_{i=2}^k ( -\frac{1}{2}({\frac{X_i - X_{i-1}}{\sigma \sqrt{(t_i-t_{i-1})}}})^2 - log(\sigma\sqrt{2\pi(t_i-t_{i-1})}) )  \]</span></p>
+<p>Plot the log-likelihood as a function of $</p>
+<pre class="r"><code>calculate_loglikelihood &lt;- function(sigma = 1, standard_sim) {
+    vec_ll &lt;- c()  # vector to store log-likelihood
+    X = standard_sim$X
+    t = standard_sim$t
+
+    # -0.5 * ( (X[2] - X[1]) / (sigma*(t[2]-t[1])))^2 -
+    # log( sigma * sqrt(2*pi* (t[2]-t[1]) )) loop
+    for (i in 2:length(t)) {
+        ll &lt;- -0.5 * ((X[i] - X[i - 1])/(sigma * sqrt(t[i] -
+            t[i - 1])))^2 - log(sigma * sqrt(2 * pi * (t[i] -
+            t[i - 1])))
+        # print(paste0(&#39;front: &#39;, -0.5 * ( (X[i] - X[i-1])
+        # / (sigma*sqrt(t[i]-t[i-1]) ) )^2))
+        # print(paste0(&#39;back: &#39;, - log( sigma * sqrt(2*pi*
+        # (t[i]-t[i-1]) )))) print(paste0(&#39;back inside log:
+        # &#39;, ( sigma * sqrt(2*pi* (t[i]-t[i-1]) ))))
+        # print(ll)
+        vec_ll &lt;- c(vec_ll, ll)
+    }
+    # print(length(vec_ll)) print(sum(vec_ll))
+    return(sum(vec_ll))
+}
+
+# when sigma is 1
+calculate_loglikelihood(sigma = 1, standard_sim)</code></pre>
+<pre><code>[1] 2839.401</code></pre>
+<pre class="r"><code># plot for sigma values between 0 to 1
+vec_loglikelihood &lt;- c()
+vec_sigma &lt;- seq(0, 1, length.out = 1000)[-1]
+for (sig in vec_sigma) {
+    # calculate_loglikelihood(sigma = sig, standard_sim)
+    vec_loglikelihood &lt;- c(vec_loglikelihood, calculate_loglikelihood(sigma = sig,
+        standard_sim))
+}
+
+# plot
+plot(vec_sigma, vec_loglikelihood, xlab = &quot;Sigma&quot;, ylab = &quot;Log-likelihood(sigma)&quot;,
+    main = paste0(&quot;log-likelihood function&quot;), col = &quot;royalblue&quot;)</code></pre>
+<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-3-1.png" width="1056" style="display: block; margin: auto;" /></p>
+<p>Let’s magnify the area between 0 and 0.1</p>
+<pre class="r"><code># plot for sigma values between 0 to 0.1
+vec_loglikelihood &lt;- c()
+vec_sigma &lt;- seq(0, 0.1, length.out = 1000)[-1]
+for (sig in vec_sigma) {
+    # calculate_loglikelihood(sigma = sig, standard_sim)
+    vec_loglikelihood &lt;- c(vec_loglikelihood, calculate_loglikelihood(sigma = sig,
+        standard_sim))
+}
+
+# plot
+plot(vec_sigma, vec_loglikelihood, xlab = &quot;Sigma&quot;, ylab = &quot;Log-likelihood(sigma)&quot;,
+    main = paste0(&quot;log-likelihood function&quot;), col = &quot;royalblue&quot;)</code></pre>
+<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-4-1.png" width="1056" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># find maximum
+max(vec_loglikelihood)</code></pre>
+<pre><code>[1] 5791.146</code></pre>
+<pre class="r"><code>vec_sigma[which.max(vec_loglikelihood)]  # 0.03303303</code></pre>
+<pre><code>[1] 0.03163163</code></pre>
+<p>Let’s magnify the area between 0.001 and 1</p>
+<pre class="r"><code># plot for sigma values between 0.001 to 1
+vec_loglikelihood &lt;- c()
+vec_sigma &lt;- seq(0.001, 1, length.out = 1000)[-1]
+for (sig in vec_sigma) {
+    # calculate_loglikelihood(sigma = sig, standard_sim)
+    vec_loglikelihood &lt;- c(vec_loglikelihood, calculate_loglikelihood(sigma = sig,
+        standard_sim))
+}
+
+# plot
+plot(vec_sigma, vec_loglikelihood, xlab = &quot;Sigma&quot;, ylab = &quot;Log-likelihood(sigma)&quot;,
+    main = paste0(&quot;log-likelihood function&quot;), col = &quot;royalblue&quot;)</code></pre>
+<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-5-1.png" width="1056" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># find maximum
+max(vec_loglikelihood)</code></pre>
+<pre><code>[1] 5791</code></pre>
+<pre class="r"><code>vec_sigma[which.max(vec_loglikelihood)]  # 0.033</code></pre>
+<pre><code>[1] 0.032</code></pre>
+<p>The maximum seems to lie between 0.01 and 0.05. Let’s zoom in between 0.015 and 0.05</p>
+<pre class="r"><code># plot for sigma values between 0.015 to 0.05
+vec_loglikelihood &lt;- c()
+vec_sigma &lt;- seq(0.015, 0.05, length.out = 1000)[-1]
+for (sig in vec_sigma) {
+    # calculate_loglikelihood(sigma = sig, standard_sim)
+    vec_loglikelihood &lt;- c(vec_loglikelihood, calculate_loglikelihood(sigma = sig,
+        standard_sim))
+}
+
+# plot
+plot(vec_sigma, vec_loglikelihood, xlab = &quot;Sigma&quot;, ylab = &quot;Log-likelihood(sigma)&quot;,
+    main = paste0(&quot;log-likelihood function&quot;), col = &quot;royalblue&quot;)</code></pre>
+<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-6-1.png" width="1056" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># find maximum
+max(vec_loglikelihood)</code></pre>
+<pre><code>[1] 5791.147</code></pre>
+<pre class="r"><code>vec_sigma[which.max(vec_loglikelihood)]  # 0.03297297</code></pre>
+<pre><code>[1] 0.03160661</code></pre>
+<p>Maximum log-likelihood is acheived at sigma of 0.033</p>
+</div>
+<div id="a-c-brownian-motion-in-the-tree" class="section level2">
+<h2>A-c) Brownian motion in the tree</h2>
+<p>Consider the tree in Figure 1 of the Mau et al paper <a href="http://www.ncbi.nlm.nih.gov/pubmed/11318142" class="uri">http://www.ncbi.nlm.nih.gov/pubmed/11318142</a> with leafs labelled 1 to 7.</p>
+<p>Brownian motion <span class="math display">\[ X_{5}^i | X_{6}^i \sim N(0, t_6) \]</span></p>
+<p><span class="math display">\[ X_{4}^i | X_{5}^i \sim N(0, t_5) \]</span> <span class="math display">\[ X_{3}^i | X_{5}^i \sim N(0, t_4+t_5) \]</span></p>
+<p><span class="math display">\[ X_{2}^i | X_{3}^i \sim N(0, t_3) \]</span> <span class="math display">\[ X_{1}^i | X_{4}^i \sim N(0, t_4+t_3+t_2) \]</span></p>
+<p><span class="math display">\[ X_{1}^L | X_{4}^i \sim N(0, t_4+t_3+t_2+t_1) \]</span></p>
+<p><span class="math display">\[ X_{4}^L | X_{1}^i \sim N(0, t_1) \]</span></p>
+<p><span class="math display">\[ X_{7}^L | X_{1}^i \sim N(0, t_1) \]</span> <span class="math display">\[ X_{2}^L | X_{3}^i \sim N(0, t_3+t_2+t_1) \]</span></p>
+<p><span class="math display">\[ X_{3}^L | X_{2}^i \sim N(0, t_1) \]</span> <span class="math display">\[ X_{6}^L | X_{2}^i \sim N(0, t_1) \]</span></p>
+<p><span class="math display">\[ X_{5}^L | X_{6}^i \sim N(0, t_6+t_5+t_4+t_3+t_2+t_1) \]</span> ## A-c-1) Simulated value of <span class="math inline">\(X^i\)</span>, <span class="math inline">\(X^L\)</span> given the coalescent times (t1, t2, …, t6)</p>
+<pre class="r"><code>set.seed(1)
+t = rnorm(6, mean = 1, sd = 0.5)
+
+xi6 = 0
+# X_{5}^i | X_{6}^i \sim N(0, t_6)
+xi5 = xi6 + rnorm(1, mean = 0, sd = sqrt(t[6]))
+# X_{4}^i | X_{5}^i \sim N(0, t_5)
+xi4 = xi5 + rnorm(1, mean = 0, sd = sqrt(t[5]))
+# X_{3}^i | X_{5}^i \sim N(0, t_4+t_5)
+xi3 = xi5 + rnorm(1, mean = 0, sd = sqrt(t[5] + t[4]))
+# X_{2}^i | X_{3}^i \sim N(0, t_3)
+xi2 = xi3 + rnorm(1, mean = 0, sd = sqrt(t[3]))
+# X_{1}^i | X_{4}^i \sim N(0, t_4+t_3+t_2)
+xi1 = xi4 + rnorm(1, mean = 0, sd = sqrt(t[4] + t[3] + t[2]))
+# X_{1}^L | X_{4}^i \sim N(0, t_4+t_3+t_2+t_1)
+xL1 = xi4 + rnorm(1, mean = 0, sd = sqrt(t[4] + t[3] + t[2] +
+    t[1]))
+# X_{4}^L | X_{1}^i \sim N(0, t_1)
+xL4 = xi1 + rnorm(1, mean = 0, sd = sqrt(t[1]))
+# X_{7}^L | X_{1}^i \sim N(0, t_1)
+xL7 = xi1 + rnorm(1, mean = 0, sd = sqrt(t[1]))
+# X_{2}^L | X_{3}^i \sim N(0, t_3+t_2+t_1)
+xL2 = xi3 + rnorm(1, mean = 0, sd = sqrt(t[3] + t[2] + t[1]))
+# X_{3}^L | X_{2}^i \sim N(0, t_1)
+xL3 = xi2 + rnorm(1, mean = 0, sd = sqrt(t[1]))
+# X_{6}^L | X_{2}^i \sim N(0, t_1)
+xL6 = xi2 + rnorm(1, mean = 0, sd = sqrt(t[1]))
+# X_{5}^L | X_{6}^i \sim N(0, t_6+t_5+t_4+t_3+t_2+t_1)
+xL5 = xi6 + rnorm(1, mean = 0, sd = sqrt(t[6] + t[5] + t[4] +
+    t[3] + t[2] + t[1]))
+
+vec_x = c(xi6, xi5, xi4, xi3, xi2, xi1, xL1, xL4, xL7, xL2, xL3,
+    xL6, xL5)
+
+vec_x</code></pre>
+<pre><code> [1] 0.000000 0.374327 1.171155 1.365339 1.132325 3.987960 1.966131 3.473127
+ [9] 2.152599 3.093777 1.095087 1.118907 2.295083</code></pre>
+<pre class="r"><code># write it into function
+simulate_xi_xL &lt;- function(t) {
+    xi6 = 0
+    # X_{5}^i | X_{6}^i \sim N(0, t_6)
+    xi5 = xi6 + rnorm(1, mean = 0, sd = sqrt(t[6]))
+    # X_{4}^i | X_{5}^i \sim N(0, t_5)
+    xi4 = xi5 + rnorm(1, mean = 0, sd = sqrt(t[5]))
+    # X_{3}^i | X_{5}^i \sim N(0, t_4+t_5)
+    xi3 = xi5 + rnorm(1, mean = 0, sd = sqrt(t[5] + t[4]))
+    # X_{2}^i | X_{3}^i \sim N(0, t_3)
+    xi2 = xi3 + rnorm(1, mean = 0, sd = sqrt(t[3]))
+    # X_{1}^i | X_{4}^i \sim N(0, t_4+t_3+t_2)
+    xi1 = xi4 + rnorm(1, mean = 0, sd = sqrt(t[4] + t[3] + t[2]))
+    # X_{1}^L | X_{4}^i \sim N(0, t_4+t_3+t_2+t_1)
+    xL1 = xi4 + rnorm(1, mean = 0, sd = sqrt(t[4] + t[3] + t[2] +
+        t[1]))
+    # X_{4}^L | X_{1}^i \sim N(0, t_1)
+    xL4 = xi1 + rnorm(1, mean = 0, sd = sqrt(t[1]))
+    # X_{7}^L | X_{1}^i \sim N(0, t_1)
+    xL7 = xi1 + rnorm(1, mean = 0, sd = sqrt(t[1]))
+    # X_{2}^L | X_{3}^i \sim N(0, t_3+t_2+t_1)
+    xL2 = xi3 + rnorm(1, mean = 0, sd = sqrt(t[3] + t[2] + t[1]))
+    # X_{3}^L | X_{2}^i \sim N(0, t_1)
+    xL3 = xi2 + rnorm(1, mean = 0, sd = sqrt(t[1]))
+    # X_{6}^L | X_{2}^i \sim N(0, t_1)
+    xL6 = xi2 + rnorm(1, mean = 0, sd = sqrt(t[1]))
+    # X_{5}^L | X_{6}^i \sim N(0, t_6+t_5+t_4+t_3+t_2+t_1)
+    xL5 = xi6 + rnorm(1, mean = 0, sd = sqrt(t[6] + t[5] + t[4] +
+        t[3] + t[2] + t[1]))
+
+    vec_x = c(xi6, xi5, xi4, xi3, xi2, xi1, xL1, xL4, xL7, xL2,
+        xL3, xL6, xL5)
+
+    return(vec_x)
+}</code></pre>
+</div>
+<div id="a-c-2-assume-tj1-and-compute-covariance-matrix-for-x" class="section level2">
+<h2>A-c-2) assume tj=1 and compute covariance matrix for x</h2>
+<p>Here, we need to create matrix A. Let’s assign z1, z2, z3, z4, z5, …, z11, z12 as links that connect nodes. z0: root z1: connecting xi6, xi5<br />
+z2: connecting xi5, xi4<br />
+z3: connecting xi5, xi3<br />
+z4: connecting xi3, xi2<br />
+z5: connecting xi4, xi1<br />
+z6: connecting xi4, xL1<br />
+z7: connecting xi1, xL4<br />
+z8: connecting xi1, xL7<br />
+z9: connecting xi3, xL2<br />
+z10: connecting xi2, xL3<br />
+z11: connecting xi2, xL6<br />
+z12: connecting xi6, xL5<br />
+</p>
+<p>Then, each row of A can be constructed based on the linear combination of links that each node can be reached from root (xi6)</p>
+<pre class="r"><code>t = rep(1, 6)
+simulate_xi_xL(t)</code></pre>
+<pre><code> [1]  0.0000000  0.8212212  1.4151225  2.1208515  2.9029878  1.5442729
+ [7] -2.5635809  2.1640986  1.4881441  1.8510057  1.4322354  2.4248377
+[13]  1.0237436</code></pre>
+<pre class="r"><code># length of link z (squre root of the time)
+length_z = sqrt(c(1, 1, 1, 2, 1, 3, 4, 1, 1, 3, 2, 2, 6))
+
+# xi6
+row1 = c(1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+row1 = row1 * length_z
+
+# xi5
+row2 = c(1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+row2 = row2 * length_z
+
+# xi4
+row3 = c(1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+row3 = row3 * length_z
+
+# xi3
+row4 = c(1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+row4 = row4 * length_z
+
+# xi2
+row5 = c(1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0)
+row5 = row5 * length_z
+
+# xi1
+row6 = c(1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0)
+row6 = row6 * length_z
+
+# xL1
+row7 = c(1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0)
+row7 = row7 * length_z
+
+# xL4
+row8 = c(1, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0)
+row8 = row8 * length_z
+
+# xL7
+row9 = c(1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0)
+row9 = row9 * length_z
+
+# xL2
+row10 = c(1, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0)
+row10 = row10 * length_z
+
+# xL3
+row11 = c(1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0)
+row11 = row11 * length_z
+
+# xL6
+row12 = c(1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0)
+row12 = row12 * length_z
+
+# xL5
+row13 = c(1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1)
+row13 = row13 * length_z
+
+mat_A = rbind(row1, row2, row3, row4, row5, row6, row7, row8,
+    row9, row10, row11, row12, row13)
+
+mat_covariance = mat_A %*% t(mat_A)
+mat_covariance</code></pre>
+<pre><code>      row1 row2 row3 row4 row5 row6 row7 row8 row9 row10 row11 row12 row13
+row1     1    1    1    1    1    1    1    1    1     1     1     1     1
+row2     1    2    2    2    2    2    2    2    2     2     2     2     1
+row3     1    2    3    2    2    3    3    3    3     2     2     2     1
+row4     1    2    2    4    4    2    2    2    2     4     4     4     1
+row5     1    2    2    4    5    2    2    2    2     4     5     5     1
+row6     1    2    3    2    2    6    3    6    6     2     2     2     1
+row7     1    2    3    2    2    3    7    3    3     2     2     2     1
+row8     1    2    3    2    2    6    3    7    6     2     2     2     1
+row9     1    2    3    2    2    6    3    6    7     2     2     2     1
+row10    1    2    2    4    4    2    2    2    2     7     4     4     1
+row11    1    2    2    4    5    2    2    2    2     4     7     5     1
+row12    1    2    2    4    5    2    2    2    2     4     5     7     1
+row13    1    1    1    1    1    1    1    1    1     1     1     1     7</code></pre>
+</div>
+<div id="a-c-3-confirm-that-my-simulation-agrees-with-covariance-matrix" class="section level2">
+<h2>A-c-3) Confirm that my simulation agrees with covariance matrix</h2>
+<pre class="r"><code># simulate 10000 times
+t = rep(1, 6)
+
+mat_data &lt;- simulate_xi_xL(t)
+
+for (i in 1:9999) {
+    mat_data &lt;- rbind(mat_data, simulate_xi_xL(t))
+}
+
+dim(mat_data)</code></pre>
+<pre><code>[1] 10000    13</code></pre>
+<pre class="r"><code>colnames(mat_data) = c(&quot;xi6&quot;, &quot;xi5&quot;, &quot;xi4&quot;, &quot;xi3&quot;, &quot;xi2&quot;, &quot;xi1&quot;,
+    &quot;xL1&quot;, &quot;xL4&quot;, &quot;xL7&quot;, &quot;xL2&quot;, &quot;xL3&quot;, &quot;xL6&quot;, &quot;xL5&quot;)
+
+cov(mat_data)</code></pre>
+<pre><code>    xi6         xi5        xi4        xi3          xi2        xi1        xL1
+xi6   0  0.00000000 0.00000000  0.0000000 0.0000000000 0.00000000 0.00000000
+xi5   0  0.98814606 0.99220429  0.9728198 0.9613143587 1.01047440 0.97878373
+xi4   0  0.99220429 1.97613137  0.9947283 0.9750676112 1.99453631 1.99317204
+xi3   0  0.97281984 0.99472826  2.9991153 2.9926083214 0.99486406 0.97310723
+xi2   0  0.96131436 0.97506761  2.9926083 4.0027913166 0.97897520 0.93942000
+xi1   0  1.01047440 1.99453631  0.9948641 0.9789751997 5.04548030 1.99207642
+xL1   0  0.97878373 1.99317204  0.9731072 0.9394200037 1.99207642 6.06496882
+xL4   0  1.01221116 1.98958593  0.9840289 0.9640890336 5.01548743 1.99621232
+xL7   0  1.03650946 2.02177264  1.0196828 0.9932661457 5.06574058 1.98823263
+xL2   0  0.97492689 1.01199244  2.9991436 2.9632574952 1.00257209 0.98682364
+xL3   0  0.95335171 0.96302536  2.9624761 3.9756320300 0.94435776 0.93240137
+xL6   0  0.96501541 0.98304424  3.0011934 4.0239840359 0.98953933 0.95462845
+xL5   0 -0.02728058 0.02933652 -0.0563075 0.0004173819 0.07995824 0.03207477
+           xL4       xL7        xL2        xL3         xL6           xL5
+xi6 0.00000000 0.0000000  0.0000000 0.00000000  0.00000000  0.0000000000
+xi5 1.01221116 1.0365095  0.9749269 0.95335171  0.96501541 -0.0272805834
+xi4 1.98958593 2.0217726  1.0119924 0.96302536  0.98304424  0.0293365205
+xi3 0.98402888 1.0196828  2.9991436 2.96247607  3.00119339 -0.0563075039
+xi2 0.96408903 0.9932661  2.9632575 3.97563203  4.02398404  0.0004173819
+xi1 5.01548743 5.0657406  1.0025721 0.94435776  0.98953933  0.0799582371
+xL1 1.99621232 1.9882326  0.9868236 0.93240137  0.95462845  0.0320747747
+xL4 5.97138303 5.0342364  0.9641668 0.93751436  0.95925286  0.0994882314
+xL7 5.03423637 6.0911917  1.0356559 0.96218163  0.99930259  0.0714794020
+xL2 0.96416675 1.0356559  6.0510236 2.95052136  2.95466706 -0.1287465443
+xL3 0.93751436 0.9621816  2.9505214 4.95252025  3.99328948  0.0361787906
+xL6 0.95925286 0.9993026  2.9546671 3.99328948  5.06388238 -0.0288493484
+xL5 0.09948823 0.0714794 -0.1287465 0.03617879 -0.02884935  5.9950143442</code></pre>
+<pre class="r"><code># covariance matrix with simulation
+library(lattice)
+levelplot(cov(mat_data), main = &quot;simulation (Problem A-c-1)&quot;)</code></pre>
+<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-9-1.png" width="1056" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>a &lt;- levelplot(cov(mat_data), main = &quot;simulation (Problem A-c-1)&quot;)
+
+# covariance matrix with logical structuring of z get
+# matrix from problem A-c-2)
+colnames(mat_covariance) = c(&quot;xi6&quot;, &quot;xi5&quot;, &quot;xi4&quot;, &quot;xi3&quot;, &quot;xi2&quot;,
+    &quot;xi1&quot;, &quot;xL1&quot;, &quot;xL4&quot;, &quot;xL7&quot;, &quot;xL2&quot;, &quot;xL3&quot;, &quot;xL6&quot;, &quot;xL5&quot;)
+rownames(mat_covariance) = c(&quot;xi6&quot;, &quot;xi5&quot;, &quot;xi4&quot;, &quot;xi3&quot;, &quot;xi2&quot;,
+    &quot;xi1&quot;, &quot;xL1&quot;, &quot;xL4&quot;, &quot;xL7&quot;, &quot;xL2&quot;, &quot;xL3&quot;, &quot;xL6&quot;, &quot;xL5&quot;)
+levelplot(mat_covariance, main = &quot;logical structuring of z (Problem A-c-2))&quot;)</code></pre>
+<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-9-2.png" width="1056" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>b &lt;- levelplot(mat_covariance, main = &quot;logical structuring of z (Problem A-c-2))&quot;)
+
+# plot and compare
+library(gridExtra)
+grid.arrange(a, b, ncol = 2)</code></pre>
+<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-9-3.png" width="1056" style="display: block; margin: auto;" /></p>
+<p>They roughly agree.</p>
+</div>
+<div id="a-c-4-precision-matrix" class="section level2">
+<h2>A-c-4) Precision matrix</h2>
+<p>Calculate the precision matrix with the covariance matrix from problem A-c-2</p>
+<pre class="r"><code>library(matlib)
+# covariance matrix from the problem A-c-2
+mat_Omega &lt;- inv(mat_covariance)
+colnames(mat_Omega) = c(&quot;xi6&quot;, &quot;xi5&quot;, &quot;xi4&quot;, &quot;xi3&quot;, &quot;xi2&quot;, &quot;xi1&quot;,
+    &quot;xL1&quot;, &quot;xL4&quot;, &quot;xL7&quot;, &quot;xL2&quot;, &quot;xL3&quot;, &quot;xL6&quot;, &quot;xL5&quot;)
+rownames(mat_Omega) = c(&quot;xi6&quot;, &quot;xi5&quot;, &quot;xi4&quot;, &quot;xi3&quot;, &quot;xi2&quot;, &quot;xi1&quot;,
+    &quot;xL1&quot;, &quot;xL4&quot;, &quot;xL7&quot;, &quot;xL2&quot;, &quot;xL3&quot;, &quot;xL6&quot;, &quot;xL5&quot;)
+
+levelplot(mat_Omega, main = &quot;Heatmap of Precision matrix (total)&quot;)</code></pre>
+<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-10-1.png" width="1056" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>p1 &lt;- levelplot(mat_Omega, main = &quot;Heatmap of Precision matrix (total)&quot;)
+
+# find covariance matrix for xi
+cov_xi &lt;- mat_covariance[c(&quot;xi6&quot;, &quot;xi5&quot;, &quot;xi4&quot;, &quot;xi3&quot;, &quot;xi2&quot;,
+    &quot;xi1&quot;), c(&quot;xi6&quot;, &quot;xi5&quot;, &quot;xi4&quot;, &quot;xi3&quot;, &quot;xi2&quot;, &quot;xi1&quot;)]
+cov_xi</code></pre>
+<pre><code>    xi6 xi5 xi4 xi3 xi2 xi1
+xi6   1   1   1   1   1   1
+xi5   1   2   2   2   2   2
+xi4   1   2   3   2   2   3
+xi3   1   2   2   4   4   2
+xi2   1   2   2   4   5   2
+xi1   1   2   3   2   2   6</code></pre>
+<pre class="r"><code># inverse
+inv(cov_xi)</code></pre>
+<pre><code>                                          
+[1,]  2 -1.0  0.0000000  0.0  0  0.0000000
+[2,] -1  2.5 -1.0000000 -0.5  0  0.0000000
+[3,]  0 -1.0  1.3333333  0.0  0 -0.3333333
+[4,]  0 -0.5  0.0000000  1.5 -1  0.0000000
+[5,]  0  0.0  0.0000000 -1.0  1  0.0000000
+[6,]  0  0.0 -0.3333333  0.0  0  0.3333333</code></pre>
+<pre class="r"><code>levelplot(cov_xi, main = &quot;Heatmap of Precision matrix of Xi&quot;)</code></pre>
+<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-10-2.png" width="1056" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>p2 &lt;- levelplot(cov_xi, main = &quot;Heatmap of Precision matrix of Xi&quot;)
+
+
+# find covariance matrix for xL
+cov_xL &lt;- mat_covariance[c(&quot;xL1&quot;, &quot;xL4&quot;, &quot;xL7&quot;, &quot;xL2&quot;, &quot;xL3&quot;,
+    &quot;xL6&quot;, &quot;xL5&quot;), c(&quot;xL1&quot;, &quot;xL4&quot;, &quot;xL7&quot;, &quot;xL2&quot;, &quot;xL3&quot;, &quot;xL6&quot;,
+    &quot;xL5&quot;)]
+cov_xL</code></pre>
+<pre><code>    xL1 xL4 xL7 xL2 xL3 xL6 xL5
+xL1   7   3   3   2   2   2   1
+xL4   3   7   6   2   2   2   1
+xL7   3   6   7   2   2   2   1
+xL2   2   2   2   7   4   4   1
+xL3   2   2   2   4   7   5   1
+xL6   2   2   2   4   5   7   1
+xL5   1   1   1   1   1   1   7</code></pre>
+<pre class="r"><code># inverse
+inv(cov_xL)</code></pre>
+<pre><code>                                                                            
+[1,]  0.18721461 -0.03587736 -0.03587736 -0.01696021 -0.01272016 -0.01272016
+[2,] -0.03587736  0.55092722 -0.44907278 -0.00969155 -0.00726866 -0.00726866
+[3,] -0.03587736 -0.44907278  0.55092722 -0.00969155 -0.00726866 -0.00726866
+[4,] -0.01696021 -0.00969155 -0.00969155  0.23697698 -0.07226726 -0.07226726
+[5,] -0.01272016 -0.00726866 -0.00726866 -0.07226726  0.32079955 -0.17920045
+[6,] -0.01272016 -0.00726866 -0.00726866 -0.07226726 -0.17920045  0.32079955
+[7,] -0.01043705 -0.00596403 -0.00596403 -0.00801416 -0.00601062 -0.00601062
+                
+[1,] -0.01043705
+[2,] -0.00596403
+[3,] -0.00596403
+[4,] -0.00801416
+[5,] -0.00601062
+[6,] -0.00601062
+[7,]  0.14891436</code></pre>
+<pre class="r"><code>levelplot(cov_xL, main = &quot;Heatmap of Precision matrix of X L&quot;)</code></pre>
+<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-10-3.png" width="1056" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>p3 &lt;- levelplot(cov_xL, main = &quot;Heatmap of Precision matrix of X L&quot;)
+
+# plot simultaneously
+library(gridExtra)
+grid.arrange(p1, p2, p3, ncol = 3)</code></pre>
+<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-10-4.png" width="1056" style="display: block; margin: auto;" /></p>
+<p>Calculate the precision matrix with the covariance matrix from problem A-c-3 (simulation-based)</p>
+<pre class="r"><code>library(matlib)
+# covariance matrix from the problem A-c-3
+library(pracma)
+mat_covariance_sim &lt;- cov(mat_data)
+mat_Omega &lt;- pinv(mat_covariance_sim)  # use pseudo inverse, due to the matrix being singular
+colnames(mat_Omega) = c(&quot;xi6&quot;, &quot;xi5&quot;, &quot;xi4&quot;, &quot;xi3&quot;, &quot;xi2&quot;, &quot;xi1&quot;,
+    &quot;xL1&quot;, &quot;xL4&quot;, &quot;xL7&quot;, &quot;xL2&quot;, &quot;xL3&quot;, &quot;xL6&quot;, &quot;xL5&quot;)
+rownames(mat_Omega) = c(&quot;xi6&quot;, &quot;xi5&quot;, &quot;xi4&quot;, &quot;xi3&quot;, &quot;xi2&quot;, &quot;xi1&quot;,
+    &quot;xL1&quot;, &quot;xL4&quot;, &quot;xL7&quot;, &quot;xL2&quot;, &quot;xL3&quot;, &quot;xL6&quot;, &quot;xL5&quot;)
+
+levelplot(mat_Omega, main = &quot;Heatmap of Precision matrix (total, simulation)&quot;)</code></pre>
+<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-11-1.png" width="1056" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>p1 &lt;- levelplot(mat_Omega, main = &quot;Heatmap of Precision matrix (total, simulation)&quot;)
+
+# find covariance matrix for xi
+cov_xi &lt;- mat_covariance_sim[c(&quot;xi6&quot;, &quot;xi5&quot;, &quot;xi4&quot;, &quot;xi3&quot;, &quot;xi2&quot;,
+    &quot;xi1&quot;), c(&quot;xi6&quot;, &quot;xi5&quot;, &quot;xi4&quot;, &quot;xi3&quot;, &quot;xi2&quot;, &quot;xi1&quot;)]
+cov_xi</code></pre>
+<pre><code>    xi6       xi5       xi4       xi3       xi2       xi1
+xi6   0 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000
+xi5   0 0.9881461 0.9922043 0.9728198 0.9613144 1.0104744
+xi4   0 0.9922043 1.9761314 0.9947283 0.9750676 1.9945363
+xi3   0 0.9728198 0.9947283 2.9991153 2.9926083 0.9948641
+xi2   0 0.9613144 0.9750676 2.9926083 4.0027913 0.9789752
+xi1   0 1.0104744 1.9945363 0.9948641 0.9789752 5.0454803</code></pre>
+<pre class="r"><code># inverse
+pinv(cov_xi)</code></pre>
+<pre><code>     [,1]         [,2]         [,3]         [,4]         [,5]         [,6]
+[1,]    0  0.000000000  0.000000000  0.000000000  0.000000000  0.000000000
+[2,]    0  2.498547547 -1.007178925 -0.479070591  0.005629627 -0.008872205
+[3,]    0 -1.007178925  1.350773560 -0.021357096  0.009491706 -0.329895876
+[4,]    0 -0.479070591 -0.021357096  1.478581274 -0.986201637  0.004194972
+[5,]    0  0.005629627  0.009491706 -0.986201637  0.983795465 -0.001307100
+[6,]    0 -0.008872205 -0.329895876  0.004194972 -0.001307100  0.329812135</code></pre>
+<pre class="r"><code>levelplot(cov_xi, main = &quot;Heatmap of Precision matrix of Xi(simulation)&quot;)</code></pre>
+<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-11-2.png" width="1056" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>p2 &lt;- levelplot(cov_xi, main = &quot;Heatmap of Precision matrix of Xi(simulation)&quot;)
+
+
+# find covariance matrix for xL
+cov_xL &lt;- mat_covariance_sim[c(&quot;xL1&quot;, &quot;xL4&quot;, &quot;xL7&quot;, &quot;xL2&quot;, &quot;xL3&quot;,
+    &quot;xL6&quot;, &quot;xL5&quot;), c(&quot;xL1&quot;, &quot;xL4&quot;, &quot;xL7&quot;, &quot;xL2&quot;, &quot;xL3&quot;, &quot;xL6&quot;,
+    &quot;xL5&quot;)]
+cov_xL</code></pre>
+<pre><code>           xL1        xL4       xL7        xL2        xL3         xL6
+xL1 6.06496882 1.99621232 1.9882326  0.9868236 0.93240137  0.95462845
+xL4 1.99621232 5.97138303 5.0342364  0.9641668 0.93751436  0.95925286
+xL7 1.98823263 5.03423637 6.0911917  1.0356559 0.96218163  0.99930259
+xL2 0.98682364 0.96416675 1.0356559  6.0510236 2.95052136  2.95466706
+xL3 0.93240137 0.93751436 0.9621816  2.9505214 4.95252025  3.99328948
+xL6 0.95462845 0.95925286 0.9993026  2.9546671 3.99328948  5.06388238
+xL5 0.03207477 0.09948823 0.0714794 -0.1287465 0.03617879 -0.02884935
+            xL5
+xL1  0.03207477
+xL4  0.09948823
+xL7  0.07147940
+xL2 -0.12874654
+xL3  0.03617879
+xL6 -0.02884935
+xL5  5.99501434</code></pre>
+<pre class="r"><code># inverse
+inv(cov_xL)</code></pre>
+<pre><code>              xL1           xL4           xL7           xL2           xL3
+xL1  0.1904658106 -0.0350043655 -0.0282459360 -0.0114434152 -0.0087769914
+xL4 -0.0350043655  0.5601755914 -0.4494152622 -0.0006838099 -0.0090003115
+xL7 -0.0282459360 -0.4494152622  0.5486840302 -0.0124417786 -0.0007934824
+xL2 -0.0114434152 -0.0006838099 -0.0124417786  0.2455493154 -0.0822604594
+xL3 -0.0087769914 -0.0090003115 -0.0007934824 -0.0822604594  0.5848713467
+xL6 -0.0101047266 -0.0033528188 -0.0099296077 -0.0736294322 -0.4097462457
+xL5 -0.0003427676 -0.0037269856  0.0007570147  0.0056363427 -0.0070621912
+             xL6           xL5
+xL1 -0.010104727 -0.0003427676
+xL4 -0.003352819 -0.0037269856
+xL7 -0.009929608  0.0007570147
+xL2 -0.073629432  0.0056363427
+xL3 -0.409746246 -0.0070621912
+xL6  0.568078388  0.0038533211
+xL5  0.003853321  0.1670421360</code></pre>
+<pre class="r"><code>levelplot(cov_xL, main = &quot;Heatmap of Precision matrix of X L(simulation)&quot;)</code></pre>
+<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-11-3.png" width="1056" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>p3 &lt;- levelplot(cov_xL, main = &quot;Heatmap of Precision matrix of X L(simulation)&quot;)
+
+# plot simultaneously
+library(gridExtra)
+grid.arrange(p1, p2, p3, ncol = 3)</code></pre>
+<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-11-4.png" width="1056" style="display: block; margin: auto;" /></p>
+<p>Both the simulation-based and the graphical model-based covariance matrix produces similar precision matrix.<br />
+</p>
+<p>Component of precision matrix is zero if and only if <span class="math inline">\(X_i\)</span> and <span class="math inline">\(X_j\)</span> are conditionally independent given all other coordinates of X.<br />
+Therefore, sparsity patterns depends on the conditional dependence/independence of Xs.<br />
+</p>
+<ol style="list-style-type: decimal">
+<li><p>When we look at the “Precision matrix of <span class="math inline">\(X^i\)</span>”, we can see that the sparsity pattern agrees with the Graphical model. In the heatmap, Ignore the diagonal (topright - bottomleft direction), since those are the variance of the same <span class="math inline">\(X_i\)</span>. In the graphical model, <span class="math inline">\(X_1\)</span> is conditionally dependent on <span class="math inline">\(X_4\)</span> given all other variables. Also, <span class="math inline">\(X_2\)</span> is conditionally dependent on <span class="math inline">\(X_3\)</span> given all other variables. We can see that these two relationship rendering high <span class="math inline">\(\Omega_ij\)</span> in the precision matrix, whereas other components are close to 0.</p></li>
+<li><p>When we look at the “Precision matrix of <span class="math inline">\(X^L\)</span>”, we can see that the sparsity pattern agrees with the Graphical model. In the graphical model, <span class="math inline">\(X_1\)</span>, <span class="math inline">\(X_4\)</span>, <span class="math inline">\(X_7\)</span> are in the same clade. We can see that in the precision matrix heatmap, <span class="math inline">\(X_1\)</span>, <span class="math inline">\(X_4\)</span>, <span class="math inline">\(X_7\)</span> can be clustered due to its relatively high <span class="math inline">\(\Omega_ij\)</span> value. Also, <span class="math inline">\(X_2\)</span>, <span class="math inline">\(X_3\)</span>, <span class="math inline">\(X_6\)</span> are in the same clade, which is reflected in the precision matrix as well. On the contrary, the leafs that are not in the same clade, especially <span class="math inline">\(X_5\)</span> (sort of an outgroup of the tree) has low <span class="math inline">\(\Omega_ij\)</span> with all other leafs.</p></li>
+</ol>
+</div>
+<div id="b.-spatial-gaussian-processes." class="section level2">
+<h2>B. Spatial Gaussian Processes.</h2>
+<p>Consider the data from <a href="http://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.0030339" class="uri">http://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.0030339</a>, available at <a href="https://github.com/stephens999/hgen48600/tree/master/data/CCR5" class="uri">https://github.com/stephens999/hgen48600/tree/master/data/CCR5</a> which you can read into R using code from <a href="https://stephens999.github.io/hgen48600/ccr5.html" class="uri">https://stephens999.github.io/hgen48600/ccr5.html</a><br />
+</p>
+<p>Read the data.</p>
+<pre class="r"><code># load data
+ccr5 = read.table(&quot;data/CCR5.freq.txt&quot;, header = TRUE)</code></pre>
+<pre><code>Error in file(file, &quot;rt&quot;): cannot open the connection</code></pre>
+<pre class="r"><code>ccr5[, 1] = ifelse(ccr5[, 1] &gt; 180, ccr5[, 1] - 360, ccr5[, 1])  # changes longitudes&gt;180 to negative</code></pre>
+<pre><code>Error in ifelse(ccr5[, 1] &gt; 180, ccr5[, 1] - 360, ccr5[, 1]): object &#39;ccr5&#39; not found</code></pre>
+</div>
+<div id="b-a" class="section level2">
+<h2>B-a)</h2>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.0.3 (2020-10-10)
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+Running under: Windows 10 x64 (build 22000)
+
+Matrix products: default
+
+locale:
+[1] LC_COLLATE=English_United States.1252 
+[2] LC_CTYPE=English_United States.1252   
+[3] LC_MONETARY=English_United States.1252
+[4] LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.1252    
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] pracma_2.3.3       matlib_0.9.4       gridExtra_2.3      rmarkdown_2.9     
+ [5] ggpubr_0.4.0       ggrepel_0.9.1      ape_5.5            openxlsx_4.2.3    
+ [9] devtools_2.4.0     usethis_2.0.1      gtools_3.8.2       reshape2_1.4.4    
+[13] readxl_1.3.1       magrittr_2.0.1     forcats_0.5.1      stringr_1.4.0     
+[17] purrr_0.3.4        readr_1.4.0        tidyr_1.1.3        tibble_3.0.4      
+[21] tidyverse_1.3.1    vegan_2.5-7        lattice_0.20-41    permute_0.9-5     
+[25] RColorBrewer_1.1-2 ggplot2_3.3.5      dplyr_1.0.5        knitr_1.37        
+
+loaded via a namespace (and not attached):
+ [1] colorspace_2.0-0  ggsignif_0.6.2    ellipsis_0.3.2    rio_0.5.27       
+ [5] rprojroot_2.0.2   fs_1.5.0          rstudioapi_0.13   remotes_2.4.0    
+ [9] fansi_0.4.2       lubridate_1.7.10  xml2_1.3.2        splines_4.0.3    
+[13] cachem_1.0.4      pkgload_1.2.1     jsonlite_1.7.2    workflowr_1.6.2  
+[17] broom_0.7.9       cluster_2.1.0     dbplyr_2.1.1      compiler_4.0.3   
+[21] httr_1.4.2        backports_1.2.1   assertthat_0.2.1  Matrix_1.2-18    
+[25] fastmap_1.1.0     cli_3.0.1         formatR_1.11      later_1.2.0      
+[29] htmltools_0.5.1.1 prettyunits_1.1.1 tools_4.0.3       gtable_0.3.0     
+[33] glue_1.4.2        Rcpp_1.0.5        carData_3.0-4     cellranger_1.1.0 
+[37] jquerylib_0.1.4   vctrs_0.3.8       nlme_3.1-149      crosstalk_1.1.1  
+[41] xfun_0.29         ps_1.6.0          testthat_3.0.2    rvest_1.0.1      
+[45] lifecycle_1.0.0   rstatix_0.7.0     MASS_7.3-53       scales_1.1.1     
+[49] hms_1.1.0         promises_1.2.0.1  parallel_4.0.3    yaml_2.2.1       
+[53] curl_4.3.2        memoise_2.0.0     sass_0.4.0        stringi_1.5.3    
+[57] highr_0.9         desc_1.3.0        pkgbuild_1.2.0    zip_2.1.1        
+[61] rlang_0.4.10      pkgconfig_2.0.3   rgl_0.107.10      evaluate_0.14    
+[65] htmlwidgets_1.5.3 tidyselect_1.1.1  processx_3.5.1    plyr_1.8.6       
+[69] R6_2.5.0          generics_0.1.0    DBI_1.1.1         pillar_1.6.0     
+[73] haven_2.4.1       whisker_0.4       foreign_0.8-80    withr_2.4.2      
+[77] mgcv_1.8-33       abind_1.4-5       modelr_0.1.8      crayon_1.4.1     
+[81] car_3.0-11        utf8_1.1.4        grid_4.0.3        data.table_1.14.0
+[85] callr_3.7.0       git2r_0.28.0      reprex_2.0.0      digest_0.6.27    
+[89] xtable_1.8-4      httpuv_1.6.0      munsell_0.5.0     bslib_0.2.5.1    
+[93] sessioninfo_1.1.1</code></pre>
+</div>
+</div>
+
+<hr>
+<p>
+    This site was created with <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+</p>
+<hr>
+
+<!-- To enable disqus, uncomment the section below and provide your disqus_shortname -->
+
+<!-- disqus
+  <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'rmarkdown'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+-->
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
