@@ -47,7 +47,7 @@ mytheme <- theme_bw() +
   theme(axis.title.x = element_text(size = 17,hjust = 0.5, family="serif")) + 
   theme(axis.title.y = element_text(size = 17,hjust = 0.5, family="serif")) + 
   theme(axis.text.x = element_text(hjust = 0.5, vjust=0.3,size=13, family="serif"))+
-  theme(axis.text.y = element_text(size=10, family="serif"))+
+  theme(axis.text.y = element_text(size=13, family="serif"))+
   theme(panel.grid.major = element_blank()) +
   theme(panel.grid.minor = element_blank(),panel.background=element_blank(),panel.border=element_blank(),plot.background=element_blank())+
   theme(axis.ticks = element_line(size = 1.1))
@@ -536,18 +536,185 @@ Therefore, sparsity patterns depends on the conditional dependence/independence 
 
 Consider the data from http://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.0030339, available at https://github.com/stephens999/hgen48600/tree/master/data/CCR5 which you can read into R using code from https://stephens999.github.io/hgen48600/ccr5.html \
 
-Read the data.
+Read and transform the data.
 ```{r}
 # load data
 ccr5 = read.table("data/CCR5.freq.txt",header=TRUE)
 ccr5[,1] = ifelse(ccr5[,1]>180,ccr5[,1]-360,ccr5[,1]) # changes longitudes>180 to negative
 
+# transform frequency
+ccr5$x = log(ccr5$Freq / (1-ccr5$Freq))
+# note that some x are -Inf
 
-
-
+# remove -Inf values from the dataset (This is to ensure that dmvnorm works in the later part)
+ccr5 = ccr5[ccr5$x != -Inf,]
 ```
 
 
-## B-a) 
+## B-a) Covariance matrix given value of a
+
+$$ \Sigma(y_1, y_2) = K(d(y_1, y_2)) = a_1 exp(-(d/a_2)^2) $$
+
+```{r}
+# compute distance matrix (euclidean distance)
+rownames(ccr5)
+y_ccr5 <- ccr5[,c("Long","Lat")]
+mat_d <- dist(y_ccr5, diag=T, upper=T)
+class(mat_d)
+mat_d <- as.matrix(mat_d)
+
+a1 = 1
+a2 = 1
+a = c(a1, a2)
+
+# compute covariance matrix with distance matrix
+mat_c <- a1*exp(-(mat_d/a2)^2)
+class(mat_c)
+
+# is it positive semi-definite?
+eigen(mat_c, only.values = T)$values
+
+any(eigen(mat_c, only.values = T)$values < 0)
+
+# check again with function
+library(matrixcalc)
+is.positive.semi.definite(mat_c, tol=1e-8)
+
+```
+
+The resulting covariance matrix is valid (it is positive semi-definite) when $a_1$ and $a_2$ are 1.
+
+```{r}
+covariance_is_valid <- function(mat_d, a1, a2){
+  # compute covariance matrix with distance matrix
+  mat_c <- a1*exp(-(mat_d/a2)^2)
+  class(mat_c)
+  
+  # is it positive semi-definite?
+  eigen(mat_c, only.values = T)$values
+  
+  return(is.positive.semi.definite(mat_c, tol=1e-8))
+}
+
+# test 1
+covariance_is_valid(mat_d, a1=0.1, a2=0.1)
+
+# test 2
+covariance_is_valid(mat_d, a1=0.5, a2=0.1)
+
+# test 3
+covariance_is_valid(mat_d, a1=0.5, a2=10)
+
+```
+
+The resulting covariance matrix is valid (it is positive semi-definite) for other $a_1$, $a_2$ values
+
+## B-b) Compute log-likelihood
+
+```{r}
+# function for computing log-likelihood
+compute_ll <- function(ccr5, m, a1, a2){
+  # compute covariance matrix with distance matrix
+  y_ccr5 <- ccr5[,c("Long","Lat")]
+  mat_d <- dist(y_ccr5, diag=T, upper=T)
+  class(mat_d)
+  mat_d <- as.matrix(mat_d)
+  mat_c <- a1*exp(-(mat_d/a2)^2)
+
+  # is it positive semi-definite?
+  # print("Is covariance matrix positive semi-definite?")
+  # print(is.positive.semi.definite(mat_c, tol=1e-8))
+  # print(eigen(mat_c, only.values = T)$values)
+  
+  # get observed X values
+  X_obs <- ccr5$x
+  ll <- mvtnorm::dmvnorm(x= X_obs, mean = rep(m, dim(mat_c)[1]), sigma=mat_c, log=T)
+  return(ll)
+}
+compute_ll(ccr5, m=1, a1=1, a2=1)
+
+# modify function to apply optim function
+
+compute_ll_optim <- function(par, data){ # par = c('m', 'a1', 'a2')
+  mat_c <- par[2]*exp(-(mat_d/par[3])^2)
+  # get observed X values
+  ll <- mvtnorm::dmvnorm(x= data, mean = rep(par[1], dim(mat_c)[1]), sigma=mat_c, log=T)
+  return(-ll) # because optim minimizes, put (-)
+}
+
+# Optimize log-likelihood over a, m using optim function
+# https://www.magesblog.com/post/2013-03-12-how-to-use-optim-in-r/
+X_obs <- ccr5$x
+
+optim(par = c(1,1,1), fn=compute_ll_optim, data = X_obs)
+
+optim(par = c(0.1,0.1,0.1), fn=compute_ll_optim, data = X_obs)
+
+```
+
+It converged to m = -2.7486638, a1 = 0.5299463, a2 = 1.6820251. This is pretty stable to initial parameter change \
+Let's do a grid search around these values to visualize it in a heatmap. 
+
+```{r}
+n = 100
+
+# mv = seq(1e-8, 3, length.out = n)
+m = -2.7486638
+a1 = seq(0.1, 3, length.out = n)
+a2 = seq(0.1, 3, length.out = n)
+
+# mat_ll <- array(-Inf, c(n, n, n))
+
+mat_ll <- matrix(nrow = n, ncol = n)
+
+# 3 dimensional
+# for (m in 1:n){
+#   print(m)
+#   for (i in 1:n){
+#     for (j in 1:n){
+#       mat_ll[m,i,j] <- compute_ll(ccr5, mv[m], a1=a1[i], a2=a2[j])
+#     }
+#   } 
+# }
+
+# 2 dimensional
+
+for (i in 1:n){
+  # print(i)
+  for (j in 1:n){
+    mat_ll[i,j] <- compute_ll(ccr5, m, a1=a1[i], a2=a2[j])
+  }
+} 
+
+head(mat_ll)
+rownames(mat_ll) <- a1
+colnames(mat_ll) <- a2
+
+# histogram
+hist(c(mat_ll))
+
+# plot heatmap
+col_bwr <- colorRampPalette(c("blue",'white',"Red"))
+
+m_ll <- reshape2::melt(mat_ll)
+colnames(m_ll) <- c("a1", "a2", "Log-likelihood")
+
+ggplot(data=m_ll, aes(x=a1, y=a2)) + geom_tile(aes(fill = `Log-likelihood`)) +
+  scale_fill_gradientn(colours =col_bwr(100), na.value="grey90") +
+  ylab("a2 \n") +
+  xlab("\n a1 ") +
+  scale_y_continuous(expand = c(0,0))+
+  scale_x_continuous(expand = c(0,0))+
+  ggtitle("Heatmap of log-likelihood (varying a1, a2) \n") +
+  mytheme
+
+# maximum likelihood
+max(mat_ll)
+which(mat_ll == max(mat_ll), arr.ind = TRUE)
+# find which a1, a2 value
+a1[which(mat_ll == max(mat_ll), arr.ind = TRUE)[1]]
+a2[which(mat_ll == max(mat_ll), arr.ind = TRUE)[2]]
+
+```
 
 
