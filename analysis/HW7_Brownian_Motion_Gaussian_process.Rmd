@@ -127,7 +127,7 @@ variance parameter $$\sigma ^ 2 $$
 Markov chain
 $$ X_{t+\mu} | X_t \sim N(0, \mu \sigma ^ 2) $$
 
-likelihood of data given $\sigma where standard deviation of the normal distribution is
+likelihood of data given $\sigma$ where standard deviation of the normal distribution is
 $$ \sigma \sqrt{t_{k} - t_{k-1}} $$
 
 $$ P(X | \sigma) = \prod_{i=2}^k  \frac{1}{\sigma\sqrt{2\pi(t_i-t_{i-1})}} e^{-\frac{1}{2}({\frac{X_i - X_{i-1}}{\sigma \sqrt{(t_i-t_{i-1})}}})^2} $$
@@ -135,7 +135,7 @@ log-likelihood
 
 $$ log P(X | \sigma)= \sum_{i=2}^k ( -\frac{1}{2}({\frac{X_i - X_{i-1}}{\sigma \sqrt{(t_i-t_{i-1})}}})^2 - log(\sigma\sqrt{2\pi(t_i-t_{i-1})}) )  $$
 
-Plot the log-likelihood as a function of $\sigma
+Plot the log-likelihood as a function of $\sigma$
 
 ```{r}
 
