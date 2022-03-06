@@ -475,16 +475,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomKiseokUchicagofiveMinuteStatstreebc25563eac06f2f28adece53dfdd208d31b19b95targetblankbc25563a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/KiseokUchicago/fiveMinuteStats/tree/bc25563eac06f2f28adece53dfdd208d31b19b95" target="_blank">bc25563</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomKiseokUchicagofiveMinuteStatstreecad4a8a75037c3d2792a0cbee5a5a96506183c5dtargetblankcad4a8aa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/KiseokUchicago/fiveMinuteStats/tree/cad4a8a75037c3d2792a0cbee5a5a96506183c5d" target="_blank">cad4a8a</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomKiseokUchicagofiveMinuteStatstreebc25563eac06f2f28adece53dfdd208d31b19b95targetblankbc25563a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomKiseokUchicagofiveMinuteStatstreecad4a8a75037c3d2792a0cbee5a5a96506183c5dtargetblankcad4a8aa" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/KiseokUchicago/fiveMinuteStats/tree/bc25563eac06f2f28adece53dfdd208d31b19b95" target="_blank">bc25563</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/KiseokUchicago/fiveMinuteStats/tree/cad4a8a75037c3d2792a0cbee5a5a96506183c5d" target="_blank">cad4a8a</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -493,14 +493,13 @@ Note that you need to be careful to ensure that all relevant files for the analy
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    analysis/bernoulli_poisson_process_cache/
 
 Untracked files:
-    Untracked:  analysis/HW5_HMM_Poisson_processes.Rmd
+    Untracked:  analysis/HW7_Brownian_Motion_Gaussian_process.log
+    Untracked:  analysis/HW7_Brownian_Motion_Gaussian_process.tex
     Untracked:  data/
     Untracked:  texput.log
-
-Unstaged changes:
-    Modified:   analysis/HW4_MCMC.Rmd
 
 </code></pre>
 <p>
@@ -539,6 +538,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/KiseokUchicago/fiveMinuteStats/blob/cad4a8a75037c3d2792a0cbee5a5a96506183c5d/analysis/HW7_Brownian_Motion_Gaussian_process.Rmd" target="_blank">cad4a8a</a>
+</td>
+<td>
+Kiseok Lee
+</td>
+<td>
+2022-03-06
+</td>
+<td>
+wflow_publish(“analysis/HW7_Brownian_Motion_Gaussian_process.Rmd”)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/KiseokUchicago/fiveMinuteStats/6fadbaaf8f2b64dacda6cb425c5c5f767fbdb82d/docs/HW7_Brownian_Motion_Gaussian_process.html" target="_blank">6fadbaa</a>
+</td>
+<td>
+Kiseok Lee
+</td>
+<td>
+2022-03-06
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1237,8 +1270,8 @@ covariance_is_valid(mat_d, a1 = 0.5, a2 = 10)</code></pre>
 <pre><code>Error in covariance_is_valid(mat_d, a1 = 0.5, a2 = 10): object &#39;mat_d&#39; not found</code></pre>
 <p>The resulting covariance matrix is valid (it is positive semi-definite) for other <span class="math inline">\(a_1\)</span>, <span class="math inline">\(a_2\)</span> values</p>
 </div>
-<div id="b-b-compute-log-likelihood" class="section level2">
-<h2>B-b) Compute log-likelihood</h2>
+<div id="b-b-compute-log-likelihood-and-maximize" class="section level2">
+<h2>B-b) Compute log-likelihood and maximize</h2>
 <pre class="r"><code># function for computing log-likelihood
 compute_ll &lt;- function(ccr5, m, a1, a2) {
     # compute covariance matrix with distance matrix
@@ -1399,6 +1432,218 @@ a1[which(mat_ll == max(mat_ll), arr.ind = TRUE)[1]]</code></pre>
 <pre><code>[1] NA</code></pre>
 <pre class="r"><code>a2[which(mat_ll == max(mat_ll), arr.ind = TRUE)[2]]</code></pre>
 <pre><code>[1] NA</code></pre>
+</div>
+<div id="b-c-compute-log-likelihood-and-maximize" class="section level2">
+<h2>B-c) Compute log-likelihood and maximize</h2>
+<p>Conditional expectation of <span class="math inline">\(X_1\)</span> given <span class="math inline">\(X_2\)</span>, …, <span class="math inline">\(X_r\)</span></p>
+<p><span class="math display">\[ Y_1 | Y_2  \sim N(\mu, \Sigma)\]</span> <span class="math display">\[ \mu = \mu_1 + \Sigma_{12} \Sigma_{22}^{-1}(Y_2 - \mu_2)  \]</span></p>
+<p><span class="math display">\[ \Sigma = \Sigma_{11} - \Sigma_{12} \Sigma_{22}^{-1}\Sigma_{21} \]</span> This is an application of standard results for the conditional mean of a Gaussian from, e.g. <a href="https://en.wikipedia.org/wiki/Multivariate_normal_distribution#Conditional_distributions" class="uri">https://en.wikipedia.org/wiki/Multivariate_normal_distribution#Conditional_distributions</a>.<br />
+</p>
+<p>From our fiveMinute notes: <span class="math display">\[ E(Y_1|Y_2) = -(1/\Omega_{11})\Omega_{12}Y_2   \]</span> where is the precision matrix and <span class="math inline">\(Y_1\)</span> is <span class="math inline">\(X_1\)</span>, <span class="math inline">\(Y_2\)</span> is (<span class="math inline">\(X_2\)</span>, …, <span class="math inline">\(X_r\)</span>).<br />
+</p>
+<pre class="r"><code># compute covariance matrix with distance matrix
+y_ccr5 &lt;- ccr5[, c(&quot;Long&quot;, &quot;Lat&quot;)]</code></pre>
+<pre><code>Error in eval(expr, envir, enclos): object &#39;ccr5&#39; not found</code></pre>
+<pre class="r"><code>mat_d &lt;- dist(y_ccr5, diag = T, upper = T)</code></pre>
+<pre><code>Error in as.matrix(x): object &#39;y_ccr5&#39; not found</code></pre>
+<pre class="r"><code>class(mat_d)</code></pre>
+<pre><code>Error in eval(expr, envir, enclos): object &#39;mat_d&#39; not found</code></pre>
+<pre class="r"><code>mat_d &lt;- as.matrix(mat_d)</code></pre>
+<pre><code>Error in as.matrix(mat_d): object &#39;mat_d&#39; not found</code></pre>
+<pre class="r"><code># Covariance matrix
+a1 = 0.5299463
+a2 = 1.6820251
+mat_c &lt;- a1 * exp(-(mat_d/a2)^2)</code></pre>
+<pre><code>Error in eval(expr, envir, enclos): object &#39;mat_d&#39; not found</code></pre>
+<pre class="r"><code># Precision matrix
+mat_precision &lt;- inv(mat_c)</code></pre>
+<pre><code>Error in inv(mat_c): object &#39;mat_c&#39; not found</code></pre>
+<pre class="r"><code># Compute \mu = \mu_1 + \Sigma_{12} \Sigma_{22}^{-1}(Y_2 -
+# \mu_2)
+X &lt;- ccr5$x</code></pre>
+<pre><code>Error in eval(expr, envir, enclos): object &#39;ccr5&#39; not found</code></pre>
+<pre class="r"><code>mu_1 = X[1]</code></pre>
+<pre><code>Error in eval(expr, envir, enclos): object &#39;X&#39; not found</code></pre>
+<pre class="r"><code>dim_mat_c &lt;- dim(mat_c)[2]</code></pre>
+<pre><code>Error in eval(expr, envir, enclos): object &#39;mat_c&#39; not found</code></pre>
+<pre class="r"><code>Sigma_12 &lt;- mat_c[1, , drop = F][2:dim_mat_c]  # \Sigma_{12}</code></pre>
+<pre><code>Error in eval(expr, envir, enclos): object &#39;mat_c&#39; not found</code></pre>
+<pre class="r"><code>class(Sigma_12)</code></pre>
+<pre><code>Error in eval(expr, envir, enclos): object &#39;Sigma_12&#39; not found</code></pre>
+<pre class="r"><code>dim(Sigma_12)</code></pre>
+<pre><code>Error in eval(expr, envir, enclos): object &#39;Sigma_12&#39; not found</code></pre>
+<pre class="r"><code>Sigma_22 &lt;- mat_c[2:dim_mat_c, 2:dim_mat_c]  # \Sigma_{22}^{-1}</code></pre>
+<pre><code>Error in eval(expr, envir, enclos): object &#39;mat_c&#39; not found</code></pre>
+<pre class="r"><code>dim(Sigma_22)</code></pre>
+<pre><code>Error in eval(expr, envir, enclos): object &#39;Sigma_22&#39; not found</code></pre>
+<pre class="r"><code>Omega_22 &lt;- inv(Sigma_22)</code></pre>
+<pre><code>Error in inv(Sigma_22): object &#39;Sigma_22&#39; not found</code></pre>
+<pre class="r"><code>dim(Omega_22)</code></pre>
+<pre><code>Error in eval(expr, envir, enclos): object &#39;Omega_22&#39; not found</code></pre>
+<pre class="r"><code>Y_2 &lt;- X[2:dim_mat_c]  # Y_2</code></pre>
+<pre><code>Error in eval(expr, envir, enclos): object &#39;X&#39; not found</code></pre>
+<pre class="r"><code>Y_2 - mean(Y_2)  # (Y_2 - \mu_2)</code></pre>
+<pre><code>Error in eval(expr, envir, enclos): object &#39;Y_2&#39; not found</code></pre>
+<pre class="r"><code># multiply
+dim(Sigma_12 %*% Omega_22)</code></pre>
+<pre><code>Error in eval(expr, envir, enclos): object &#39;Sigma_12&#39; not found</code></pre>
+<pre class="r"><code>Sigma_12 %*% Omega_22 %*% (Y_2 - mean(Y_2))</code></pre>
+<pre><code>Error in eval(expr, envir, enclos): object &#39;Sigma_12&#39; not found</code></pre>
+<pre class="r"><code>mu = mu_1 + Sigma_12 %*% Omega_22 %*% (Y_2 - mean(Y_2))</code></pre>
+<pre><code>Error in eval(expr, envir, enclos): object &#39;mu_1&#39; not found</code></pre>
+<pre class="r"><code># wrap it into function
+
+compute_exp_cond_first &lt;- function(mat_c, ccr5) {
+    # Precision matrix
+    mat_precision &lt;- inv(mat_c)
+
+    # Compute \mu = \mu_1 + \Sigma_{12}
+    # \Sigma_{22}^{-1}(Y_2 - \mu_2)
+    X &lt;- ccr5$x
+    mu_1 = X[1]
+
+    dim_mat_c &lt;- dim(mat_c)[2]
+    Sigma_12 &lt;- mat_c[1, , drop = F][2:dim_mat_c]  # \Sigma_{12}
+    class(Sigma_12)
+    dim(Sigma_12)
+
+    Sigma_22 &lt;- mat_c[2:dim_mat_c, 2:dim_mat_c]  # \Sigma_{22}^{-1}
+    dim(Sigma_22)
+    Omega_22 &lt;- inv(Sigma_22)
+    dim(Omega_22)
+
+    Y_2 &lt;- X[2:dim_mat_c]  # Y_2
+    Y_2 - mean(Y_2)  # (Y_2 - \mu_2)
+
+    # multiply
+    dim(Sigma_12 %*% Omega_22)
+    Sigma_12 %*% Omega_22 %*% (Y_2 - mean(Y_2))
+
+    mu = mu_1 + Sigma_12 %*% Omega_22 %*% (Y_2 - mean(Y_2))
+    return(mu)
+}
+
+compute_exp_cond_first(mat_c, ccr5)</code></pre>
+<pre><code>Error in inv(mat_c): object &#39;mat_c&#39; not found</code></pre>
+<p>answer: -1.758<br />
+</p>
+<p>Notice that this expectation ends up being a weighted linear combination of the other datapoints. Intuitively, if allele frequencies vary smoothly in space then this weighted linear combination should weight the nearby data points more. Does it?<br />
+</p>
+<p>The weight is determined by Sigma_12 %*% Omega_22. However, it does not seem that this weight vector give more weight to X_2 or X_3 compared to other X.</p>
+<p>Repeat this for each of the r datapoints.</p>
+<pre class="r"><code># this function only works for r = 2,3,4,...,67 (nrow of
+# the matrix -1) compute this for all other X_2, X_3...
+# Precision matrix
+compute_exp_Xr_cond &lt;- function(mat_c, ccr5, r = 2) {
+    mat_precision &lt;- inv(mat_c)
+
+    # Compute \mu = \mu_1 + \Sigma_{12}
+    # \Sigma_{22}^{-1}(Y_2 - \mu_2)
+    X &lt;- ccr5$x
+    mu_1 = X[r]
+
+    dim_mat_c &lt;- dim(mat_c)[2]
+    Sigma_12 &lt;- mat_c[r, , drop = F][c(1:(r - 1), (r + 1):dim_mat_c)]  # \Sigma_{12}
+    class(Sigma_12)
+    dim(Sigma_12)
+
+    Sigma_22 &lt;- mat_c[c(1:(r - 1), (r + 1):dim_mat_c), c(1:(r -
+        1), (r + 1):dim_mat_c)]  # \Sigma_{22}^{-1}
+    dim(Sigma_22)
+    Omega_22 &lt;- inv(Sigma_22)
+    dim(Omega_22)
+
+    Y_2 &lt;- X[c(1:(r - 1), (r + 1):dim_mat_c)]  # Y_2
+    Y_2 - mean(Y_2)  # (Y_2 - \mu_2)
+
+    # multiply
+    dim(Sigma_12 %*% Omega_22)
+    Sigma_12 %*% Omega_22 %*% (Y_2 - mean(Y_2))
+
+    mu = mu_1 + Sigma_12 %*% Omega_22 %*% (Y_2 - mean(Y_2))
+    return(mu)
+}
+
+# compute
+vec_middle &lt;- c()
+for (r in 2:(nrow(mat_c) - 1)) {
+    # print(r)
+    mu_r &lt;- compute_exp_Xr_cond(mat_c, ccr5, r)
+    vec_middle &lt;- c(vec_middle, mu_r)
+}</code></pre>
+<pre><code>Error in nrow(mat_c): object &#39;mat_c&#39; not found</code></pre>
+<pre class="r"><code>length(vec_middle)</code></pre>
+<pre><code>[1] 0</code></pre>
+<pre class="r"><code>vec_middle</code></pre>
+<pre><code>NULL</code></pre>
+<pre class="r"><code># compute the last X_r
+compute_exp_cond_last &lt;- function(mat_c, ccr5) {
+    r_last = nrow(mat_c)
+
+    # Precision matrix
+    mat_precision &lt;- inv(mat_c)
+
+    # Compute \mu = \mu_1 + \Sigma_{12}
+    # \Sigma_{22}^{-1}(Y_2 - \mu_2)
+    X &lt;- ccr5$x
+    mu_1 = X[r_last]
+
+    Sigma_12 &lt;- mat_c[r_last, , drop = F][1:(r_last - 1)]  # \Sigma_{12}
+    class(Sigma_12)
+    dim(Sigma_12)
+
+    Sigma_22 &lt;- mat_c[1:(r_last - 1), 1:(r_last - 1)]  # \Sigma_{22}^{-1}
+    dim(Sigma_22)
+    Omega_22 &lt;- inv(Sigma_22)
+    dim(Omega_22)
+
+    Y_2 &lt;- X[1:(r_last - 1)]  # Y_2
+    Y_2 - mean(Y_2)  # (Y_2 - \mu_2)
+
+    # multiply
+    dim(Sigma_12 %*% Omega_22)
+    Sigma_12 %*% Omega_22 %*% (Y_2 - mean(Y_2))
+
+    mu = mu_1 + Sigma_12 %*% Omega_22 %*% (Y_2 - mean(Y_2))
+    return(mu)
+}
+
+compute_exp_cond_last(mat_c, ccr5)</code></pre>
+<pre><code>Error in nrow(mat_c): object &#39;mat_c&#39; not found</code></pre>
+<pre class="r"><code># vector for all conditional expectations
+vec_exp_cond &lt;- c(compute_exp_cond_first(mat_c, ccr5), vec_middle,
+    compute_exp_cond_last(mat_c, ccr5))</code></pre>
+<pre><code>Error in inv(mat_c): object &#39;mat_c&#39; not found</code></pre>
+<pre class="r"><code>length(vec_exp_cond)</code></pre>
+<pre><code>Error in eval(expr, envir, enclos): object &#39;vec_exp_cond&#39; not found</code></pre>
+<pre class="r"><code>vec_exp_cond</code></pre>
+<pre><code>Error in eval(expr, envir, enclos): object &#39;vec_exp_cond&#39; not found</code></pre>
+<p>Comparing the accuracy of this imputation scheme with just using the mean of the other datapoints.</p>
+<pre class="r"><code># Accuracy of Kriging
+
+X  # observed</code></pre>
+<pre><code>Error in eval(expr, envir, enclos): object &#39;X&#39; not found</code></pre>
+<pre class="r"><code>vec_exp_cond  # kriging</code></pre>
+<pre><code>Error in eval(expr, envir, enclos): object &#39;vec_exp_cond&#39; not found</code></pre>
+<pre class="r"><code># calculated distance
+sqrt(sum((X - vec_exp_cond)^2))</code></pre>
+<pre><code>Error in eval(expr, envir, enclos): object &#39;X&#39; not found</code></pre>
+<p>distance calculated against the observed X is only 2.4</p>
+<pre class="r"><code># When only using the mean of other datapoints
+
+X  # observed</code></pre>
+<pre><code>Error in eval(expr, envir, enclos): object &#39;X&#39; not found</code></pre>
+<pre class="r"><code>vec_mean &lt;- rep(Inf, length(X))</code></pre>
+<pre><code>Error in eval(expr, envir, enclos): object &#39;X&#39; not found</code></pre>
+<pre class="r"><code>for (i in 1:length(X)) {
+    # print(i)
+    vec_mean[i] &lt;- mean(X[-i])
+}</code></pre>
+<pre><code>Error in eval(expr, envir, enclos): object &#39;X&#39; not found</code></pre>
+<pre class="r"><code># calculate distance
+sqrt(sum((X - vec_mean)^2))</code></pre>
+<pre><code>Error in eval(expr, envir, enclos): object &#39;X&#39; not found</code></pre>
+<p>distance calculated against the observed X is only 6.03, which is larger than the Kriging scheme.</p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
