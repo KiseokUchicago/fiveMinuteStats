@@ -384,7 +384,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-02-07
+<strong>Last updated:</strong> 2022-03-06
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -475,16 +475,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomKiseokUchicagofiveMinuteStatstree641c8e35098981bd3c134a5e12e9b8d1902dc617targetblank641c8e3a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/KiseokUchicago/fiveMinuteStats/tree/641c8e35098981bd3c134a5e12e9b8d1902dc617" target="_blank">641c8e3</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomKiseokUchicagofiveMinuteStatstree492834ed515fe48616befc24cb91c1b45e8e7768targetblank492834ea"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/KiseokUchicago/fiveMinuteStats/tree/492834ed515fe48616befc24cb91c1b45e8e7768" target="_blank">492834e</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomKiseokUchicagofiveMinuteStatstree641c8e35098981bd3c134a5e12e9b8d1902dc617targetblank641c8e3a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomKiseokUchicagofiveMinuteStatstree492834ed515fe48616befc24cb91c1b45e8e7768targetblank492834ea" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/KiseokUchicago/fiveMinuteStats/tree/641c8e35098981bd3c134a5e12e9b8d1902dc617" target="_blank">641c8e3</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/KiseokUchicago/fiveMinuteStats/tree/492834ed515fe48616befc24cb91c1b45e8e7768" target="_blank">492834e</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -493,8 +493,11 @@ Note that you need to be careful to ensure that all relevant files for the analy
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    analysis/bernoulli_poisson_process_cache/
+    Ignored:    analysis/figure/
 
 Untracked files:
+    Untracked:  data/
     Untracked:  texput.log
 
 </code></pre>
@@ -534,6 +537,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/KiseokUchicago/fiveMinuteStats/blob/492834ed515fe48616befc24cb91c1b45e8e7768/analysis/HW4_MCMC.Rmd" target="_blank">492834e</a>
+</td>
+<td>
+Kiseok Lee
+</td>
+<td>
+2022-03-06
+</td>
+<td>
+wflow_publish(“analysis/HW4_MCMC.Rmd”)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/KiseokUchicago/fiveMinuteStats/247dfb733b032371c1bd3ad4d5b8244c5d1cec4b/docs/HW4_MCMC.html" target="_blank">247dfb7</a>
+</td>
+<td>
+Kiseok Lee
+</td>
+<td>
+2022-02-07
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1227,7 +1264,7 @@ R = 6  # number of markers
 K = 2  # number of components(populations)
 P = rbind(c(0.4, 0.12, 0.21, 0.12, 0.02, 0.32), # savannah allele frequency
           c(0.8, 0.2, 0.11, 0.17, 0.23, 0.25)) # forest allele frequency
-pi = c(0.4, 0.6) # population composition, (savannah, forest)
+pi = c(0.8, 0.2) # population composition, (savannah, forest)
 
 sim = r_simplemix(n=1000, P=P, pi=pi)
 x = sim$x
@@ -1237,7 +1274,7 @@ dim(x)</code></pre>
 table(sim$z)</code></pre>
 <pre><code>
   1   2 
-401 599 </code></pre>
+799 201 </code></pre>
 <ol start="2" style="list-style-type: decimal">
 <li>Implement the Gibbs sampler We assume that prior distribution of P and pi are independent. p(pi, P) = p(pi) * p(P)</li>
 </ol>
@@ -1366,57 +1403,57 @@ res = gibbs(x, k = 2, niter = 1000)</code></pre>
 <pre><code>[1] &quot;k(number of population) is 2&quot;
 [1] &quot;R(number of markers) is 6&quot;
 [1] &quot;n(number of samples) is 1000&quot;
-[1] &quot;niter: 100, pi: 0.417431154528918&quot; &quot;niter: 100, pi: 0.582568845471082&quot;
-[1] &quot;niter: 200, pi: 0.555711944701249&quot; &quot;niter: 200, pi: 0.444288055298751&quot;
-[1] &quot;niter: 300, pi: 0.775309210221034&quot; &quot;niter: 300, pi: 0.224690789778966&quot;
-[1] &quot;niter: 400, pi: 0.709718617886303&quot; &quot;niter: 400, pi: 0.290281382113697&quot;
-[1] &quot;niter: 500, pi: 0.858445238358121&quot; &quot;niter: 500, pi: 0.141554761641879&quot;
-[1] &quot;niter: 600, pi: 0.662652409539676&quot; &quot;niter: 600, pi: 0.337347590460324&quot;
-[1] &quot;niter: 700, pi: 0.336069572111723&quot; &quot;niter: 700, pi: 0.663930427888277&quot;
-[1] &quot;niter: 800, pi: 0.528990659096347&quot; &quot;niter: 800, pi: 0.471009340903653&quot;
-[1] &quot;niter: 900, pi: 0.44787964792192&quot; &quot;niter: 900, pi: 0.55212035207808&quot;
-[1] &quot;niter: 1000, pi: 0.598839765621071&quot; &quot;niter: 1000, pi: 0.401160234378929&quot;</code></pre>
+[1] &quot;niter: 100, pi: 0.597000026529218&quot; &quot;niter: 100, pi: 0.402999973470782&quot;
+[1] &quot;niter: 200, pi: 0.972293256644978&quot;  &quot;niter: 200, pi: 0.0277067433550215&quot;
+[1] &quot;niter: 300, pi: 0.982427622775506&quot;  &quot;niter: 300, pi: 0.0175723772244941&quot;
+[1] &quot;niter: 400, pi: 0.980415636118885&quot;  &quot;niter: 400, pi: 0.0195843638811149&quot;
+[1] &quot;niter: 500, pi: 0.992288512563103&quot;   &quot;niter: 500, pi: 0.00771148743689662&quot;
+[1] &quot;niter: 600, pi: 0.93383843433649&quot;   &quot;niter: 600, pi: 0.0661615656635103&quot;
+[1] &quot;niter: 700, pi: 0.972126654739103&quot;  &quot;niter: 700, pi: 0.0278733452608969&quot;
+[1] &quot;niter: 800, pi: 0.985505182209394&quot;  &quot;niter: 800, pi: 0.0144948177906065&quot;
+[1] &quot;niter: 900, pi: 0.960912401113688&quot;  &quot;niter: 900, pi: 0.0390875988863116&quot;
+[1] &quot;niter: 1000, pi: 0.913491581232857&quot;  &quot;niter: 1000, pi: 0.0865084187671427&quot;</code></pre>
 </div>
 <div id="evaluate-the-gibbs-sampling" class="section level2">
 <h2>Evaluate the gibbs sampling</h2>
 <pre class="r"><code># (1) Pi is it converging? 
 plot(res$pi[,1], xlab=&quot;iteration&quot;, ylab=&quot;Component proportion&quot;, col=&#39;red&#39;, type = &quot;b&quot;,lty = 1, pch=19,lwd=1, main=&quot;MCMC (Gibbs)&quot;, ylim = c(0, 1))
 lines(res$pi[,2], col=&#39;blue&#39;, type = &quot;b&quot;,lty = 1, pch=19,lwd=1)
-abline(h = 0.4, col = &#39;red&#39;, lty=3, lwd=2)
-abline(h = 0.6, col = &#39;blue&#39;, lty=3, lwd=2)
+abline(h = 0.8, col = &#39;red&#39;, lty=3, lwd=2)
+abline(h = 0.2, col = &#39;blue&#39;, lty=3, lwd=2)
 legend(&quot;bottomright&quot;, legend=c(&#39;Savannah&#39;, &#39;Forest&#39;, &#39;Truth&#39;), col=c(&quot;Red&quot;, &quot;Blue&quot;, &quot;Black&quot;), lty=c(1,1,3), cex=0.8, box.lty=0)</code></pre>
 <p><img src="figure/HW4_MCMC.Rmd/unnamed-chunk-18-1.png" width="1056" style="display: block; margin: auto;" /></p>
 <pre class="r"><code># (2) Accuracy
 table(res$z[1,],sim$z)</code></pre>
 <pre><code>   
       1   2
-  1 209 287
-  2 192 312</code></pre>
+  1 390 106
+  2 409  95</code></pre>
 <pre class="r"><code>table(res$z[100,],sim$z)</code></pre>
 <pre><code>   
       1   2
-  1 222 173
-  2 179 426</code></pre>
+  1 508  86
+  2 291 115</code></pre>
 <pre class="r"><code>table(res$z[200,],sim$z)</code></pre>
 <pre><code>   
       1   2
-  1 272 303
-  2 129 296</code></pre>
+  1 786 181
+  2  13  20</code></pre>
 <pre class="r"><code>table(res$z[300,],sim$z)</code></pre>
 <pre><code>   
       1   2
-  1 345 429
-  2  56 170</code></pre>
+  1 793 196
+  2   6   5</code></pre>
 <pre class="r"><code>table(res$z[1000,],sim$z)</code></pre>
 <pre><code>   
       1   2
-  1 300 304
-  2 101 295</code></pre>
+  1 778 155
+  2  21  46</code></pre>
 <pre class="r"><code>vec_accuracy = rep(-1, dim(res$z)[1])
 niter = dim(res$z)[1]
 for (i in 1:dim(res$z)[1]){
   t_iter = table(res$z[i,],sim$z)
-  vec_accuracy[i] = (t_iter[1,1] + t_iter[2,2]) / sum(t_iter)
+  vec_accuracy[i] = sum(diag(t_iter)) / sum(t_iter)
 }
 
 plot(vec_accuracy, xlab=&quot;iteration&quot;, ylab=&quot;Accuracy (right Z prediction / number_of_samples)&quot;, col=&#39;red&#39;, type = &quot;b&quot;,lty = 1, pch=19,lwd=1, main=&quot;MCMC (Gibbs) and accuracy&quot;, ylim = c(0, 1))</code></pre>
@@ -1480,85 +1517,85 @@ x_arb = arb_sim$x
 dim(x_arb)</code></pre>
 <pre><code>[1] 1000    6</code></pre>
 <pre class="r"><code>arb_sim$z</code></pre>
-<pre><code>   [1] 5 5 4 5 5 5 4 5 5 4 4 1 1 5 5 2 5 1 5 1 5 1 5 4 1 4 4 4 5 2 5 5 4 5 5 4 5
-  [38] 4 5 1 4 5 4 1 4 4 5 4 5 2 2 5 4 5 4 2 4 4 2 4 5 4 4 4 5 2 5 4 5 1 2 4 3 5
-  [75] 5 5 4 2 2 2 5 4 4 5 1 5 5 4 4 4 4 5 2 1 4 4 4 5 4 4 3 4 5 2 5 4 5 4 5 1 3
- [112] 4 5 4 4 4 4 4 2 4 4 2 4 4 4 4 5 3 4 3 5 5 5 3 4 1 5 2 2 2 5 4 5 2 4 4 2 4
- [149] 5 5 4 2 1 3 4 5 2 4 1 5 2 4 5 4 1 4 5 4 2 2 4 1 4 2 4 4 4 4 2 5 4 4 4 4 2
- [186] 4 4 5 1 2 4 2 5 5 5 4 3 4 1 1 2 4 3 5 5 2 5 4 1 2 5 5 2 4 4 5 2 5 4 4 4 1
- [223] 4 5 4 2 5 5 4 4 5 4 4 5 5 2 2 4 4 4 4 3 4 5 5 2 1 5 4 5 2 1 5 1 4 1 5 1 5
- [260] 5 5 5 1 5 5 4 1 5 5 5 2 4 2 5 5 5 4 5 5 4 5 5 5 5 4 4 5 5 5 2 4 1 5 5 2 4
- [297] 4 2 4 1 1 4 4 4 4 4 2 4 5 4 4 5 4 4 5 1 2 1 5 3 2 5 5 4 5 4 4 5 5 5 5 4 3
- [334] 1 4 1 2 4 1 1 4 1 5 4 4 5 5 2 5 4 2 5 5 5 5 2 5 5 4 4 4 4 4 1 3 5 5 1 4 5
- [371] 3 1 5 5 4 5 2 5 2 5 5 4 4 2 2 1 5 4 4 1 5 4 5 5 1 5 2 4 4 5 1 4 1 4 5 5 5
- [408] 4 4 4 2 4 1 5 4 4 1 4 2 5 5 5 4 4 4 4 5 1 5 4 5 4 2 5 5 2 1 4 4 1 5 4 4 4
- [445] 5 1 4 4 5 4 5 4 2 4 4 5 4 5 3 5 4 5 5 4 2 4 1 5 4 4 4 4 2 4 1 4 5 5 4 4 1
- [482] 5 4 4 5 4 3 2 5 3 5 4 5 4 5 4 4 4 4 5 2 2 4 5 5 4 5 2 4 4 5 2 5 4 4 3 4 5
- [519] 2 4 5 5 1 4 5 5 4 4 1 5 4 5 5 5 4 4 1 2 4 2 2 5 5 4 5 5 1 4 4 4 4 5 4 5 4
- [556] 4 4 4 4 4 4 5 5 5 5 2 4 4 5 5 1 5 5 1 5 5 5 5 3 5 4 4 4 4 4 4 1 3 4 5 5 2
- [593] 2 5 1 5 4 4 2 5 3 1 5 4 5 1 2 5 5 5 5 5 4 5 5 4 5 4 1 5 5 4 1 5 4 1 5 4 4
- [630] 5 4 4 4 5 1 4 1 4 5 4 4 5 4 2 5 3 4 2 4 2 4 4 2 1 5 4 1 5 4 2 5 3 5 5 4 5
- [667] 5 1 2 4 5 1 4 5 5 1 4 5 5 5 4 5 5 5 5 5 4 4 1 4 1 4 4 5 5 4 4 5 5 4 5 2 5
- [704] 3 1 2 5 5 4 5 5 4 5 1 5 5 5 4 3 4 5 1 1 1 4 5 4 2 5 4 2 3 4 5 5 4 4 4 4 5
- [741] 4 5 2 5 4 1 5 4 5 4 5 1 4 5 5 4 4 4 5 4 4 1 5 2 5 1 4 4 4 5 4 2 4 5 4 5 4
- [778] 5 5 5 5 4 4 5 4 2 5 5 2 4 2 3 2 4 3 4 2 1 5 4 1 4 1 5 4 5 5 5 5 5 5 5 4 2
- [815] 4 5 4 4 1 5 4 1 5 1 2 2 5 2 5 4 2 4 4 4 4 2 5 4 4 5 5 2 5 3 4 2 5 2 4 5 5
- [852] 5 2 2 4 4 4 2 5 5 4 1 4 3 4 5 2 5 1 5 2 4 4 5 2 5 5 1 2 5 5 4 4 5 4 1 1 5
- [889] 5 3 4 2 4 5 1 4 5 5 5 5 4 2 1 1 1 5 4 4 1 5 2 4 4 2 1 4 4 4 4 5 4 2 4 5 5
- [926] 5 4 4 4 1 4 5 1 2 1 5 1 1 1 3 4 1 4 1 4 2 2 2 5 2 2 5 2 4 5 2 1 2 4 5 4 2
- [963] 5 5 5 1 4 1 5 1 5 5 1 1 5 4 4 5 4 1 4 4 3 4 5 5 4 5 1 1 4 4 5 2 1 4 2 5 1
-[1000] 5</code></pre>
+<pre><code>   [1] 3 1 5 4 4 1 4 1 2 5 3 4 1 4 2 4 4 5 4 1 4 4 4 1 5 3 4 3 3 2 4 2 3 3 1 4 2
+  [38] 2 2 1 1 1 3 5 1 3 4 4 4 4 1 2 3 4 4 4 3 4 4 2 4 3 2 1 4 3 4 1 5 2 4 3 4 1
+  [75] 4 4 4 2 4 4 2 1 4 4 4 1 2 4 2 1 3 1 2 4 5 1 2 2 2 1 1 1 2 4 4 2 4 3 1 4 5
+ [112] 5 2 4 3 2 4 3 1 2 4 3 4 5 4 1 4 2 2 4 5 1 2 4 4 4 4 2 1 4 4 4 4 2 1 1 3 3
+ [149] 2 1 2 3 1 3 4 2 4 5 5 2 4 2 1 1 2 1 4 5 2 1 3 2 1 4 3 2 1 4 4 4 3 4 3 4 2
+ [186] 3 1 4 4 1 4 4 1 1 2 5 4 1 4 4 2 4 3 3 2 5 3 4 3 2 5 3 3 1 5 3 3 3 1 1 1 5
+ [223] 3 3 4 5 1 1 3 2 4 5 1 3 3 4 1 1 4 3 1 3 3 4 4 1 1 3 2 4 5 3 3 5 4 4 2 1 3
+ [260] 3 1 4 4 4 4 2 4 3 4 4 1 4 1 1 3 2 5 3 2 2 3 3 4 3 4 4 1 1 3 1 4 2 5 4 5 2
+ [297] 4 5 5 4 5 1 4 4 1 1 2 3 4 2 3 1 1 3 2 1 1 4 4 4 4 4 5 2 1 3 5 4 3 2 5 1 1
+ [334] 4 3 5 1 2 1 3 4 1 2 2 3 3 4 4 5 1 4 1 1 3 3 2 4 4 3 3 1 3 4 3 1 3 4 4 1 2
+ [371] 4 3 1 1 1 5 4 2 3 3 3 4 4 1 4 1 5 3 4 3 4 2 3 1 2 5 4 1 5 3 4 4 4 1 5 4 4
+ [408] 3 1 3 4 5 4 1 3 4 1 2 1 1 1 1 4 2 4 5 1 4 4 4 4 5 4 5 4 1 1 4 1 5 1 4 4 1
+ [445] 4 2 2 1 2 3 4 1 4 3 4 4 4 4 1 2 2 4 3 3 4 1 2 4 4 1 2 1 4 4 2 4 1 5 4 1 3
+ [482] 5 4 1 1 4 4 5 1 4 1 3 1 4 1 5 2 4 2 5 1 3 4 3 1 3 4 4 4 4 3 4 3 4 4 4 4 1
+ [519] 1 4 3 3 3 1 2 4 1 1 3 5 1 3 5 1 3 3 3 2 1 4 4 4 4 4 4 5 2 1 1 3 2 2 3 5 3
+ [556] 4 4 2 3 2 5 1 4 3 5 2 1 3 1 1 1 4 1 3 4 1 4 5 1 3 4 3 1 4 5 1 4 4 3 4 1 4
+ [593] 3 3 4 5 4 3 4 4 3 4 2 1 2 4 5 4 5 4 4 5 3 3 4 3 1 1 5 3 2 1 3 4 1 1 5 2 4
+ [630] 1 5 1 3 1 5 1 3 1 1 4 3 1 3 1 1 4 4 5 4 5 4 4 1 3 4 4 3 1 4 1 2 3 2 5 5 1
+ [667] 3 4 3 3 4 1 3 1 3 1 4 2 4 1 5 5 3 4 1 4 2 1 4 2 2 4 1 3 1 4 4 1 1 4 1 5 3
+ [704] 1 5 3 4 1 4 3 5 4 3 3 4 4 4 1 4 4 5 3 2 3 5 4 4 1 3 4 2 4 3 4 3 1 1 1 1 1
+ [741] 4 4 1 4 5 3 3 5 4 2 2 2 4 2 4 2 3 3 4 5 4 3 3 4 3 1 3 1 1 1 3 4 5 4 3 4 4
+ [778] 5 3 4 5 3 5 2 2 1 2 3 4 5 4 4 4 1 2 1 4 4 3 3 2 3 2 4 2 3 2 4 1 3 3 2 2 4
+ [815] 4 4 5 3 1 4 3 4 2 4 1 2 1 5 3 2 4 4 3 2 3 1 5 2 1 3 4 1 3 4 5 3 3 3 2 4 2
+ [852] 4 3 5 4 1 3 1 1 4 5 5 3 5 1 1 1 3 1 2 4 4 2 3 4 4 4 4 1 1 5 4 3 1 1 4 4 1
+ [889] 5 4 1 3 2 5 3 5 5 5 2 4 5 4 5 4 2 2 2 1 2 2 3 2 4 3 2 5 2 4 1 4 2 3 1 3 3
+ [926] 4 3 3 3 1 1 5 5 3 1 4 3 1 3 4 4 2 4 1 3 4 3 5 5 1 4 1 2 3 1 2 1 5 1 4 3 3
+ [963] 4 3 1 1 1 3 4 1 4 4 3 2 4 1 1 1 2 2 4 3 5 5 1 4 4 5 4 4 2 5 4 1 5 3 3 4 4
+[1000] 2</code></pre>
 <pre class="r"><code>arb_sim$k</code></pre>
 <pre><code>[1] 5</code></pre>
 <pre class="r"><code>arb_sim$pi</code></pre>
-<pre><code>[1] 0.13648067 0.11938209 0.03191186 0.37171326 0.34051212</code></pre>
+<pre><code>[1] 0.2414506 0.1224224 0.1948885 0.3158298 0.1254088</code></pre>
 <pre class="r"><code>arb_sim$P</code></pre>
-<pre><code>          [,1]      [,2]      [,3]       [,4]      [,5]       [,6]
-[1,] 0.4207590 0.6244815 0.6205796 0.06378931 0.8523212 0.04626184
-[2,] 0.2773479 0.4265226 0.3119986 0.97131908 0.0196396 0.07738109
-[3,] 0.1739043 0.7116329 0.2067251 0.70708675 0.1601342 0.17575030
-[4,] 0.5380617 0.1669658 0.2939560 0.84420595 0.6224021 0.05199443
-[5,] 0.8496468 0.3465639 0.7996776 0.41435821 0.1184500 0.34025380</code></pre>
+<pre><code>          [,1]      [,2]      [,3]       [,4]      [,5]      [,6]
+[1,] 0.2324861 0.5007088 0.5219166 0.05024958 0.1220201 0.8351091
+[2,] 0.7855581 0.4978790 0.4312630 0.91915334 0.3865836 0.7473676
+[3,] 0.7065546 0.8069034 0.7004641 0.78703399 0.6349661 0.3449095
+[4,] 0.8416496 0.3188070 0.2636360 0.09120611 0.6518484 0.8852961
+[5,] 0.6936497 0.5615197 0.1300015 0.41544944 0.4716415 0.1017621</code></pre>
 <pre class="r"><code># community composition
 table(arb_sim$z)</code></pre>
 <pre><code>
   1   2   3   4   5 
-123 129  33 364 351 </code></pre>
+229 140 205 315 111 </code></pre>
 <p>Gibbs simulation</p>
 <pre class="r"><code>res_arb = gibbs(x_arb, k = 5, niter = 1000)</code></pre>
 <pre><code>[1] &quot;k(number of population) is 5&quot;
 [1] &quot;R(number of markers) is 6&quot;
 [1] &quot;n(number of samples) is 1000&quot;
-[1] &quot;niter: 100, pi: 0.114855844394583&quot;  &quot;niter: 100, pi: 0.0801449292347373&quot;
-[3] &quot;niter: 100, pi: 0.399264207060853&quot;  &quot;niter: 100, pi: 0.205137370841093&quot; 
-[5] &quot;niter: 100, pi: 0.200597648468734&quot; 
-[1] &quot;niter: 200, pi: 0.126089182370777&quot;  &quot;niter: 200, pi: 0.109341722095568&quot; 
-[3] &quot;niter: 200, pi: 0.420997799578577&quot;  &quot;niter: 200, pi: 0.303985466871874&quot; 
-[5] &quot;niter: 200, pi: 0.0395858290832049&quot;
-[1] &quot;niter: 300, pi: 0.139816230260457&quot;  &quot;niter: 300, pi: 0.0286287303024365&quot;
-[3] &quot;niter: 300, pi: 0.432222996151119&quot;  &quot;niter: 300, pi: 0.294949262013021&quot; 
-[5] &quot;niter: 300, pi: 0.104382781272967&quot; 
-[1] &quot;niter: 400, pi: 0.155997200218159&quot;  &quot;niter: 400, pi: 0.0682877138165943&quot;
-[3] &quot;niter: 400, pi: 0.408346628524271&quot;  &quot;niter: 400, pi: 0.248399210203577&quot; 
-[5] &quot;niter: 400, pi: 0.1189692472374&quot;   
-[1] &quot;niter: 500, pi: 0.164476265963827&quot;  &quot;niter: 500, pi: 0.0228405684329271&quot;
-[3] &quot;niter: 500, pi: 0.447000600719267&quot;  &quot;niter: 500, pi: 0.302162915130182&quot; 
-[5] &quot;niter: 500, pi: 0.0635196497537971&quot;
-[1] &quot;niter: 600, pi: 0.0132534632827818&quot; &quot;niter: 600, pi: 0.0642644423783572&quot;
-[3] &quot;niter: 600, pi: 0.462463288457102&quot;  &quot;niter: 600, pi: 0.331948054377619&quot; 
-[5] &quot;niter: 600, pi: 0.12807075150414&quot;  
-[1] &quot;niter: 700, pi: 0.016848810109853&quot; &quot;niter: 700, pi: 0.312952064590725&quot;
-[3] &quot;niter: 700, pi: 0.293218604991052&quot; &quot;niter: 700, pi: 0.267921422366061&quot;
-[5] &quot;niter: 700, pi: 0.10905909794231&quot; 
-[1] &quot;niter: 800, pi: 0.0424752655667812&quot; &quot;niter: 800, pi: 0.232602312180554&quot; 
-[3] &quot;niter: 800, pi: 0.206388428718395&quot;  &quot;niter: 800, pi: 0.335876755395304&quot; 
-[5] &quot;niter: 800, pi: 0.182657238138967&quot; 
-[1] &quot;niter: 900, pi: 0.0649213890851309&quot; &quot;niter: 900, pi: 0.208277473725405&quot; 
-[3] &quot;niter: 900, pi: 0.330922286780376&quot;  &quot;niter: 900, pi: 0.253748184881022&quot; 
-[5] &quot;niter: 900, pi: 0.142130665528067&quot; 
-[1] &quot;niter: 1000, pi: 0.0848812010058377&quot; &quot;niter: 1000, pi: 0.130206300245794&quot; 
-[3] &quot;niter: 1000, pi: 0.317458841997871&quot;  &quot;niter: 1000, pi: 0.335160539672143&quot; 
-[5] &quot;niter: 1000, pi: 0.132293117078355&quot; </code></pre>
+[1] &quot;niter: 100, pi: 0.345966540002908&quot; &quot;niter: 100, pi: 0.21521408839804&quot; 
+[3] &quot;niter: 100, pi: 0.156104290781643&quot; &quot;niter: 100, pi: 0.102437190019367&quot;
+[5] &quot;niter: 100, pi: 0.180277890798042&quot;
+[1] &quot;niter: 200, pi: 0.250696028954878&quot; &quot;niter: 200, pi: 0.157329619558756&quot;
+[3] &quot;niter: 200, pi: 0.302255568173961&quot; &quot;niter: 200, pi: 0.13769287633257&quot; 
+[5] &quot;niter: 200, pi: 0.152025906979834&quot;
+[1] &quot;niter: 300, pi: 0.353461022080113&quot;  &quot;niter: 300, pi: 0.169128285213736&quot; 
+[3] &quot;niter: 300, pi: 0.243990952011801&quot;  &quot;niter: 300, pi: 0.0156745746110429&quot;
+[5] &quot;niter: 300, pi: 0.217745166083307&quot; 
+[1] &quot;niter: 400, pi: 0.231094774198468&quot;  &quot;niter: 400, pi: 0.252830110908353&quot; 
+[3] &quot;niter: 400, pi: 0.305681722472725&quot;  &quot;niter: 400, pi: 0.0957882956858263&quot;
+[5] &quot;niter: 400, pi: 0.114605096734627&quot; 
+[1] &quot;niter: 500, pi: 0.31986041079754&quot;   &quot;niter: 500, pi: 0.169070377529421&quot; 
+[3] &quot;niter: 500, pi: 0.250315150220613&quot;  &quot;niter: 500, pi: 0.0632253927673477&quot;
+[5] &quot;niter: 500, pi: 0.197528668685079&quot; 
+[1] &quot;niter: 600, pi: 0.275055332036052&quot; &quot;niter: 600, pi: 0.167652537716054&quot;
+[3] &quot;niter: 600, pi: 0.101085728711862&quot; &quot;niter: 600, pi: 0.166620928639432&quot;
+[5] &quot;niter: 600, pi: 0.289585472896599&quot;
+[1] &quot;niter: 700, pi: 0.238784010806905&quot; &quot;niter: 700, pi: 0.164453754700941&quot;
+[3] &quot;niter: 700, pi: 0.165792334221224&quot; &quot;niter: 700, pi: 0.170829904319865&quot;
+[5] &quot;niter: 700, pi: 0.260139995951065&quot;
+[1] &quot;niter: 800, pi: 0.374488648238313&quot;  &quot;niter: 800, pi: 0.0671284489207334&quot;
+[3] &quot;niter: 800, pi: 0.188484598664714&quot;  &quot;niter: 800, pi: 0.169165024950692&quot; 
+[5] &quot;niter: 800, pi: 0.200733279225547&quot; 
+[1] &quot;niter: 900, pi: 0.417179239260884&quot;  &quot;niter: 900, pi: 0.065434116927597&quot; 
+[3] &quot;niter: 900, pi: 0.0586163594182768&quot; &quot;niter: 900, pi: 0.21402596296464&quot;  
+[5] &quot;niter: 900, pi: 0.244744321428603&quot; 
+[1] &quot;niter: 1000, pi: 0.179654162183576&quot; &quot;niter: 1000, pi: 0.142080802594972&quot;
+[3] &quot;niter: 1000, pi: 0.150285267091333&quot; &quot;niter: 1000, pi: 0.322913228868907&quot;
+[5] &quot;niter: 1000, pi: 0.205066539261211&quot;</code></pre>
 <p>Evaluate the gibbs sampling</p>
 <pre class="r"><code># (1) Pi is it converging?
 plot(res_arb$pi[, 1], xlab = &quot;iteration&quot;,
@@ -1586,43 +1623,43 @@ legend(&quot;bottomright&quot;, legend = c(&quot;Pop1&quot;,
 table(res_arb$z[1, ], arb_sim$z)</code></pre>
 <pre><code>   
      1  2  3  4  5
-  1 14 23  8 77 70
-  2 32 22  5 77 70
-  3 20 31  8 76 55
-  4 31 25  3 67 77
-  5 26 28  9 67 79</code></pre>
+  1 42 27 45 68 15
+  2 51 23 40 64 20
+  3 41 36 29 65 24
+  4 55 23 38 56 28
+  5 40 31 53 62 24</code></pre>
 <pre class="r"><code>table(res_arb$z[100, ], arb_sim$z)</code></pre>
 <pre><code>   
       1   2   3   4   5
-  1  72   2   3  33  13
-  2  11  34   9  17  13
-  3  12  68  11 233  54
-  4  23  13   3  58 128
-  5   5  12   7  23 143</code></pre>
+  1  58  10  17 200  22
+  2 126   7  17  28   9
+  3  26  37  31  66  46
+  4  13  11  58   5  18
+  5   6  75  82  16  16</code></pre>
 <pre class="r"><code>table(res_arb$z[200, ], arb_sim$z)</code></pre>
 <pre><code>   
       1   2   3   4   5
-  1  81   4   5  21  26
-  2   9  38   8  36  19
-  3  15  68  12 262  56
-  4  17  12   4  42 226
-  5   1   7   4   3  24</code></pre>
+  1  36  18  18 179  10
+  2 119   7  14  26  11
+  3  59  66  44  93  52
+  4   8  20  75   6  25
+  5   7  29  54  11  13</code></pre>
 <pre class="r"><code>table(res_arb$z[300, ], arb_sim$z)</code></pre>
 <pre><code>   
       1   2   3   4   5
-  1  77   3   5  30  25
-  2   0   3   1   9  14
-  3  15  87  14 272  70
-  4  17   9   4  35 215
-  5  14  27   9  18  27</code></pre>
+  1  68  26  23 206  22
+  2 110   8  10  22   6
+  3  24  52  50  64  69
+  4  11   9   8   7   2
+  5  16  45 114  16  12</code></pre>
 <pre class="r"><code>table(res_arb$z[1000, ], arb_sim$z)</code></pre>
 <pre><code>   
       1   2   3   4   5
-  1  11   1   1   8  74
-  2   2  48   7  49  26
-  3  22  54  10 247  52
-  4  21  25  10  40 190
-  5  67   1   5  20   9</code></pre>
+  1  13   9  14 129   8
+  2  23  17   6  72   9
+  3  17  45  50  22  41
+  4 167  15  26  80  28
+  5   9  54 109  12  25</code></pre>
 <pre class="r"><code>vec_accuracy = rep(-1, dim(res_arb$z)[1])
 niter = dim(res_arb$z)[1]
 for (i in 1:dim(res_arb$z)[1]) {
@@ -1679,7 +1716,7 @@ mytheme_2d</code></pre>
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 4.0.3 (2020-10-10)
 Platform: x86_64-w64-mingw32/x64 (64-bit)
-Running under: Windows 10 x64 (build 19042)
+Running under: Windows 10 x64 (build 22000)
 
 Matrix products: default
 
