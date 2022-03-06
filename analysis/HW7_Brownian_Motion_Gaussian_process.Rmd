@@ -686,7 +686,7 @@ for (i in 1:n){
   }
 } 
 
-head(mat_ll)
+# head(mat_ll)
 rownames(mat_ll) <- a1
 colnames(mat_ll) <- a2
 
