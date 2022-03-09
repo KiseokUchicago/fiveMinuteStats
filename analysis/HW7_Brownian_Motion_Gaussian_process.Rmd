@@ -96,7 +96,7 @@ library(rmarkdown)
 $$ X_{t+\mu} | X_t \sim N(0, \mu) $$
 
 Let's simulate this standard Brownian motion and plot
-```{r}
+```{r, results = 'asis'}
 
 simulate_standard_Brownian = function(length=1000){
   t = c(0, runif(999, min=0, max=1))
@@ -108,7 +108,7 @@ simulate_standard_Brownian = function(length=1000){
   X[1] = 0  # X(0) = 0
   for(k in 2:length){
     # print(k)
-    X[k]= X[k-1] + rnorm(1, mean = 0, sd = t[k] - t[k-1])  
+    X[k]= X[k-1] + rnorm(1, mean = 0, sd = sqrt(t[k] - t[k-1]))  
   }
   return(list(X=X, t=t))
 }
@@ -137,7 +137,7 @@ $$ log P(X | \sigma)= \sum_{i=2}^k ( -\frac{1}{2}({\frac{X_i - X_{i-1}}{\sigma \
 
 Plot the log-likelihood as a function of $\sigma$
 
-```{r}
+```{r, results = 'asis'}
 
 
 calculate_loglikelihood <- function(sigma = 1, standard_sim){
@@ -176,28 +176,9 @@ plot(vec_sigma, vec_loglikelihood, xlab = "Sigma", ylab="Log-likelihood(sigma)",
 
 ```
 
-Let's magnify the area between 0 and 0.1
-
-```{r}
-# plot for sigma values between 0 to 0.1
-vec_loglikelihood <- c()
-vec_sigma <- seq(0, 0.1, length.out = 1000)[-1]
-for (sig in vec_sigma){ 
-  # calculate_loglikelihood(sigma = sig, standard_sim)
-  vec_loglikelihood <- c(vec_loglikelihood, calculate_loglikelihood(sigma = sig, standard_sim))
-}
-
-# plot
-plot(vec_sigma, vec_loglikelihood, xlab = "Sigma", ylab="Log-likelihood(sigma)", main = paste0("log-likelihood function"), col = "royalblue")
-
-# find maximum
-max(vec_loglikelihood)
-vec_sigma[which.max(vec_loglikelihood)] # 0.03303303
-```
-
 Let's magnify the area between 0.001 and 1
 
-```{r}
+```{r, , results = 'asis'}
 # plot for sigma values between 0.001 to 1
 vec_loglikelihood <- c()
 vec_sigma <- seq(0.001, 1, length.out = 1000)[-1]
@@ -210,17 +191,17 @@ for (sig in vec_sigma){
 plot(vec_sigma, vec_loglikelihood, xlab = "Sigma", ylab="Log-likelihood(sigma)", main = paste0("log-likelihood function"), col = "royalblue")
 
 # find maximum
-max(vec_loglikelihood)
-vec_sigma[which.max(vec_loglikelihood)] # 0.033
+max(vec_loglikelihood) # 2379.556
+vec_sigma[which.max(vec_loglikelihood)] # 0.962
 ```
 
-The maximum seems to lie between 0.01 and 0.05. Let's zoom in between 0.015 and 0.05
+Let's zoom in between 0.5 and 1.5
 
 
-```{r}
-# plot for sigma values between 0.015 to 0.05
+```{r, , results = 'asis'}
+# plot for sigma values between 0.5 and 1.5
 vec_loglikelihood <- c()
-vec_sigma <- seq(0.015, 0.05, length.out = 1000)[-1]
+vec_sigma <- seq(0.5, 1.5, length.out = 1000)[-1]
 for (sig in vec_sigma){ 
   # calculate_loglikelihood(sigma = sig, standard_sim)
   vec_loglikelihood <- c(vec_loglikelihood, calculate_loglikelihood(sigma = sig, standard_sim))
@@ -230,11 +211,11 @@ for (sig in vec_sigma){
 plot(vec_sigma, vec_loglikelihood, xlab = "Sigma", ylab="Log-likelihood(sigma)", main = paste0("log-likelihood function"), col = "royalblue")
 
 # find maximum
-max(vec_loglikelihood)
-vec_sigma[which.max(vec_loglikelihood)] # 0.03297297
+max(vec_loglikelihood) # 2379.556
+vec_sigma[which.max(vec_loglikelihood)] # 0.9614615
 ```
 
-Maximum log-likelihood is acheived at sigma of 0.033
+Maximum log-likelihood is acheived at sigma of approximately 1
 
 ## A-c) Brownian motion in the tree
 Consider the tree in Figure 1 of the Mau et al paper http://www.ncbi.nlm.nih.gov/pubmed/11318142 with leafs labelled 1 to 7.
@@ -261,7 +242,7 @@ $$ X_{6}^L | X_{2}^i \sim N(0, t_1) $$
 $$ X_{5}^L | X_{6}^i \sim N(0, t_6+t_5+t_4+t_3+t_2+t_1) $$
 ## A-c-1) Simulated value of $X^i$, $X^L$ given the coalescent times (t1, t2, ..., t6)
 
-```{r}
+```{r, , results = 'asis'}
 
 set.seed(1)
 t = rnorm(6, mean = 1, sd = 0.5) 
@@ -350,7 +331,7 @@ z11: connecting xi2, xL6 \
 z12: connecting xi6, xL5 \
 
 Then, each row of A can be constructed based on the linear combination of links that each node can be reached from root (xi6)
-```{r}
+```{r, , results = 'asis'}
 t = rep(1, 6)
 simulate_xi_xL(t)
 
@@ -417,7 +398,7 @@ mat_covariance
 
 ## A-c-3) Confirm that my simulation agrees with covariance matrix
 
-```{r}
+```{r, , results = 'asis'}
 # simulate 10000 times
 t = rep(1, 6)
 
@@ -454,7 +435,7 @@ They roughly agree.
 ## A-c-4) Precision matrix
 
 Calculate the precision matrix with the covariance matrix from problem A-c-2
-```{r}
+```{r, , results = 'asis'}
 library(matlib)
 # covariance matrix from the problem A-c-2
 mat_Omega <- inv(mat_covariance)
@@ -488,7 +469,7 @@ grid.arrange(p1, p2, p3, ncol=3)
 ```
 
 Calculate the precision matrix with the covariance matrix from problem A-c-3 (simulation-based)
-```{r}
+```{r, , results = 'asis'}
 library(matlib)
 # covariance matrix from the problem A-c-3
 library(pracma)
@@ -537,7 +518,7 @@ Therefore, sparsity patterns depends on the conditional dependence/independence 
 Consider the data from http://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.0030339, available at https://github.com/stephens999/hgen48600/tree/master/data/CCR5 which you can read into R using code from https://stephens999.github.io/hgen48600/ccr5.html \
 
 Read and transform the data.
-```{r}
+```{r, , results = 'asis'}
 # load data
 # setwd("C:/Users/there/Desktop/Computational_Biology_2022_Winter/fiveMinuteStats")
 ccr5 = read.table("../data/CCR5.freq.txt",header=TRUE)
@@ -556,7 +537,7 @@ ccr5 = ccr5[ccr5$x != -Inf,]
 
 $$ \Sigma(y_1, y_2) = K(d(y_1, y_2)) = a_1 exp(-(d/a_2)^2) $$
 
-```{r}
+```{r, , results = 'asis'}
 # compute distance matrix (euclidean distance)
 rownames(ccr5)
 y_ccr5 <- ccr5[,c("Long","Lat")]
@@ -585,7 +566,7 @@ is.positive.semi.definite(mat_c, tol=1e-8)
 
 The resulting covariance matrix is valid (it is positive semi-definite) when $a_1$ and $a_2$ are 1.
 
-```{r}
+```{r, , results = 'asis'}
 covariance_is_valid <- function(mat_d, a1, a2){
   # compute covariance matrix with distance matrix
   mat_c <- a1*exp(-(mat_d/a2)^2)
@@ -612,7 +593,7 @@ The resulting covariance matrix is valid (it is positive semi-definite) for othe
 
 ## B-b) Compute log-likelihood and maximize
 
-```{r}
+```{r, , results = 'asis'}
 # function for computing log-likelihood
 compute_ll <- function(ccr5, m, a1, a2){
   # compute covariance matrix with distance matrix
@@ -656,7 +637,7 @@ optim(par = c(0.1,0.1,0.1), fn=compute_ll_optim, data = X_obs)
 It converged to m = -2.7486638, a1 = 0.5299463, a2 = 1.6820251. This is pretty stable to initial parameter change \
 Let's do a grid search around these values to visualize it in a heatmap. 
 
-```{r}
+```{r, , results = 'asis'}
 n = 100
 
 # mv = seq(1e-8, 3, length.out = n)
@@ -735,7 +716,7 @@ where $\Omega$ is the precision matrix and $Y_1$ is $X_1$, $Y_2$ is ($X_2$, ...,
 
 
 
-```{r}
+```{r, , results = 'asis'}
 # compute covariance matrix with distance matrix
 y_ccr5 <- ccr5[,c("Long","Lat")]
 mat_d <- dist(y_ccr5, diag=T, upper=T)
@@ -816,7 +797,7 @@ Notice that this expectation ends up being a weighted linear combination of the 
 The weight is determined by Sigma_12 %*% Omega_22. However, it does not seem that this weight vector give more weight to X_2 or X_3 compared to other X.
 
 Repeat this for each of the r datapoints.
-```{r}
+```{r, , results = 'asis'}
 # this function only works for r = 2,3,4,...,67 (nrow of the matrix -1)
 compute_exp_Xr_cond <- function(mat_c, ccr5, r=2){ # compute this for all other X_2, X_3...
   # Precision matrix
@@ -903,7 +884,7 @@ vec_exp_cond
 ```
 
 Comparing the accuracy of this imputation scheme with just using the mean of the other datapoints.
-```{r}
+```{r, , results = 'asis'}
 # Accuracy of Kriging
 
 X # observed
@@ -915,7 +896,7 @@ sqrt(sum( (X - vec_exp_cond)^2 ))
 
 distance calculated against the observed X is only 2.4
 
-```{r}
+```{r, , results = 'asis'}
 # When only using the mean of other datapoints
 
 X # observed
