@@ -384,7 +384,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-03-06
+<strong>Last updated:</strong> 2022-03-08
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
@@ -499,16 +499,16 @@ C:/Users/there/Desktop/Computational_Biology_2022_Winter/fiveMinuteStats
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomKiseokUchicagofiveMinuteStatstreea7eadcc97b4c7c11520408d89bd7f6ed9da0e0bdtargetblanka7eadcca"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/KiseokUchicago/fiveMinuteStats/tree/a7eadcc97b4c7c11520408d89bd7f6ed9da0e0bd" target="_blank">a7eadcc</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomKiseokUchicagofiveMinuteStatstreecfae418f47e840c222b66917a697c188ba1ba91dtargetblankcfae418a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/KiseokUchicago/fiveMinuteStats/tree/cfae418f47e840c222b66917a697c188ba1ba91d" target="_blank">cfae418</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomKiseokUchicagofiveMinuteStatstreea7eadcc97b4c7c11520408d89bd7f6ed9da0e0bdtargetblanka7eadcca" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomKiseokUchicagofiveMinuteStatstreecfae418f47e840c222b66917a697c188ba1ba91dtargetblankcfae418a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/KiseokUchicago/fiveMinuteStats/tree/a7eadcc97b4c7c11520408d89bd7f6ed9da0e0bd" target="_blank">a7eadcc</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/KiseokUchicago/fiveMinuteStats/tree/cfae418f47e840c222b66917a697c188ba1ba91d" target="_blank">cfae418</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -517,11 +517,10 @@ Note that you need to be careful to ensure that all relevant files for the analy
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    analysis/HW7_Brownian_Motion_Gaussian_process.pdf
     Ignored:    analysis/bernoulli_poisson_process_cache/
 
 Untracked files:
-    Untracked:  analysis/HW7_Brownian_Motion_Gaussian_process.log
-    Untracked:  analysis/HW7_Brownian_Motion_Gaussian_process.tex
     Untracked:  data/
     Untracked:  texput.log
 
@@ -562,6 +561,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/KiseokUchicago/fiveMinuteStats/blob/cfae418f47e840c222b66917a697c188ba1ba91d/analysis/HW7_Brownian_Motion_Gaussian_process.Rmd" target="_blank">cfae418</a>
+</td>
+<td>
+Kiseok Lee
+</td>
+<td>
+2022-03-08
+</td>
+<td>
+wflow_publish(“analysis/HW7_Brownian_Motion_Gaussian_process.Rmd”)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/KiseokUchicago/fiveMinuteStats/ae1801a6c5b97ddf9e3a365b054782042c65ff1f/docs/HW7_Brownian_Motion_Gaussian_process.html" target="_blank">ae1801a</a>
+</td>
+<td>
+Kiseok Lee
+</td>
+<td>
+2022-03-06
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -813,8 +846,8 @@ Class: <strong>HGEN 486 Computational Biology</strong></p>
     X[1] = 0  # X(0) = 0
     for (k in 2:length) {
         # print(k)
-        X[k] = X[k - 1] + rnorm(1, mean = 0, sd = t[k] - t[k -
-            1])
+        X[k] = X[k - 1] + rnorm(1, mean = 0, sd = sqrt(t[k] -
+            t[k - 1]))
     }
     return(list(X = X, t = t))
 }
@@ -859,7 +892,7 @@ plot(standard_sim$t, standard_sim$X, xlab = &quot;t&quot;, ylab = &quot;X(t)&quo
 
 # when sigma is 1
 calculate_loglikelihood(sigma = 1, standard_sim)</code></pre>
-<pre><code>[1] 2839.401</code></pre>
+<p>[1] 2378.061</p>
 <pre class="r"><code># plot for sigma values between 0 to 1
 vec_loglikelihood &lt;- c()
 vec_sigma &lt;- seq(0, 1, length.out = 1000)[-1]
@@ -873,25 +906,6 @@ for (sig in vec_sigma) {
 plot(vec_sigma, vec_loglikelihood, xlab = &quot;Sigma&quot;, ylab = &quot;Log-likelihood(sigma)&quot;,
     main = paste0(&quot;log-likelihood function&quot;), col = &quot;royalblue&quot;)</code></pre>
 <p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-3-1.png" width="1056" style="display: block; margin: auto;" /></p>
-<p>Let’s magnify the area between 0 and 0.1</p>
-<pre class="r"><code># plot for sigma values between 0 to 0.1
-vec_loglikelihood &lt;- c()
-vec_sigma &lt;- seq(0, 0.1, length.out = 1000)[-1]
-for (sig in vec_sigma) {
-    # calculate_loglikelihood(sigma = sig, standard_sim)
-    vec_loglikelihood &lt;- c(vec_loglikelihood, calculate_loglikelihood(sigma = sig,
-        standard_sim))
-}
-
-# plot
-plot(vec_sigma, vec_loglikelihood, xlab = &quot;Sigma&quot;, ylab = &quot;Log-likelihood(sigma)&quot;,
-    main = paste0(&quot;log-likelihood function&quot;), col = &quot;royalblue&quot;)</code></pre>
-<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-4-1.png" width="1056" style="display: block; margin: auto;" /></p>
-<pre class="r"><code># find maximum
-max(vec_loglikelihood)</code></pre>
-<pre><code>[1] 5791.146</code></pre>
-<pre class="r"><code>vec_sigma[which.max(vec_loglikelihood)]  # 0.03303303</code></pre>
-<pre><code>[1] 0.03163163</code></pre>
 <p>Let’s magnify the area between 0.001 and 1</p>
 <pre class="r"><code># plot for sigma values between 0.001 to 1
 vec_loglikelihood &lt;- c()
@@ -905,16 +919,16 @@ for (sig in vec_sigma) {
 # plot
 plot(vec_sigma, vec_loglikelihood, xlab = &quot;Sigma&quot;, ylab = &quot;Log-likelihood(sigma)&quot;,
     main = paste0(&quot;log-likelihood function&quot;), col = &quot;royalblue&quot;)</code></pre>
-<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-5-1.png" width="1056" style="display: block; margin: auto;" /></p>
+<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-4-1.png" width="1056" style="display: block; margin: auto;" /></p>
 <pre class="r"><code># find maximum
-max(vec_loglikelihood)</code></pre>
-<pre><code>[1] 5791</code></pre>
-<pre class="r"><code>vec_sigma[which.max(vec_loglikelihood)]  # 0.033</code></pre>
-<pre><code>[1] 0.032</code></pre>
-<p>The maximum seems to lie between 0.01 and 0.05. Let’s zoom in between 0.015 and 0.05</p>
-<pre class="r"><code># plot for sigma values between 0.015 to 0.05
+max(vec_loglikelihood)  # 2379.556</code></pre>
+<p>[1] 2379.556</p>
+<pre class="r"><code>vec_sigma[which.max(vec_loglikelihood)]  # 0.962</code></pre>
+<p>[1] 0.962</p>
+<p>Let’s zoom in between 0.5 and 1.5</p>
+<pre class="r"><code># plot for sigma values between 0.5 and 1.5
 vec_loglikelihood &lt;- c()
-vec_sigma &lt;- seq(0.015, 0.05, length.out = 1000)[-1]
+vec_sigma &lt;- seq(0.5, 1.5, length.out = 1000)[-1]
 for (sig in vec_sigma) {
     # calculate_loglikelihood(sigma = sig, standard_sim)
     vec_loglikelihood &lt;- c(vec_loglikelihood, calculate_loglikelihood(sigma = sig,
@@ -924,13 +938,13 @@ for (sig in vec_sigma) {
 # plot
 plot(vec_sigma, vec_loglikelihood, xlab = &quot;Sigma&quot;, ylab = &quot;Log-likelihood(sigma)&quot;,
     main = paste0(&quot;log-likelihood function&quot;), col = &quot;royalblue&quot;)</code></pre>
-<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-6-1.png" width="1056" style="display: block; margin: auto;" /></p>
+<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-5-1.png" width="1056" style="display: block; margin: auto;" /></p>
 <pre class="r"><code># find maximum
-max(vec_loglikelihood)</code></pre>
-<pre><code>[1] 5791.147</code></pre>
-<pre class="r"><code>vec_sigma[which.max(vec_loglikelihood)]  # 0.03297297</code></pre>
-<pre><code>[1] 0.03160661</code></pre>
-<p>Maximum log-likelihood is acheived at sigma of 0.033</p>
+max(vec_loglikelihood)  # 2379.556</code></pre>
+<p>[1] 2379.556</p>
+<pre class="r"><code>vec_sigma[which.max(vec_loglikelihood)]  # 0.9614615</code></pre>
+<p>[1] 0.9614615</p>
+<p>Maximum log-likelihood is acheived at sigma of approximately 1</p>
 </div>
 <div id="a-c-brownian-motion-in-the-tree" class="section level2">
 <h2>A-c) Brownian motion in the tree</h2>
@@ -978,8 +992,7 @@ vec_x = c(xi6, xi5, xi4, xi3, xi2, xi1, xL1, xL4, xL7, xL2, xL3,
     xL6, xL5)
 
 vec_x</code></pre>
-<pre><code> [1] 0.000000 0.374327 1.171155 1.365339 1.132325 3.987960 1.966131 3.473127
- [9] 2.152599 3.093777 1.095087 1.118907 2.295083</code></pre>
+<p>[1] 0.000000 0.374327 1.171155 1.365339 1.132325 3.987960 1.966131 3.473127 [9] 2.152599 3.093777 1.095087 1.118907 2.295083</p>
 <pre class="r"><code># write it into function
 simulate_xi_xL &lt;- function(t) {
     xi6 = 0
@@ -1034,9 +1047,7 @@ z12: connecting xi6, xL5<br />
 <p>Then, each row of A can be constructed based on the linear combination of links that each node can be reached from root (xi6)</p>
 <pre class="r"><code>t = rep(1, 6)
 simulate_xi_xL(t)</code></pre>
-<pre><code> [1]  0.0000000  0.8212212  1.4151225  2.1208515  2.9029878  1.5442729
- [7] -2.5635809  2.1640986  1.4881441  1.8510057  1.4322354  2.4248377
-[13]  1.0237436</code></pre>
+<p>[1] 0.0000000 0.8212212 1.4151225 2.1208515 2.9029878 1.5442729 [7] -2.5635809 2.1640986 1.4881441 1.8510057 1.4322354 2.4248377 [13] 1.0237436</p>
 <pre class="r"><code># length of link z (squre root of the time)
 length_z = sqrt(c(1, 1, 1, 2, 1, 3, 4, 1, 1, 3, 2, 2, 6))
 
@@ -1097,20 +1108,8 @@ mat_A = rbind(row1, row2, row3, row4, row5, row6, row7, row8,
 
 mat_covariance = mat_A %*% t(mat_A)
 mat_covariance</code></pre>
-<pre><code>      row1 row2 row3 row4 row5 row6 row7 row8 row9 row10 row11 row12 row13
-row1     1    1    1    1    1    1    1    1    1     1     1     1     1
-row2     1    2    2    2    2    2    2    2    2     2     2     2     1
-row3     1    2    3    2    2    3    3    3    3     2     2     2     1
-row4     1    2    2    4    4    2    2    2    2     4     4     4     1
-row5     1    2    2    4    5    2    2    2    2     4     5     5     1
-row6     1    2    3    2    2    6    3    6    6     2     2     2     1
-row7     1    2    3    2    2    3    7    3    3     2     2     2     1
-row8     1    2    3    2    2    6    3    7    6     2     2     2     1
-row9     1    2    3    2    2    6    3    6    7     2     2     2     1
-row10    1    2    2    4    4    2    2    2    2     7     4     4     1
-row11    1    2    2    4    5    2    2    2    2     4     7     5     1
-row12    1    2    2    4    5    2    2    2    2     4     5     7     1
-row13    1    1    1    1    1    1    1    1    1     1     1     1     7</code></pre>
+<pre><code>  row1 row2 row3 row4 row5 row6 row7 row8 row9 row10 row11 row12 row13</code></pre>
+<p>row1 1 1 1 1 1 1 1 1 1 1 1 1 1 row2 1 2 2 2 2 2 2 2 2 2 2 2 1 row3 1 2 3 2 2 3 3 3 3 2 2 2 1 row4 1 2 2 4 4 2 2 2 2 4 4 4 1 row5 1 2 2 4 5 2 2 2 2 4 5 5 1 row6 1 2 3 2 2 6 3 6 6 2 2 2 1 row7 1 2 3 2 2 3 7 3 3 2 2 2 1 row8 1 2 3 2 2 6 3 7 6 2 2 2 1 row9 1 2 3 2 2 6 3 6 7 2 2 2 1 row10 1 2 2 4 4 2 2 2 2 7 4 4 1 row11 1 2 2 4 5 2 2 2 2 4 7 5 1 row12 1 2 2 4 5 2 2 2 2 4 5 7 1 row13 1 1 1 1 1 1 1 1 1 1 1 1 7</p>
 </div>
 <div id="a-c-3-confirm-that-my-simulation-agrees-with-covariance-matrix" class="section level2">
 <h2>A-c-3) Confirm that my simulation agrees with covariance matrix</h2>
@@ -1124,43 +1123,17 @@ for (i in 1:9999) {
 }
 
 dim(mat_data)</code></pre>
-<pre><code>[1] 10000    13</code></pre>
+<p>[1] 10000 13</p>
 <pre class="r"><code>colnames(mat_data) = c(&quot;xi6&quot;, &quot;xi5&quot;, &quot;xi4&quot;, &quot;xi3&quot;, &quot;xi2&quot;, &quot;xi1&quot;,
     &quot;xL1&quot;, &quot;xL4&quot;, &quot;xL7&quot;, &quot;xL2&quot;, &quot;xL3&quot;, &quot;xL6&quot;, &quot;xL5&quot;)
 
 cov(mat_data)</code></pre>
-<pre><code>    xi6         xi5        xi4        xi3          xi2        xi1        xL1
-xi6   0  0.00000000 0.00000000  0.0000000 0.0000000000 0.00000000 0.00000000
-xi5   0  0.98814606 0.99220429  0.9728198 0.9613143587 1.01047440 0.97878373
-xi4   0  0.99220429 1.97613137  0.9947283 0.9750676112 1.99453631 1.99317204
-xi3   0  0.97281984 0.99472826  2.9991153 2.9926083214 0.99486406 0.97310723
-xi2   0  0.96131436 0.97506761  2.9926083 4.0027913166 0.97897520 0.93942000
-xi1   0  1.01047440 1.99453631  0.9948641 0.9789751997 5.04548030 1.99207642
-xL1   0  0.97878373 1.99317204  0.9731072 0.9394200037 1.99207642 6.06496882
-xL4   0  1.01221116 1.98958593  0.9840289 0.9640890336 5.01548743 1.99621232
-xL7   0  1.03650946 2.02177264  1.0196828 0.9932661457 5.06574058 1.98823263
-xL2   0  0.97492689 1.01199244  2.9991436 2.9632574952 1.00257209 0.98682364
-xL3   0  0.95335171 0.96302536  2.9624761 3.9756320300 0.94435776 0.93240137
-xL6   0  0.96501541 0.98304424  3.0011934 4.0239840359 0.98953933 0.95462845
-xL5   0 -0.02728058 0.02933652 -0.0563075 0.0004173819 0.07995824 0.03207477
-           xL4       xL7        xL2        xL3         xL6           xL5
-xi6 0.00000000 0.0000000  0.0000000 0.00000000  0.00000000  0.0000000000
-xi5 1.01221116 1.0365095  0.9749269 0.95335171  0.96501541 -0.0272805834
-xi4 1.98958593 2.0217726  1.0119924 0.96302536  0.98304424  0.0293365205
-xi3 0.98402888 1.0196828  2.9991436 2.96247607  3.00119339 -0.0563075039
-xi2 0.96408903 0.9932661  2.9632575 3.97563203  4.02398404  0.0004173819
-xi1 5.01548743 5.0657406  1.0025721 0.94435776  0.98953933  0.0799582371
-xL1 1.99621232 1.9882326  0.9868236 0.93240137  0.95462845  0.0320747747
-xL4 5.97138303 5.0342364  0.9641668 0.93751436  0.95925286  0.0994882314
-xL7 5.03423637 6.0911917  1.0356559 0.96218163  0.99930259  0.0714794020
-xL2 0.96416675 1.0356559  6.0510236 2.95052136  2.95466706 -0.1287465443
-xL3 0.93751436 0.9621816  2.9505214 4.95252025  3.99328948  0.0361787906
-xL6 0.95925286 0.9993026  2.9546671 3.99328948  5.06388238 -0.0288493484
-xL5 0.09948823 0.0714794 -0.1287465 0.03617879 -0.02884935  5.9950143442</code></pre>
+<pre><code>xi6         xi5        xi4        xi3          xi2        xi1        xL1</code></pre>
+<p>xi6 0 0.00000000 0.00000000 0.0000000 0.0000000000 0.00000000 0.00000000 xi5 0 0.98814606 0.99220429 0.9728198 0.9613143587 1.01047440 0.97878373 xi4 0 0.99220429 1.97613137 0.9947283 0.9750676112 1.99453631 1.99317204 xi3 0 0.97281984 0.99472826 2.9991153 2.9926083214 0.99486406 0.97310723 xi2 0 0.96131436 0.97506761 2.9926083 4.0027913166 0.97897520 0.93942000 xi1 0 1.01047440 1.99453631 0.9948641 0.9789751997 5.04548030 1.99207642 xL1 0 0.97878373 1.99317204 0.9731072 0.9394200037 1.99207642 6.06496882 xL4 0 1.01221116 1.98958593 0.9840289 0.9640890336 5.01548743 1.99621232 xL7 0 1.03650946 2.02177264 1.0196828 0.9932661457 5.06574058 1.98823263 xL2 0 0.97492689 1.01199244 2.9991436 2.9632574952 1.00257209 0.98682364 xL3 0 0.95335171 0.96302536 2.9624761 3.9756320300 0.94435776 0.93240137 xL6 0 0.96501541 0.98304424 3.0011934 4.0239840359 0.98953933 0.95462845 xL5 0 -0.02728058 0.02933652 -0.0563075 0.0004173819 0.07995824 0.03207477 xL4 xL7 xL2 xL3 xL6 xL5 xi6 0.00000000 0.0000000 0.0000000 0.00000000 0.00000000 0.0000000000 xi5 1.01221116 1.0365095 0.9749269 0.95335171 0.96501541 -0.0272805834 xi4 1.98958593 2.0217726 1.0119924 0.96302536 0.98304424 0.0293365205 xi3 0.98402888 1.0196828 2.9991436 2.96247607 3.00119339 -0.0563075039 xi2 0.96408903 0.9932661 2.9632575 3.97563203 4.02398404 0.0004173819 xi1 5.01548743 5.0657406 1.0025721 0.94435776 0.98953933 0.0799582371 xL1 1.99621232 1.9882326 0.9868236 0.93240137 0.95462845 0.0320747747 xL4 5.97138303 5.0342364 0.9641668 0.93751436 0.95925286 0.0994882314 xL7 5.03423637 6.0911917 1.0356559 0.96218163 0.99930259 0.0714794020 xL2 0.96416675 1.0356559 6.0510236 2.95052136 2.95466706 -0.1287465443 xL3 0.93751436 0.9621816 2.9505214 4.95252025 3.99328948 0.0361787906 xL6 0.95925286 0.9993026 2.9546671 3.99328948 5.06388238 -0.0288493484 xL5 0.09948823 0.0714794 -0.1287465 0.03617879 -0.02884935 5.9950143442</p>
 <pre class="r"><code># covariance matrix with simulation
 library(lattice)
 levelplot(cov(mat_data), main = &quot;simulation (Problem A-c-1)&quot;)</code></pre>
-<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-9-1.png" width="1056" style="display: block; margin: auto;" /></p>
+<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-8-1.png" width="1056" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>a &lt;- levelplot(cov(mat_data), main = &quot;simulation (Problem A-c-1)&quot;)
 
 # covariance matrix with logical structuring of z get
@@ -1170,13 +1143,13 @@ colnames(mat_covariance) = c(&quot;xi6&quot;, &quot;xi5&quot;, &quot;xi4&quot;, 
 rownames(mat_covariance) = c(&quot;xi6&quot;, &quot;xi5&quot;, &quot;xi4&quot;, &quot;xi3&quot;, &quot;xi2&quot;,
     &quot;xi1&quot;, &quot;xL1&quot;, &quot;xL4&quot;, &quot;xL7&quot;, &quot;xL2&quot;, &quot;xL3&quot;, &quot;xL6&quot;, &quot;xL5&quot;)
 levelplot(mat_covariance, main = &quot;logical structuring of z (Problem A-c-2))&quot;)</code></pre>
-<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-9-2.png" width="1056" style="display: block; margin: auto;" /></p>
+<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-8-2.png" width="1056" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>b &lt;- levelplot(mat_covariance, main = &quot;logical structuring of z (Problem A-c-2))&quot;)
 
 # plot and compare
 library(gridExtra)
 grid.arrange(a, b, ncol = 2)</code></pre>
-<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-9-3.png" width="1056" style="display: block; margin: auto;" /></p>
+<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-8-3.png" width="1056" style="display: block; margin: auto;" /></p>
 <p>They roughly agree.</p>
 </div>
 <div id="a-c-4-precision-matrix" class="section level2">
@@ -1191,31 +1164,20 @@ rownames(mat_Omega) = c(&quot;xi6&quot;, &quot;xi5&quot;, &quot;xi4&quot;, &quot
     &quot;xL1&quot;, &quot;xL4&quot;, &quot;xL7&quot;, &quot;xL2&quot;, &quot;xL3&quot;, &quot;xL6&quot;, &quot;xL5&quot;)
 
 levelplot(mat_Omega, main = &quot;Heatmap of Precision matrix (total)&quot;)</code></pre>
-<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-10-1.png" width="1056" style="display: block; margin: auto;" /></p>
+<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-9-1.png" width="1056" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>p1 &lt;- levelplot(mat_Omega, main = &quot;Heatmap of Precision matrix (total)&quot;)
 
 # find covariance matrix for xi
 cov_xi &lt;- mat_covariance[c(&quot;xi6&quot;, &quot;xi5&quot;, &quot;xi4&quot;, &quot;xi3&quot;, &quot;xi2&quot;,
     &quot;xi1&quot;), c(&quot;xi6&quot;, &quot;xi5&quot;, &quot;xi4&quot;, &quot;xi3&quot;, &quot;xi2&quot;, &quot;xi1&quot;)]
 cov_xi</code></pre>
-<pre><code>    xi6 xi5 xi4 xi3 xi2 xi1
-xi6   1   1   1   1   1   1
-xi5   1   2   2   2   2   2
-xi4   1   2   3   2   2   3
-xi3   1   2   2   4   4   2
-xi2   1   2   2   4   5   2
-xi1   1   2   3   2   2   6</code></pre>
+<pre><code>xi6 xi5 xi4 xi3 xi2 xi1</code></pre>
+<p>xi6 1 1 1 1 1 1 xi5 1 2 2 2 2 2 xi4 1 2 3 2 2 3 xi3 1 2 2 4 4 2 xi2 1 2 2 4 5 2 xi1 1 2 3 2 2 6</p>
 <pre class="r"><code># inverse
 inv(cov_xi)</code></pre>
-<pre><code>                                          
-[1,]  2 -1.0  0.0000000  0.0  0  0.0000000
-[2,] -1  2.5 -1.0000000 -0.5  0  0.0000000
-[3,]  0 -1.0  1.3333333  0.0  0 -0.3333333
-[4,]  0 -0.5  0.0000000  1.5 -1  0.0000000
-[5,]  0  0.0  0.0000000 -1.0  1  0.0000000
-[6,]  0  0.0 -0.3333333  0.0  0  0.3333333</code></pre>
+<p>[1,] 2 -1.0 0.0000000 0.0 0 0.0000000 [2,] -1 2.5 -1.0000000 -0.5 0 0.0000000 [3,] 0 -1.0 1.3333333 0.0 0 -0.3333333 [4,] 0 -0.5 0.0000000 1.5 -1 0.0000000 [5,] 0 0.0 0.0000000 -1.0 1 0.0000000 [6,] 0 0.0 -0.3333333 0.0 0 0.3333333</p>
 <pre class="r"><code>levelplot(cov_xi, main = &quot;Heatmap of Precision matrix of Xi&quot;)</code></pre>
-<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-10-2.png" width="1056" style="display: block; margin: auto;" /></p>
+<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-9-2.png" width="1056" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>p2 &lt;- levelplot(cov_xi, main = &quot;Heatmap of Precision matrix of Xi&quot;)
 
 
@@ -1224,40 +1186,20 @@ cov_xL &lt;- mat_covariance[c(&quot;xL1&quot;, &quot;xL4&quot;, &quot;xL7&quot;,
     &quot;xL6&quot;, &quot;xL5&quot;), c(&quot;xL1&quot;, &quot;xL4&quot;, &quot;xL7&quot;, &quot;xL2&quot;, &quot;xL3&quot;, &quot;xL6&quot;,
     &quot;xL5&quot;)]
 cov_xL</code></pre>
-<pre><code>    xL1 xL4 xL7 xL2 xL3 xL6 xL5
-xL1   7   3   3   2   2   2   1
-xL4   3   7   6   2   2   2   1
-xL7   3   6   7   2   2   2   1
-xL2   2   2   2   7   4   4   1
-xL3   2   2   2   4   7   5   1
-xL6   2   2   2   4   5   7   1
-xL5   1   1   1   1   1   1   7</code></pre>
+<pre><code>xL1 xL4 xL7 xL2 xL3 xL6 xL5</code></pre>
+<p>xL1 7 3 3 2 2 2 1 xL4 3 7 6 2 2 2 1 xL7 3 6 7 2 2 2 1 xL2 2 2 2 7 4 4 1 xL3 2 2 2 4 7 5 1 xL6 2 2 2 4 5 7 1 xL5 1 1 1 1 1 1 7</p>
 <pre class="r"><code># inverse
 inv(cov_xL)</code></pre>
-<pre><code>                                                                            
-[1,]  0.18721461 -0.03587736 -0.03587736 -0.01696021 -0.01272016 -0.01272016
-[2,] -0.03587736  0.55092722 -0.44907278 -0.00969155 -0.00726866 -0.00726866
-[3,] -0.03587736 -0.44907278  0.55092722 -0.00969155 -0.00726866 -0.00726866
-[4,] -0.01696021 -0.00969155 -0.00969155  0.23697698 -0.07226726 -0.07226726
-[5,] -0.01272016 -0.00726866 -0.00726866 -0.07226726  0.32079955 -0.17920045
-[6,] -0.01272016 -0.00726866 -0.00726866 -0.07226726 -0.17920045  0.32079955
-[7,] -0.01043705 -0.00596403 -0.00596403 -0.00801416 -0.00601062 -0.00601062
-                
-[1,] -0.01043705
-[2,] -0.00596403
-[3,] -0.00596403
-[4,] -0.00801416
-[5,] -0.00601062
-[6,] -0.00601062
-[7,]  0.14891436</code></pre>
+<p>[1,] 0.18721461 -0.03587736 -0.03587736 -0.01696021 -0.01272016 -0.01272016 [2,] -0.03587736 0.55092722 -0.44907278 -0.00969155 -0.00726866 -0.00726866 [3,] -0.03587736 -0.44907278 0.55092722 -0.00969155 -0.00726866 -0.00726866 [4,] -0.01696021 -0.00969155 -0.00969155 0.23697698 -0.07226726 -0.07226726 [5,] -0.01272016 -0.00726866 -0.00726866 -0.07226726 0.32079955 -0.17920045 [6,] -0.01272016 -0.00726866 -0.00726866 -0.07226726 -0.17920045 0.32079955 [7,] -0.01043705 -0.00596403 -0.00596403 -0.00801416 -0.00601062 -0.00601062</p>
+<p>[1,] -0.01043705 [2,] -0.00596403 [3,] -0.00596403 [4,] -0.00801416 [5,] -0.00601062 [6,] -0.00601062 [7,] 0.14891436</p>
 <pre class="r"><code>levelplot(cov_xL, main = &quot;Heatmap of Precision matrix of X L&quot;)</code></pre>
-<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-10-3.png" width="1056" style="display: block; margin: auto;" /></p>
+<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-9-3.png" width="1056" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>p3 &lt;- levelplot(cov_xL, main = &quot;Heatmap of Precision matrix of X L&quot;)
 
 # plot simultaneously
 library(gridExtra)
 grid.arrange(p1, p2, p3, ncol = 3)</code></pre>
-<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-10-4.png" width="1056" style="display: block; margin: auto;" /></p>
+<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-9-4.png" width="1056" style="display: block; margin: auto;" /></p>
 <p>Calculate the precision matrix with the covariance matrix from problem A-c-3 (simulation-based)</p>
 <pre class="r"><code>library(matlib)
 # covariance matrix from the problem A-c-3
@@ -1270,31 +1212,21 @@ rownames(mat_Omega) = c(&quot;xi6&quot;, &quot;xi5&quot;, &quot;xi4&quot;, &quot
     &quot;xL1&quot;, &quot;xL4&quot;, &quot;xL7&quot;, &quot;xL2&quot;, &quot;xL3&quot;, &quot;xL6&quot;, &quot;xL5&quot;)
 
 levelplot(mat_Omega, main = &quot;Heatmap of Precision matrix (total, simulation)&quot;)</code></pre>
-<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-11-1.png" width="1056" style="display: block; margin: auto;" /></p>
+<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-10-1.png" width="1056" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>p1 &lt;- levelplot(mat_Omega, main = &quot;Heatmap of Precision matrix (total, simulation)&quot;)
 
 # find covariance matrix for xi
 cov_xi &lt;- mat_covariance_sim[c(&quot;xi6&quot;, &quot;xi5&quot;, &quot;xi4&quot;, &quot;xi3&quot;, &quot;xi2&quot;,
     &quot;xi1&quot;), c(&quot;xi6&quot;, &quot;xi5&quot;, &quot;xi4&quot;, &quot;xi3&quot;, &quot;xi2&quot;, &quot;xi1&quot;)]
 cov_xi</code></pre>
-<pre><code>    xi6       xi5       xi4       xi3       xi2       xi1
-xi6   0 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000
-xi5   0 0.9881461 0.9922043 0.9728198 0.9613144 1.0104744
-xi4   0 0.9922043 1.9761314 0.9947283 0.9750676 1.9945363
-xi3   0 0.9728198 0.9947283 2.9991153 2.9926083 0.9948641
-xi2   0 0.9613144 0.9750676 2.9926083 4.0027913 0.9789752
-xi1   0 1.0104744 1.9945363 0.9948641 0.9789752 5.0454803</code></pre>
+<pre><code>xi6       xi5       xi4       xi3       xi2       xi1</code></pre>
+<p>xi6 0 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000 xi5 0 0.9881461 0.9922043 0.9728198 0.9613144 1.0104744 xi4 0 0.9922043 1.9761314 0.9947283 0.9750676 1.9945363 xi3 0 0.9728198 0.9947283 2.9991153 2.9926083 0.9948641 xi2 0 0.9613144 0.9750676 2.9926083 4.0027913 0.9789752 xi1 0 1.0104744 1.9945363 0.9948641 0.9789752 5.0454803</p>
 <pre class="r"><code># inverse
 pinv(cov_xi)</code></pre>
-<pre><code>     [,1]         [,2]         [,3]         [,4]         [,5]         [,6]
-[1,]    0  0.000000000  0.000000000  0.000000000  0.000000000  0.000000000
-[2,]    0  2.498547547 -1.007178925 -0.479070591  0.005629627 -0.008872205
-[3,]    0 -1.007178925  1.350773560 -0.021357096  0.009491706 -0.329895876
-[4,]    0 -0.479070591 -0.021357096  1.478581274 -0.986201637  0.004194972
-[5,]    0  0.005629627  0.009491706 -0.986201637  0.983795465 -0.001307100
-[6,]    0 -0.008872205 -0.329895876  0.004194972 -0.001307100  0.329812135</code></pre>
+<pre><code> [,1]         [,2]         [,3]         [,4]         [,5]         [,6]</code></pre>
+<p>[1,] 0 0.000000000 0.000000000 0.000000000 0.000000000 0.000000000 [2,] 0 2.498547547 -1.007178925 -0.479070591 0.005629627 -0.008872205 [3,] 0 -1.007178925 1.350773560 -0.021357096 0.009491706 -0.329895876 [4,] 0 -0.479070591 -0.021357096 1.478581274 -0.986201637 0.004194972 [5,] 0 0.005629627 0.009491706 -0.986201637 0.983795465 -0.001307100 [6,] 0 -0.008872205 -0.329895876 0.004194972 -0.001307100 0.329812135</p>
 <pre class="r"><code>levelplot(cov_xi, main = &quot;Heatmap of Precision matrix of Xi(simulation)&quot;)</code></pre>
-<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-11-2.png" width="1056" style="display: block; margin: auto;" /></p>
+<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-10-2.png" width="1056" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>p2 &lt;- levelplot(cov_xi, main = &quot;Heatmap of Precision matrix of Xi(simulation)&quot;)
 
 
@@ -1303,48 +1235,20 @@ cov_xL &lt;- mat_covariance_sim[c(&quot;xL1&quot;, &quot;xL4&quot;, &quot;xL7&qu
     &quot;xL6&quot;, &quot;xL5&quot;), c(&quot;xL1&quot;, &quot;xL4&quot;, &quot;xL7&quot;, &quot;xL2&quot;, &quot;xL3&quot;, &quot;xL6&quot;,
     &quot;xL5&quot;)]
 cov_xL</code></pre>
-<pre><code>           xL1        xL4       xL7        xL2        xL3         xL6
-xL1 6.06496882 1.99621232 1.9882326  0.9868236 0.93240137  0.95462845
-xL4 1.99621232 5.97138303 5.0342364  0.9641668 0.93751436  0.95925286
-xL7 1.98823263 5.03423637 6.0911917  1.0356559 0.96218163  0.99930259
-xL2 0.98682364 0.96416675 1.0356559  6.0510236 2.95052136  2.95466706
-xL3 0.93240137 0.93751436 0.9621816  2.9505214 4.95252025  3.99328948
-xL6 0.95462845 0.95925286 0.9993026  2.9546671 3.99328948  5.06388238
-xL5 0.03207477 0.09948823 0.0714794 -0.1287465 0.03617879 -0.02884935
-            xL5
-xL1  0.03207477
-xL4  0.09948823
-xL7  0.07147940
-xL2 -0.12874654
-xL3  0.03617879
-xL6 -0.02884935
-xL5  5.99501434</code></pre>
+<pre><code>       xL1        xL4       xL7        xL2        xL3         xL6</code></pre>
+<p>xL1 6.06496882 1.99621232 1.9882326 0.9868236 0.93240137 0.95462845 xL4 1.99621232 5.97138303 5.0342364 0.9641668 0.93751436 0.95925286 xL7 1.98823263 5.03423637 6.0911917 1.0356559 0.96218163 0.99930259 xL2 0.98682364 0.96416675 1.0356559 6.0510236 2.95052136 2.95466706 xL3 0.93240137 0.93751436 0.9621816 2.9505214 4.95252025 3.99328948 xL6 0.95462845 0.95925286 0.9993026 2.9546671 3.99328948 5.06388238 xL5 0.03207477 0.09948823 0.0714794 -0.1287465 0.03617879 -0.02884935 xL5 xL1 0.03207477 xL4 0.09948823 xL7 0.07147940 xL2 -0.12874654 xL3 0.03617879 xL6 -0.02884935 xL5 5.99501434</p>
 <pre class="r"><code># inverse
 inv(cov_xL)</code></pre>
-<pre><code>              xL1           xL4           xL7           xL2           xL3
-xL1  0.1904658106 -0.0350043655 -0.0282459360 -0.0114434152 -0.0087769914
-xL4 -0.0350043655  0.5601755914 -0.4494152622 -0.0006838099 -0.0090003115
-xL7 -0.0282459360 -0.4494152622  0.5486840302 -0.0124417786 -0.0007934824
-xL2 -0.0114434152 -0.0006838099 -0.0124417786  0.2455493154 -0.0822604594
-xL3 -0.0087769914 -0.0090003115 -0.0007934824 -0.0822604594  0.5848713467
-xL6 -0.0101047266 -0.0033528188 -0.0099296077 -0.0736294322 -0.4097462457
-xL5 -0.0003427676 -0.0037269856  0.0007570147  0.0056363427 -0.0070621912
-             xL6           xL5
-xL1 -0.010104727 -0.0003427676
-xL4 -0.003352819 -0.0037269856
-xL7 -0.009929608  0.0007570147
-xL2 -0.073629432  0.0056363427
-xL3 -0.409746246 -0.0070621912
-xL6  0.568078388  0.0038533211
-xL5  0.003853321  0.1670421360</code></pre>
+<pre><code>          xL1           xL4           xL7           xL2           xL3</code></pre>
+<p>xL1 0.1904658106 -0.0350043655 -0.0282459360 -0.0114434152 -0.0087769914 xL4 -0.0350043655 0.5601755914 -0.4494152622 -0.0006838099 -0.0090003115 xL7 -0.0282459360 -0.4494152622 0.5486840302 -0.0124417786 -0.0007934824 xL2 -0.0114434152 -0.0006838099 -0.0124417786 0.2455493154 -0.0822604594 xL3 -0.0087769914 -0.0090003115 -0.0007934824 -0.0822604594 0.5848713467 xL6 -0.0101047266 -0.0033528188 -0.0099296077 -0.0736294322 -0.4097462457 xL5 -0.0003427676 -0.0037269856 0.0007570147 0.0056363427 -0.0070621912 xL6 xL5 xL1 -0.010104727 -0.0003427676 xL4 -0.003352819 -0.0037269856 xL7 -0.009929608 0.0007570147 xL2 -0.073629432 0.0056363427 xL3 -0.409746246 -0.0070621912 xL6 0.568078388 0.0038533211 xL5 0.003853321 0.1670421360</p>
 <pre class="r"><code>levelplot(cov_xL, main = &quot;Heatmap of Precision matrix of X L(simulation)&quot;)</code></pre>
-<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-11-3.png" width="1056" style="display: block; margin: auto;" /></p>
+<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-10-3.png" width="1056" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>p3 &lt;- levelplot(cov_xL, main = &quot;Heatmap of Precision matrix of X L(simulation)&quot;)
 
 # plot simultaneously
 library(gridExtra)
 grid.arrange(p1, p2, p3, ncol = 3)</code></pre>
-<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-11-4.png" width="1056" style="display: block; margin: auto;" /></p>
+<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-10-4.png" width="1056" style="display: block; margin: auto;" /></p>
 <p>Both the simulation-based and the graphical model-based covariance matrix produces similar precision matrix.<br />
 </p>
 <p>Component of precision matrix is zero if and only if <span class="math inline">\(X_i\)</span> and <span class="math inline">\(X_j\)</span> are conditionally independent given all other coordinates of X.<br />
@@ -1378,15 +1282,11 @@ ccr5 = ccr5[ccr5$x != -Inf, ]</code></pre>
 <p><span class="math display">\[ \Sigma(y_1, y_2) = K(d(y_1, y_2)) = a_1 exp(-(d/a_2)^2) \]</span></p>
 <pre class="r"><code># compute distance matrix (euclidean distance)
 rownames(ccr5)</code></pre>
-<pre><code> [1] &quot;1&quot;  &quot;2&quot;  &quot;3&quot;  &quot;4&quot;  &quot;5&quot;  &quot;6&quot;  &quot;7&quot;  &quot;8&quot;  &quot;9&quot;  &quot;10&quot; &quot;11&quot; &quot;12&quot; &quot;13&quot; &quot;14&quot; &quot;15&quot;
-[16] &quot;16&quot; &quot;17&quot; &quot;18&quot; &quot;19&quot; &quot;20&quot; &quot;21&quot; &quot;22&quot; &quot;23&quot; &quot;24&quot; &quot;25&quot; &quot;26&quot; &quot;27&quot; &quot;28&quot; &quot;29&quot; &quot;30&quot;
-[31] &quot;31&quot; &quot;32&quot; &quot;33&quot; &quot;34&quot; &quot;35&quot; &quot;36&quot; &quot;37&quot; &quot;38&quot; &quot;39&quot; &quot;40&quot; &quot;41&quot; &quot;42&quot; &quot;43&quot; &quot;44&quot; &quot;45&quot;
-[46] &quot;46&quot; &quot;47&quot; &quot;48&quot; &quot;49&quot; &quot;50&quot; &quot;51&quot; &quot;52&quot; &quot;53&quot; &quot;54&quot; &quot;55&quot; &quot;56&quot; &quot;57&quot; &quot;58&quot; &quot;59&quot; &quot;60&quot;
-[61] &quot;61&quot; &quot;62&quot; &quot;63&quot; &quot;64&quot; &quot;65&quot; &quot;66&quot; &quot;67&quot; &quot;68&quot;</code></pre>
+<p>[1] “1” “2” “3” “4” “5” “6” “7” “8” “9” “10” “11” “12” “13” “14” “15” [16] “16” “17” “18” “19” “20” “21” “22” “23” “24” “25” “26” “27” “28” “29” “30” [31] “31” “32” “33” “34” “35” “36” “37” “38” “39” “40” “41” “42” “43” “44” “45” [46] “46” “47” “48” “49” “50” “51” “52” “53” “54” “55” “56” “57” “58” “59” “60” [61] “61” “62” “63” “64” “65” “66” “67” “68”</p>
 <pre class="r"><code>y_ccr5 &lt;- ccr5[, c(&quot;Long&quot;, &quot;Lat&quot;)]
 mat_d &lt;- dist(y_ccr5, diag = T, upper = T)
 class(mat_d)</code></pre>
-<pre><code>[1] &quot;dist&quot;</code></pre>
+<p>[1] “dist”</p>
 <pre class="r"><code>mat_d &lt;- as.matrix(mat_d)
 
 a1 = 1
@@ -1396,25 +1296,16 @@ a = c(a1, a2)
 # compute covariance matrix with distance matrix
 mat_c &lt;- a1 * exp(-(mat_d/a2)^2)
 class(mat_c)</code></pre>
-<pre><code>[1] &quot;matrix&quot; &quot;array&quot; </code></pre>
+<p>[1] “matrix” “array”</p>
 <pre class="r"><code># is it positive semi-definite?
 eigen(mat_c, only.values = T)$values</code></pre>
-<pre><code> [1] 1.6172017 1.5294986 1.3952727 1.3687310 1.3678794 1.3678794 1.2607939
- [8] 1.2413514 1.1718709 1.1358492 1.1353353 1.1347790 1.0183156 1.0067379
-[15] 1.0067378 1.0059563 1.0003355 1.0001234 1.0000454 1.0000023 1.0000003
-[22] 1.0000000 1.0000000 1.0000000 1.0000000 1.0000000 1.0000000 1.0000000
-[29] 1.0000000 1.0000000 1.0000000 1.0000000 1.0000000 1.0000000 1.0000000
-[36] 1.0000000 1.0000000 1.0000000 1.0000000 1.0000000 1.0000000 1.0000000
-[43] 1.0000000 1.0000000 0.9999977 0.9999546 0.9998766 0.9996645 0.9993307
-[50] 0.9956502 0.9932621 0.9932620 0.9816844 0.9816843 0.9815147 0.9795053
-[57] 0.8646647 0.8643531 0.8639913 0.8298705 0.7713373 0.7236844 0.6321206
-[64] 0.6321206 0.6319381 0.6099453 0.4888170 0.4170729</code></pre>
+<p>[1] 1.6172017 1.5294986 1.3952727 1.3687310 1.3678794 1.3678794 1.2607939 [8] 1.2413514 1.1718709 1.1358492 1.1353353 1.1347790 1.0183156 1.0067379 [15] 1.0067378 1.0059563 1.0003355 1.0001234 1.0000454 1.0000023 1.0000003 [22] 1.0000000 1.0000000 1.0000000 1.0000000 1.0000000 1.0000000 1.0000000 [29] 1.0000000 1.0000000 1.0000000 1.0000000 1.0000000 1.0000000 1.0000000 [36] 1.0000000 1.0000000 1.0000000 1.0000000 1.0000000 1.0000000 1.0000000 [43] 1.0000000 1.0000000 0.9999977 0.9999546 0.9998766 0.9996645 0.9993307 [50] 0.9956502 0.9932621 0.9932620 0.9816844 0.9816843 0.9815147 0.9795053 [57] 0.8646647 0.8643531 0.8639913 0.8298705 0.7713373 0.7236844 0.6321206 [64] 0.6321206 0.6319381 0.6099453 0.4888170 0.4170729</p>
 <pre class="r"><code>any(eigen(mat_c, only.values = T)$values &lt; 0)</code></pre>
-<pre><code>[1] FALSE</code></pre>
+<p>[1] FALSE</p>
 <pre class="r"><code># check again with function
 library(matrixcalc)
 is.positive.semi.definite(mat_c, tol = 1e-08)</code></pre>
-<pre><code>[1] TRUE</code></pre>
+<p>[1] TRUE</p>
 <p>The resulting covariance matrix is valid (it is positive semi-definite) when <span class="math inline">\(a_1\)</span> and <span class="math inline">\(a_2\)</span> are 1.</p>
 <pre class="r"><code>covariance_is_valid &lt;- function(mat_d, a1, a2) {
     # compute covariance matrix with distance matrix
@@ -1429,13 +1320,13 @@ is.positive.semi.definite(mat_c, tol = 1e-08)</code></pre>
 
 # test 1
 covariance_is_valid(mat_d, a1 = 0.1, a2 = 0.1)</code></pre>
-<pre><code>[1] TRUE</code></pre>
+<p>[1] TRUE</p>
 <pre class="r"><code># test 2
 covariance_is_valid(mat_d, a1 = 0.5, a2 = 0.1)</code></pre>
-<pre><code>[1] TRUE</code></pre>
+<p>[1] TRUE</p>
 <pre class="r"><code># test 3
 covariance_is_valid(mat_d, a1 = 0.5, a2 = 10)</code></pre>
-<pre><code>[1] TRUE</code></pre>
+<p>[1] TRUE</p>
 <p>The resulting covariance matrix is valid (it is positive semi-definite) for other <span class="math inline">\(a_1\)</span>, <span class="math inline">\(a_2\)</span> values</p>
 </div>
 <div id="b-b-compute-log-likelihood-and-maximize" class="section level2">
@@ -1461,7 +1352,7 @@ compute_ll &lt;- function(ccr5, m, a1, a2) {
     return(ll)
 }
 compute_ll(ccr5, m = 1, a1 = 1, a2 = 1)</code></pre>
-<pre><code>[1] -494.7394</code></pre>
+<p>[1] -494.7394</p>
 <pre class="r"><code># modify function to apply optim function
 
 compute_ll_optim &lt;- function(par, data) {
@@ -1478,37 +1369,17 @@ compute_ll_optim &lt;- function(par, data) {
 X_obs &lt;- ccr5$x
 
 optim(par = c(1, 1, 1), fn = compute_ll_optim, data = X_obs)</code></pre>
-<pre><code>$par
-[1] -2.7486638  0.5299463  1.6820251
-
-$value
-[1] 69.52806
-
-$counts
-function gradient 
-     148       NA 
-
-$convergence
-[1] 0
-
-$message
-NULL</code></pre>
+<p>$par [1] -2.7486638 0.5299463 1.6820251</p>
+<p>$value [1] 69.52806</p>
+<p>$counts function gradient 148 NA</p>
+<p>$convergence [1] 0</p>
+<p>$message NULL</p>
 <pre class="r"><code>optim(par = c(0.1, 0.1, 0.1), fn = compute_ll_optim, data = X_obs)</code></pre>
-<pre><code>$par
-[1] -2.7484053  0.5300537  1.6810833
-
-$value
-[1] 69.52807
-
-$counts
-function gradient 
-     226       NA 
-
-$convergence
-[1] 0
-
-$message
-NULL</code></pre>
+<p>$par [1] -2.7484053 0.5300537 1.6810833</p>
+<p>$value [1] 69.52807</p>
+<p>$counts function gradient 226 NA</p>
+<p>$convergence [1] 0</p>
+<p>$message NULL</p>
 <p>It converged to m = -2.7486638, a1 = 0.5299463, a2 = 1.6820251. This is pretty stable to initial parameter change<br />
 Let’s do a grid search around these values to visualize it in a heatmap.</p>
 <pre class="r"><code>n = 100
@@ -1541,7 +1412,7 @@ colnames(mat_ll) &lt;- a2
 
 # histogram
 hist(c(mat_ll))</code></pre>
-<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-16-1.png" width="1056" style="display: block; margin: auto;" /></p>
+<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-15-1.png" width="1056" style="display: block; margin: auto;" /></p>
 <pre class="r"><code># plot heatmap
 col_bwr &lt;- colorRampPalette(c(&quot;blue&quot;, &quot;white&quot;, &quot;Red&quot;))
 
@@ -1553,18 +1424,18 @@ ggplot(data = m_ll, aes(x = a1, y = a2)) + geom_tile(aes(fill = `Log-likelihood`
     ylab(&quot;a2 \n&quot;) + xlab(&quot;\n a1 &quot;) + scale_y_continuous(expand = c(0,
     0)) + scale_x_continuous(expand = c(0, 0)) + ggtitle(&quot;Heatmap of log-likelihood (varying a1, a2) \n&quot;) +
     mytheme</code></pre>
-<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-16-2.png" width="1056" style="display: block; margin: auto;" /></p>
+<p><img src="figure/HW7_Brownian_Motion_Gaussian_process.Rmd/unnamed-chunk-15-2.png" width="1056" style="display: block; margin: auto;" /></p>
 <pre class="r"><code># maximum likelihood
 max(mat_ll)</code></pre>
-<pre><code>[1] -69.53353</code></pre>
+<p>[1] -69.53353</p>
 <pre class="r"><code>which(mat_ll == max(mat_ll), arr.ind = TRUE)</code></pre>
-<pre><code>                  row col
-0.539393939393939  16  55</code></pre>
+<pre><code>              row col</code></pre>
+<p>0.539393939393939 16 55</p>
 <pre class="r"><code># find which a1, a2 value
 a1[which(mat_ll == max(mat_ll), arr.ind = TRUE)[1]]</code></pre>
-<pre><code>[1] 0.5393939</code></pre>
+<p>[1] 0.5393939</p>
 <pre class="r"><code>a2[which(mat_ll == max(mat_ll), arr.ind = TRUE)[2]]</code></pre>
-<pre><code>[1] 1.681818</code></pre>
+<p>[1] 1.681818</p>
 </div>
 <div id="b-c-compute-log-likelihood-and-maximize" class="section level2">
 <h2>B-c) Compute log-likelihood and maximize</h2>
@@ -1579,7 +1450,7 @@ a1[which(mat_ll == max(mat_ll), arr.ind = TRUE)[1]]</code></pre>
 y_ccr5 &lt;- ccr5[, c(&quot;Long&quot;, &quot;Lat&quot;)]
 mat_d &lt;- dist(y_ccr5, diag = T, upper = T)
 class(mat_d)</code></pre>
-<pre><code>[1] &quot;dist&quot;</code></pre>
+<p>[1] “dist”</p>
 <pre class="r"><code>mat_d &lt;- as.matrix(mat_d)
 # Covariance matrix
 a1 = 0.5299463
@@ -1597,35 +1468,24 @@ mu_1 = X[1]
 dim_mat_c &lt;- dim(mat_c)[2]
 Sigma_12 &lt;- mat_c[1, , drop = F][2:dim_mat_c]  # \Sigma_{12}
 class(Sigma_12)</code></pre>
-<pre><code>[1] &quot;numeric&quot;</code></pre>
+<p>[1] “numeric”</p>
 <pre class="r"><code>dim(Sigma_12)</code></pre>
-<pre><code>NULL</code></pre>
+<p>NULL</p>
 <pre class="r"><code>Sigma_22 &lt;- mat_c[2:dim_mat_c, 2:dim_mat_c]  # \Sigma_{22}^{-1}
 dim(Sigma_22)</code></pre>
-<pre><code>[1] 67 67</code></pre>
+<p>[1] 67 67</p>
 <pre class="r"><code>Omega_22 &lt;- inv(Sigma_22)
 dim(Omega_22)</code></pre>
-<pre><code>[1] 67 67</code></pre>
+<p>[1] 67 67</p>
 <pre class="r"><code>Y_2 &lt;- X[2:dim_mat_c]  # Y_2
 Y_2 - mean(Y_2)  # (Y_2 - \mu_2)</code></pre>
-<pre><code> [1]  1.00017131  0.98521441  0.97010290  0.85962235  0.83477882  0.80948151
- [7]  0.75744063  0.74856982  0.66596923  0.66596923  0.65646526  0.61774387
-[13]  0.61774387  0.61774387  0.57783236  0.56765829  0.56765829  0.55740285
-[19]  0.52613271  0.51553602  0.47223687  0.43875235  0.41591822  0.41591822
-[25]  0.36894359  0.35691380  0.30757163  0.30757163  0.29491612  0.29491612
-[31]  0.28212658  0.28212658  0.25613253  0.24292125  0.21605236  0.08697053
-[37]  0.05624662 -0.02433300 -0.02433300 -0.04114916 -0.05821617 -0.09313592
-[43] -0.09313592 -0.11100630 -0.18545235 -0.24471139 -0.24471139 -0.26518377
-[49] -0.26518377 -0.28603959 -0.28603959 -0.28603959 -0.35106791 -0.46877877
-[55] -0.51965444 -0.81769930 -0.85263125 -1.00516226 -1.04700937 -1.13606783
-[61] -1.18360981 -1.34082016 -1.39899639 -1.52619205 -1.52619205 -1.59619963
-[67] -1.93672046</code></pre>
+<p>[1] 1.00017131 0.98521441 0.97010290 0.85962235 0.83477882 0.80948151 [7] 0.75744063 0.74856982 0.66596923 0.66596923 0.65646526 0.61774387 [13] 0.61774387 0.61774387 0.57783236 0.56765829 0.56765829 0.55740285 [19] 0.52613271 0.51553602 0.47223687 0.43875235 0.41591822 0.41591822 [25] 0.36894359 0.35691380 0.30757163 0.30757163 0.29491612 0.29491612 [31] 0.28212658 0.28212658 0.25613253 0.24292125 0.21605236 0.08697053 [37] 0.05624662 -0.02433300 -0.02433300 -0.04114916 -0.05821617 -0.09313592 [43] -0.09313592 -0.11100630 -0.18545235 -0.24471139 -0.24471139 -0.26518377 [49] -0.26518377 -0.28603959 -0.28603959 -0.28603959 -0.35106791 -0.46877877 [55] -0.51965444 -0.81769930 -0.85263125 -1.00516226 -1.04700937 -1.13606783 [61] -1.18360981 -1.34082016 -1.39899639 -1.52619205 -1.52619205 -1.59619963 [67] -1.93672046</p>
 <pre class="r"><code># multiply
 dim(Sigma_12 %*% Omega_22)</code></pre>
-<pre><code>[1]  1 67</code></pre>
+<p>[1] 1 67</p>
 <pre class="r"><code>Sigma_12 %*% Omega_22 %*% (Y_2 - mean(Y_2))</code></pre>
-<pre><code>           [,1]
-[1,] -0.1217408</code></pre>
+<pre><code>       [,1]</code></pre>
+<p>[1,] -0.1217408</p>
 <pre class="r"><code>mu = mu_1 + Sigma_12 %*% Omega_22 %*% (Y_2 - mean(Y_2))
 
 
@@ -1662,8 +1522,8 @@ compute_exp_cond_first &lt;- function(mat_c, ccr5) {
 }
 
 compute_exp_cond_first(mat_c, ccr5)</code></pre>
-<pre><code>          [,1]
-[1,] -1.757815</code></pre>
+<pre><code>      [,1]</code></pre>
+<p>[1,] -1.757815</p>
 <p>answer: -1.758<br />
 </p>
 <p>Notice that this expectation ends up being a weighted linear combination of the other datapoints. Intuitively, if allele frequencies vary smoothly in space then this weighted linear combination should weight the nearby data points more. Does it?<br />
@@ -1712,18 +1572,9 @@ for (r in 2:(nrow(mat_c) - 1)) {
 }
 
 length(vec_middle)</code></pre>
-<pre><code>[1] 66</code></pre>
+<p>[1] 66</p>
 <pre class="r"><code>vec_middle</code></pre>
-<pre><code> [1] -1.224617 -1.299924 -1.026259 -1.798740 -1.709679 -1.485647 -1.417014
- [8] -1.350783 -1.854711 -1.356266 -1.742532 -1.342490 -1.459067 -1.606622
-[15] -1.861533 -2.090308 -2.090589 -1.680297 -1.934899 -2.142387 -2.262485
-[22] -2.309269 -2.236445 -2.088814 -1.869665 -2.301496 -2.240443 -2.498986
-[29] -1.648594 -2.363483 -1.976553 -2.376273 -2.402144 -2.415547 -2.430576
-[36] -3.236374 -2.153978 -2.693547 -2.700576 -2.699549 -2.790354 -2.751426
-[43] -2.751535 -2.032550 -2.848668 -2.904907 -2.428991 -2.720902 -3.140217
-[50] -2.944403 -2.947033 -2.945710 -2.926516 -3.127178 -3.178140 -3.476155
-[57] -3.530239 -3.859709 -3.705409 -3.993962 -3.842009 -3.970004 -4.059541
-[64] -4.184591 -4.193554 -4.254599</code></pre>
+<p>[1] -1.224617 -1.299924 -1.026259 -1.798740 -1.709679 -1.485647 -1.417014 [8] -1.350783 -1.854711 -1.356266 -1.742532 -1.342490 -1.459067 -1.606622 [15] -1.861533 -2.090308 -2.090589 -1.680297 -1.934899 -2.142387 -2.262485 [22] -2.309269 -2.236445 -2.088814 -1.869665 -2.301496 -2.240443 -2.498986 [29] -1.648594 -2.363483 -1.976553 -2.376273 -2.402144 -2.415547 -2.430576 [36] -3.236374 -2.153978 -2.693547 -2.700576 -2.699549 -2.790354 -2.751426 [43] -2.751535 -2.032550 -2.848668 -2.904907 -2.428991 -2.720902 -3.140217 [50] -2.944403 -2.947033 -2.945710 -2.926516 -3.127178 -3.178140 -3.476155 [57] -3.530239 -3.859709 -3.705409 -3.993962 -3.842009 -3.970004 -4.059541 [64] -4.184591 -4.193554 -4.254599</p>
 <pre class="r"><code># compute the last X_r
 compute_exp_cond_last &lt;- function(mat_c, ccr5) {
     r_last = nrow(mat_c)
@@ -1757,67 +1608,31 @@ compute_exp_cond_last &lt;- function(mat_c, ccr5) {
 }
 
 compute_exp_cond_last(mat_c, ccr5)</code></pre>
-<pre><code>          [,1]
-[1,] -4.595113</code></pre>
+<pre><code>      [,1]</code></pre>
+<p>[1,] -4.595113</p>
 <pre class="r"><code># vector for all conditional expectations
 vec_exp_cond &lt;- c(compute_exp_cond_first(mat_c, ccr5), vec_middle,
     compute_exp_cond_last(mat_c, ccr5))
 
 length(vec_exp_cond)</code></pre>
-<pre><code>[1] 68</code></pre>
+<p>[1] 68</p>
 <pre class="r"><code>vec_exp_cond</code></pre>
-<pre><code> [1] -1.757815 -1.224617 -1.299924 -1.026259 -1.798740 -1.709679 -1.485647
- [8] -1.417014 -1.350783 -1.854711 -1.356266 -1.742532 -1.342490 -1.459067
-[15] -1.606622 -1.861533 -2.090308 -2.090589 -1.680297 -1.934899 -2.142387
-[22] -2.262485 -2.309269 -2.236445 -2.088814 -1.869665 -2.301496 -2.240443
-[29] -2.498986 -1.648594 -2.363483 -1.976553 -2.376273 -2.402144 -2.415547
-[36] -2.430576 -3.236374 -2.153978 -2.693547 -2.700576 -2.699549 -2.790354
-[43] -2.751426 -2.751535 -2.032550 -2.848668 -2.904907 -2.428991 -2.720902
-[50] -3.140217 -2.944403 -2.947033 -2.945710 -2.926516 -3.127178 -3.178140
-[57] -3.476155 -3.530239 -3.859709 -3.705409 -3.993962 -3.842009 -3.970004
-[64] -4.059541 -4.184591 -4.193554 -4.254599 -4.595113</code></pre>
+<p>[1] -1.757815 -1.224617 -1.299924 -1.026259 -1.798740 -1.709679 -1.485647 [8] -1.417014 -1.350783 -1.854711 -1.356266 -1.742532 -1.342490 -1.459067 [15] -1.606622 -1.861533 -2.090308 -2.090589 -1.680297 -1.934899 -2.142387 [22] -2.262485 -2.309269 -2.236445 -2.088814 -1.869665 -2.301496 -2.240443 [29] -2.498986 -1.648594 -2.363483 -1.976553 -2.376273 -2.402144 -2.415547 [36] -2.430576 -3.236374 -2.153978 -2.693547 -2.700576 -2.699549 -2.790354 [43] -2.751426 -2.751535 -2.032550 -2.848668 -2.904907 -2.428991 -2.720902 [50] -3.140217 -2.944403 -2.947033 -2.945710 -2.926516 -3.127178 -3.178140 [57] -3.476155 -3.530239 -3.859709 -3.705409 -3.993962 -3.842009 -3.970004 [64] -4.059541 -4.184591 -4.193554 -4.254599 -4.595113</p>
 <p>Comparing the accuracy of this imputation scheme with just using the mean of the other datapoints.</p>
 <pre class="r"><code># Accuracy of Kriging
 
 X  # observed</code></pre>
-<pre><code> [1] -1.636074 -1.658228 -1.673185 -1.688296 -1.798777 -1.823621 -1.848918
- [8] -1.900959 -1.909830 -1.992430 -1.992430 -2.001934 -2.040656 -2.040656
-[15] -2.040656 -2.080567 -2.090741 -2.090741 -2.100997 -2.132267 -2.142863
-[22] -2.186163 -2.219647 -2.242481 -2.242481 -2.289456 -2.301486 -2.350828
-[29] -2.350828 -2.363483 -2.363483 -2.376273 -2.376273 -2.402267 -2.415478
-[36] -2.442347 -2.571429 -2.602153 -2.682732 -2.682732 -2.699549 -2.716616
-[43] -2.751535 -2.751535 -2.769406 -2.843852 -2.903111 -2.903111 -2.923583
-[50] -2.923583 -2.944439 -2.944439 -2.944439 -3.009467 -3.127178 -3.178054
-[57] -3.476099 -3.511031 -3.663562 -3.705409 -3.794467 -3.842009 -3.999220
-[64] -4.057396 -4.184591 -4.184591 -4.254599 -4.595120</code></pre>
+<p>[1] -1.636074 -1.658228 -1.673185 -1.688296 -1.798777 -1.823621 -1.848918 [8] -1.900959 -1.909830 -1.992430 -1.992430 -2.001934 -2.040656 -2.040656 [15] -2.040656 -2.080567 -2.090741 -2.090741 -2.100997 -2.132267 -2.142863 [22] -2.186163 -2.219647 -2.242481 -2.242481 -2.289456 -2.301486 -2.350828 [29] -2.350828 -2.363483 -2.363483 -2.376273 -2.376273 -2.402267 -2.415478 [36] -2.442347 -2.571429 -2.602153 -2.682732 -2.682732 -2.699549 -2.716616 [43] -2.751535 -2.751535 -2.769406 -2.843852 -2.903111 -2.903111 -2.923583 [50] -2.923583 -2.944439 -2.944439 -2.944439 -3.009467 -3.127178 -3.178054 [57] -3.476099 -3.511031 -3.663562 -3.705409 -3.794467 -3.842009 -3.999220 [64] -4.057396 -4.184591 -4.184591 -4.254599 -4.595120</p>
 <pre class="r"><code>vec_exp_cond  # kriging</code></pre>
-<pre><code> [1] -1.757815 -1.224617 -1.299924 -1.026259 -1.798740 -1.709679 -1.485647
- [8] -1.417014 -1.350783 -1.854711 -1.356266 -1.742532 -1.342490 -1.459067
-[15] -1.606622 -1.861533 -2.090308 -2.090589 -1.680297 -1.934899 -2.142387
-[22] -2.262485 -2.309269 -2.236445 -2.088814 -1.869665 -2.301496 -2.240443
-[29] -2.498986 -1.648594 -2.363483 -1.976553 -2.376273 -2.402144 -2.415547
-[36] -2.430576 -3.236374 -2.153978 -2.693547 -2.700576 -2.699549 -2.790354
-[43] -2.751426 -2.751535 -2.032550 -2.848668 -2.904907 -2.428991 -2.720902
-[50] -3.140217 -2.944403 -2.947033 -2.945710 -2.926516 -3.127178 -3.178140
-[57] -3.476155 -3.530239 -3.859709 -3.705409 -3.993962 -3.842009 -3.970004
-[64] -4.059541 -4.184591 -4.193554 -4.254599 -4.595113</code></pre>
+<p>[1] -1.757815 -1.224617 -1.299924 -1.026259 -1.798740 -1.709679 -1.485647 [8] -1.417014 -1.350783 -1.854711 -1.356266 -1.742532 -1.342490 -1.459067 [15] -1.606622 -1.861533 -2.090308 -2.090589 -1.680297 -1.934899 -2.142387 [22] -2.262485 -2.309269 -2.236445 -2.088814 -1.869665 -2.301496 -2.240443 [29] -2.498986 -1.648594 -2.363483 -1.976553 -2.376273 -2.402144 -2.415547 [36] -2.430576 -3.236374 -2.153978 -2.693547 -2.700576 -2.699549 -2.790354 [43] -2.751426 -2.751535 -2.032550 -2.848668 -2.904907 -2.428991 -2.720902 [50] -3.140217 -2.944403 -2.947033 -2.945710 -2.926516 -3.127178 -3.178140 [57] -3.476155 -3.530239 -3.859709 -3.705409 -3.993962 -3.842009 -3.970004 [64] -4.059541 -4.184591 -4.193554 -4.254599 -4.595113</p>
 <pre class="r"><code># calculated distance
 sqrt(sum((X - vec_exp_cond)^2))</code></pre>
-<pre><code>[1] 2.398139</code></pre>
+<p>[1] 2.398139</p>
 <p>distance calculated against the observed X is only 2.4</p>
 <pre class="r"><code># When only using the mean of other datapoints
 
 X  # observed</code></pre>
-<pre><code> [1] -1.636074 -1.658228 -1.673185 -1.688296 -1.798777 -1.823621 -1.848918
- [8] -1.900959 -1.909830 -1.992430 -1.992430 -2.001934 -2.040656 -2.040656
-[15] -2.040656 -2.080567 -2.090741 -2.090741 -2.100997 -2.132267 -2.142863
-[22] -2.186163 -2.219647 -2.242481 -2.242481 -2.289456 -2.301486 -2.350828
-[29] -2.350828 -2.363483 -2.363483 -2.376273 -2.376273 -2.402267 -2.415478
-[36] -2.442347 -2.571429 -2.602153 -2.682732 -2.682732 -2.699549 -2.716616
-[43] -2.751535 -2.751535 -2.769406 -2.843852 -2.903111 -2.903111 -2.923583
-[50] -2.923583 -2.944439 -2.944439 -2.944439 -3.009467 -3.127178 -3.178054
-[57] -3.476099 -3.511031 -3.663562 -3.705409 -3.794467 -3.842009 -3.999220
-[64] -4.057396 -4.184591 -4.184591 -4.254599 -4.595120</code></pre>
+<p>[1] -1.636074 -1.658228 -1.673185 -1.688296 -1.798777 -1.823621 -1.848918 [8] -1.900959 -1.909830 -1.992430 -1.992430 -2.001934 -2.040656 -2.040656 [15] -2.040656 -2.080567 -2.090741 -2.090741 -2.100997 -2.132267 -2.142863 [22] -2.186163 -2.219647 -2.242481 -2.242481 -2.289456 -2.301486 -2.350828 [29] -2.350828 -2.363483 -2.363483 -2.376273 -2.376273 -2.402267 -2.415478 [36] -2.442347 -2.571429 -2.602153 -2.682732 -2.682732 -2.699549 -2.716616 [43] -2.751535 -2.751535 -2.769406 -2.843852 -2.903111 -2.903111 -2.923583 [50] -2.923583 -2.944439 -2.944439 -2.944439 -3.009467 -3.127178 -3.178054 [57] -3.476099 -3.511031 -3.663562 -3.705409 -3.794467 -3.842009 -3.999220 [64] -4.057396 -4.184591 -4.184591 -4.254599 -4.595120</p>
 <pre class="r"><code>vec_mean &lt;- rep(Inf, length(X))
 
 for (i in 1:length(X)) {
@@ -1827,7 +1642,7 @@ for (i in 1:length(X)) {
 
 # calculate distance
 sqrt(sum((X - vec_mean)^2))</code></pre>
-<pre><code>[1] 6.028869</code></pre>
+<p>[1] 6.028869</p>
 <p>distance calculated against the observed X is only 6.03, which is larger than the Kriging scheme.</p>
 <br>
 <p>
